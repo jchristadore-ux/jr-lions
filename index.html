@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Jr. Lions Lacrosse - Game Day</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--card:#111;--card2:#1a1a1a;--border:#2a2a2a;--border2:#3a3a3a;--gold:#f0c020;--gold2:#c8a000;--gold3:#f8d84a;--green:#2aaa2a;--white:#fff;--muted:#777;--atk:#ff8c42;--mid:#5bc8f5;--def:#c084fc;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',sans-serif;font-size:16px;min-height:100vh}
+.hdr{background:#000;border-bottom:2px solid var(--gold2);padding:10px 14px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.hdr-logo{height:50px;width:auto;flex-shrink:0}
+.hdr-text{flex:1}
+.hdr-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:.5px;line-height:1.1;text-transform:uppercase}
+.hdr-sub{font-size:10px;color:var(--green);letter-spacing:2px;text-transform:uppercase}
+.hdr-pill{background:var(--card2);border:1.5px solid var(--gold2);border-radius:8px;padding:4px 10px;text-align:center;flex-shrink:0}
+.hdr-pill .num{font-family:'Oswald',sans-serif;font-size:20px;color:var(--gold);display:block;line-height:1}
+.hdr-pill .lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.nav{display:flex;background:#000;border-bottom:1px solid var(--border2);position:sticky;top:72px;z-index:99}
+.nav-tab{flex:1;padding:13px 4px;background:none;border:none;color:var(--muted);font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;letter-spacing:1px;cursor:pointer;text-transform:uppercase;border-bottom:3px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.page{display:none;padding:14px;padding-bottom:30px}
+.page.active{display:block}
+.sec-lbl{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;color:var(--green);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--border2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.pos-badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:1px}
+.b-atk{background:rgba(255,140,66,.15);color:var(--atk);border:1px solid rgba(255,140,66,.5)}
+.b-mid{background:rgba(91,200,245,.12);color:var(--mid);border:1px solid rgba(91,200,245,.5)}
+.b-def{background:rgba(192,132,252,.12);color:var(--def);border:1px solid rgba(192,132,252,.5)}
+.player-row{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--card);border:1px solid var(--border2);border-radius:10px;margin-bottom:7px;cursor:pointer;user-select:none;min-height:58px;transition:background .12s}
+.player-row:active{background:var(--card2)}
+.player-row.absent{background:transparent;border-color:#1a1a1a;opacity:.4}
+.chk{width:26px;height:26px;border-radius:6px;border:2px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#000}
+.player-row:not(.absent) .chk{background:var(--gold);border-color:var(--gold)}
+.pname{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;color:var(--white);flex:1}
+.player-row.absent .pname{color:var(--muted);text-decoration:line-through}
+.ctrl-card{background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:12px}
+.ctrl-lbl{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+.gen-btn{width:100%;padding:18px;background:var(--gold);border:none;border-radius:12px;color:#000;font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-bottom:12px}
+.gen-btn:active{background:var(--gold3);transform:scale(.98)}
+.warn{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.4);border-radius:10px;padding:12px 14px;font-size:14px;color:#ff7777;margin-bottom:10px;line-height:1.5}
+.note{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.note strong{color:var(--gold)}
+.starter-section{margin-bottom:16px}
+.s-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px}
+.s-chip{padding:10px 16px;border-radius:10px;font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;cursor:pointer;user-select:none;transition:all .15s;border:1.5px solid var(--border2);background:var(--card);color:var(--muted)}
+.s-chip:active{transform:scale(.95)}
+.s-chip.sel-def{background:rgba(192,132,252,.18);border-color:var(--def);color:var(--def)}
+.s-chip.sel-mid{background:rgba(91,200,245,.16);border-color:var(--mid);color:var(--mid)}
+.s-chip.sel-atk{background:rgba(255,140,66,.18);border-color:var(--atk);color:var(--atk)}
+.s-chip.full{opacity:.3;cursor:not-allowed}
+.s-counter{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;margin-bottom:8px}
+.s-counter.ok{color:var(--green)}.s-counter.bad{color:#ff7777}
+.stats-strip{display:flex;gap:7px;margin-bottom:12px}
+.stat-box{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:9px 8px;flex:1;text-align:center}
+.stat-box .sv{font-family:'Oswald',sans-serif;font-size:20px;display:block;line-height:1;margin-bottom:1px}
+.stat-box .sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.sched-list{display:flex;flex-direction:column;gap:8px}
+.shift-card{background:var(--card);border:1px solid var(--border2);border-radius:12px;overflow:hidden}
+.shift-card.special{border-color:var(--gold2)}
+.shift-hdr{background:#000;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border2)}
+.shift-card.special .shift-hdr{border-bottom-color:var(--gold2)}
+.shift-clock{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:var(--gold)}
+.shift-sub-count{font-family:'Oswald',sans-serif;font-size:11px;color:var(--green);letter-spacing:1px;margin-left:auto;text-transform:uppercase}
+.badge{font-size:11px;background:var(--gold2);color:#000;border-radius:4px;padding:2px 9px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px}
+.shift-body{padding:11px 14px;display:flex;flex-direction:column;gap:7px}
+.pos-row{display:flex;align-items:center;gap:10px}
+.pos-lbl{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;min-width:40px;flex-shrink:0}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.pchip{padding:6px 12px;border-radius:6px;font-size:14px;font-weight:700}
+.chip-atk{background:rgba(255,140,66,.12);color:var(--atk);border:1px solid rgba(255,140,66,.45)}
+.chip-mid{background:rgba(91,200,245,.1);color:var(--mid);border:1px solid rgba(91,200,245,.45)}
+.chip-def{background:rgba(192,132,252,.1);color:var(--def);border:1px solid rgba(192,132,252,.45)}
+.chip-atk-new{background:rgba(255,140,66,.28);color:var(--atk);border:2px solid var(--atk);font-weight:800}
+.chip-mid-new{background:rgba(91,200,245,.25);color:var(--mid);border:2px solid var(--mid);font-weight:800}
+.chip-def-new{background:rgba(192,132,252,.25);color:var(--def);border:2px solid var(--def);font-weight:800}
+.new-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-left:5px;vertical-align:middle}
+.half-divider{text-align:center;padding:10px 0;font-family:'Oswald',sans-serif;font-size:13px;color:var(--gold);letter-spacing:4px;border-top:1px solid var(--gold2);border-bottom:1px solid var(--gold2);margin:2px 0}
+.pt-list{display:flex;flex-direction:column;gap:9px}
+.pt-row{display:flex;flex-direction:column;gap:5px}
+.pt-top{display:flex;align-items:center;gap:8px}
+.pt-name{font-family:'Oswald',sans-serif;font-size:19px;color:var(--white);flex:1}
+.pt-mins{font-family:'Oswald',sans-serif;font-size:17px;color:var(--gold);min-width:62px;text-align:right}
+.pt-bar-bg{height:10px;background:#1a1a1a;border-radius:5px;overflow:hidden}
+.pt-bar-fill{height:100%;border-radius:5px}
+.empty{text-align:center;padding:50px 16px;color:var(--muted);font-size:15px;line-height:1.8}
+.empty .ico{font-size:44px;margin-bottom:10px}
+.pos-group{margin-bottom:18px}
+.btn-row{display:flex;gap:10px;margin-top:10px}
+.act-btn{flex:1;padding:15px;border-radius:12px;font-family:'Oswald',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;text-align:center;font-weight:600;border:none}
+.btn-gold{background:var(--gold);color:#000}
+.btn-gold:active{background:var(--gold3)}
+.btn-outline{background:var(--card2);border:1.5px solid var(--gold2);color:var(--gold)}
+.btn-outline:active{background:#222}
+.flex-badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:8px;user-select:none;transition:all .15s}
+.flex-badge:active{opacity:.7}
+.flex-active{border-color:var(--gold);color:var(--gold);background:rgba(240,192,0,.1)}
+.flex-active.flex-defense{border-color:var(--def);color:var(--def);background:rgba(192,132,252,.15)}
+.flex-active.flex-attack{border-color:var(--atk);color:var(--atk);background:rgba(255,140,66,.15)}
+.flex-active.flex-middie{border-color:var(--mid);color:var(--mid);background:rgba(91,200,245,.15)}
+.flex-starter-chip{border-style:dashed !important}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow-y:auto;display:none}
+.overlay.show{display:block}
+.ov-bar{background:#1a5c1a;color:#f0c020;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
+.ov-bar h2{margin:0;font-size:16px;font-family:'Oswald',sans-serif;letter-spacing:1px}
+.ov-close{background:#f0c020;color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Oswald',sans-serif}
+.ov-hint{background:#e8f5e8;border-bottom:2px solid #1a5c1a;padding:12px 16px;font-size:14px;color:#1a3a1a;text-align:center;line-height:1.5}
+.ov-body{padding:16px;font-family:Arial,sans-serif;font-size:10pt;color:#000}
+.ov-body h3{font-size:10pt;font-weight:700;color:#f0c020;background:#1a5c1a;padding:4px 9px;margin:12px 0 5px;letter-spacing:1px}
+.ov-body table{border-collapse:collapse;width:100%;margin-bottom:6px}
+.ov-body th{background:#1a5c1a;color:#f0c020;padding:5px 7px;text-align:left;font-size:9pt;letter-spacing:1px}
+.ov-body td{padding:5px 7px;border-bottom:1px solid #ddd;font-size:10pt;vertical-align:top}
+.ov-body tr:nth-child(even) td{background:#f4f8f4}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <svg class="hdr-logo" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="50" rx="6" fill="#1a5c1a"/>
+  <!-- Crossed sticks -->
+  <line x1="10" y1="8" x2="50" y2="42" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="8" x2="10" y2="42" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+  <!-- Stick heads -->
+  <ellipse cx="12" cy="9" rx="7" ry="5" fill="none" stroke="#f0c020" stroke-width="1.5"/>
+  <ellipse cx="48" cy="9" rx="7" ry="5" fill="none" stroke="#f0c020" stroke-width="1.5"/>
+  <!-- JL text -->
+  <text x="30" y="34" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="#f0c020" text-anchor="middle">JL</text>
+</svg>
+  <div class="hdr-text">
+    <div class="hdr-title">Jr. Lions Lacrosse</div>
+    <div class="hdr-sub">Game Day Manager</div>
+  </div>
+  <div class="hdr-pill">
+    <span class="num" id="activeCount">17</span>
+    <span class="lbl">Active</span>
+  </div>
+</div>
+<div class="nav">
+  <button class="nav-tab active" onclick="showPage('roster',this)">ROSTER</button>
+  <button class="nav-tab" onclick="showPage('settings',this)">SETTINGS</button>
+  <button class="nav-tab" onclick="showPage('shifts',this)">SHIFTS</button>
+  <button class="nav-tab" onclick="showPage('time',this)">TIME</button>
+</div>
+<div class="page active" id="page-roster">
+  <div class="note">Tap a name to mark <strong>absent</strong>. Rotation adjusts automatically.</div>
+  <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-def">DEFENSE</span></div><div id="list-defense"></div></div>
+  <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-mid">MIDFIELD</span></div><div id="list-middie"></div></div>
+  <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-atk">ATTACK</span></div><div id="list-attack"></div></div>
+</div>
+<div class="page" id="page-settings">
+  <div class="ctrl-card">
+    <div class="ctrl-lbl">Playing Time Targets</div>
+    <div id="planNote" style="font-size:13px;color:var(--muted);line-height:1.9"></div>
+  </div>
+  <div class="ctrl-card">
+    <div class="ctrl-lbl">Starting Lineup</div>
+    <div class="note" style="margin-bottom:12px">Tap exactly the right number of starters per position.</div>
+    <div class="starter-section">
+      <div class="sec-lbl" style="font-size:12px"><span class="pos-badge b-atk">ATTACK</span> <span id="atk-counter" class="s-counter bad">0 / 4</span></div>
+      <div class="s-chips" id="atk-chips"></div>
+    </div>
+    <div class="starter-section">
+      <div class="sec-lbl" style="font-size:12px"><span class="pos-badge b-mid">MIDFIELD</span> <span id="mid-counter" class="s-counter bad">0 / 3</span></div>
+      <div class="s-chips" id="mid-chips"></div>
+    </div>
+    <div class="starter-section">
+      <div class="sec-lbl" style="font-size:12px"><span class="pos-badge b-def">DEFENSE</span> <span id="def-counter" class="s-counter bad">0 / 4</span></div>
+      <div class="s-chips" id="def-chips"></div>
+    </div>
+  </div>
+  <div id="warnArea"></div>
+  <button class="gen-btn" onclick="generate()">BUILD ROTATION</button>
+</div>
+<div class="page" id="page-shifts">
+  <div id="shifts-content"><div class="empty"><div class="ico">&#129409;</div>Go to Settings - Build Rotation</div></div>
+</div>
+<div class="page" id="page-time">
+  <div id="time-content"><div class="empty"><div class="ico">&#128202;</div>Build your rotation first</div></div>
+</div>
+<script>
+
+
+// ============================================================
+// CONSTANTS & CONFIG
+// ============================================================
+var TOTAL = 40;
+var HALF  = 20;
+var FORM  = {defense:4, middie:3, attack:4};
+
+// ============================================================
+// ROSTER
+// flex: null | 'defense' | 'middie' | 'attack'
+// Any player can flex to any other position (toggled by coach)
+// ============================================================
+var ROSTER = [
+  {name:'Anya',     pos:'defense', flex:null},
+  {name:'Rachael',  pos:'defense', flex:null},
+  {name:'Elowyn',   pos:'defense', flex:null},
+  {name:'Raegan',   pos:'defense', flex:null},
+  {name:'Addie',    pos:'defense', flex:null},
+  {name:'Zadlock',  pos:'defense', flex:null},
+  {name:'Colby',    pos:'middie',  flex:null},
+  {name:'Emerson',  pos:'middie',  flex:null},
+  {name:'Lia',      pos:'middie',  flex:null},
+  {name:'Jolene',   pos:'middie',  flex:null},
+  {name:'Anna',     pos:'middie',  flex:null},
+  {name:'Meredith', pos:'middie',  flex:null},
+  {name:'Emma',     pos:'attack',  flex:null},
+  {name:'Juliette', pos:'attack',  flex:null},
+  {name:'Maya',     pos:'attack',  flex:null},
+  {name:'Gia',      pos:'attack',  flex:null},
+  {name:'Cam',      pos:'attack',  flex:null}
+];
+
+var absent   = {};
+var starters = {defense:{}, middie:{}, attack:{}};
+var PLAN     = null;
+
+// ============================================================
+// HELPERS
+// ============================================================
+function showPage(id, btn) {
+  var pages = document.querySelectorAll('.page');
+  var tabs  = document.querySelectorAll('.nav-tab');
+  for(var i=0;i<pages.length;i++) pages[i].classList.remove('active');
+  for(var i=0;i<tabs.length;i++)  tabs[i].classList.remove('active');
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id === 'settings') { updatePlanNote(); renderStarterPicker(); }
+}
+
+function fmt(t) {
+  var m = Math.floor(t + 0.0001);
+  var s = Math.round((t + 0.0001 - m) * 60);
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function isAbsent(name) { return absent[name] === true; }
+function isStarter(pos, name) { return starters[pos][name] === true; }
+function starterCount(pos) {
+  var n = 0, keys = Object.keys(starters[pos]);
+  for(var i=0;i<keys.length;i++) if(starters[pos][keys[i]]) n++;
+  return n;
+}
+
+function getRosterPlayer(name) {
+  for(var i=0;i<ROSTER.length;i++) if(ROSTER[i].name===name) return ROSTER[i];
+  return null;
+}
+
+// ============================================================
+// ROSTER RENDERING - 100% createElement, zero innerHTML,
+// zero querySelector on dynamic content. Bulletproof on iOS.
+// ============================================================
+function renderRoster() {
+  var POS = ['defense','middie','attack'];
+  for(var gi=0; gi<POS.length; gi++) {
+    var pos       = POS[gi];
+    var container = document.getElementById('list-'+pos);
+    while(container.firstChild) container.removeChild(container.firstChild);
+    var players = ROSTER.filter(function(p){ return p.pos===pos; });
+    for(var pi=0; pi<players.length; pi++) {
+      container.appendChild(makePlayerRow(players[pi]));
+    }
+  }
+  var active = ROSTER.filter(function(p){ return !isAbsent(p.name); }).length;
+  document.getElementById('activeCount').textContent = active;
+}
+
+function makePlayerRow(p) {
+  var ab  = isAbsent(p.name);
+  var row = document.createElement('div');
+  row.className = 'player-row' + (ab ? ' absent' : '');
+
+  var chk = document.createElement('div');
+  chk.className = 'chk';
+  chk.textContent = ab ? '' : '\u2713';
+
+  var nameSpan = document.createElement('span');
+  nameSpan.className = 'pname';
+  nameSpan.textContent = p.name;
+
+  row.appendChild(chk);
+  row.appendChild(nameSpan);
+
+  if(!ab) row.appendChild(makeFlexBadge(p));
+
+  row.addEventListener('click', function(evt) {
+    var t = evt.target;
+    if(t.className && typeof t.className==='string' && t.className.indexOf('flex-badge')!==-1) return;
+    toggleAbsent(p.name);
+  });
+  return row;
+}
+
+function makeFlexBadge(p) {
+  var LABELS = {defense:'DEF', middie:'MID', attack:'ATK'};
+  var badge  = document.createElement('button');
+  badge.className = 'flex-badge' + (p.flex ? ' flex-active flex-'+p.flex : '');
+  badge.textContent = p.flex ? ('FLEX: '+LABELS[p.flex]) : '+ FLEX';
+  badge.addEventListener('click', function(evt) {
+    evt.stopPropagation();
+    toggleFlex(p.name);
+  });
+  return badge;
+}
+
+// ============================================================
+// STATE MUTATIONS
+// ============================================================
+function toggleAbsent(name) {
+  if(isAbsent(name)) {
+    delete absent[name];
+  } else {
+    absent[name] = true;
+    var pos = ['defense','middie','attack'];
+    for(var i=0;i<pos.length;i++) delete starters[pos[i]][name];
+  }
+  renderRoster(); updatePlanNote(); renderStarterPicker();
+}
+
+function toggleFlex(name) {
+  var p = getRosterPlayer(name);
+  if(!p) return;
+  // Cycle: null -> each other position in order -> null
+  var POS    = ['defense','middie','attack'];
+  var others = POS.filter(function(pos){ return pos !== p.pos; });
+  others.push(null);
+  var curIdx = others.indexOf(p.flex);
+  p.flex = others[(curIdx + 1) % others.length];
+  renderRoster();
+}
+
+// ============================================================
+// SETTINGS: PLAN NOTE
+// ============================================================
+function updatePlanNote() {
+  var avail = ROSTER.filter(function(p){ return !isAbsent(p.name); });
+  var parts = [];
+  var POS   = ['defense','middie','attack'];
+  var LABEL = {defense:'Defense', middie:'Midfield', attack:'Attack'};
+  var COL   = {defense:'var(--def)', middie:'var(--mid)', attack:'var(--atk)'};
+
+  for(var i=0;i<POS.length;i++) {
+    var pos   = POS[i];
+    var slots = FORM[pos];
+    var n     = avail.filter(function(p){ return p.pos===pos; }).length;
+    var nFlex = avail.filter(function(p){ return p.flex===pos && p.pos!==pos; }).length;
+
+    if(n < slots && n+nFlex < slots) {
+      parts.push('<span style="color:#ff7777">Need '+slots+' '+LABEL[pos]+', only '+(n+nFlex)+' available</span>');
+    } else {
+      var minsStr = n>=slots ? (n===slots?'40.0':(TOTAL*slots/n).toFixed(1)) : 'flex needed';
+      var scheme  = (pos==='middie'&&n===2*slots) ? 'group swap every 10 min'
+                  : n<=slots ? 'all play full game'
+                  : 'sub every '+fmt(TOTAL/n);
+      var flexNote = nFlex>0 ? ' <span style="color:var(--muted)">(+'+nFlex+' flex avail)</span>' : '';
+      parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '
+        +n+' players -> <strong style="color:var(--gold)">'+minsStr+' min each</strong>'
+        +flexNote+' <span style="color:var(--muted)">('+scheme+')</span>');
+    }
+  }
+  document.getElementById('planNote').innerHTML = parts.join('<br>');
+}
+
+// ============================================================
+// SETTINGS: STARTER PICKER
+// Each position's IIFE captures its own pos/need/key correctly.
+// ============================================================
+function renderStarterPicker() {
+  var POS = ['attack','middie','defense'];
+  for(var i=0;i<POS.length;i++) {
+    (function(pos, need, key) {
+      var cont = document.getElementById(key+'-chips');
+      var ctr  = document.getElementById(key+'-counter');
+      if(!cont || !ctr) return;
+      while(cont.firstChild) cont.removeChild(cont.firstChild);
+
+      // Primary players for this position + flex players who have flex===pos
+      var primary  = ROSTER.filter(function(p){ return p.pos===pos && !isAbsent(p.name); });
+      var flexIn   = ROSTER.filter(function(p){ return p.flex===pos && p.pos!==pos && !isAbsent(p.name); });
+      var avail    = primary.concat(flexIn);
+      var count    = starterCount(pos);
+
+      for(var j=0;j<avail.length;j++) {
+        (function(p, isFlex) {
+          var sel  = isStarter(pos, p.name);
+          // Full if: this pos has enough starters AND this player not yet selected here
+          // Also blocked if: player is already started at their OTHER position
+          var otherPos = isFlex ? p.pos : p.flex;
+          var startedElsewhere = otherPos ? isStarter(otherPos, p.name) : false;
+          var full = ((count >= need) && !sel) || (startedElsewhere && !sel);
+          var chip = document.createElement('div');
+          // Style flex chips differently so coach can tell them apart
+          var chipClass = isFlex ? 's-chip flex-starter-chip' : 's-chip';
+          chip.className = chipClass+(sel?' sel-'+key:'')+(full?' full':'');
+          chip.textContent = isFlex ? p.name+' *' : p.name;
+          chip.title       = isFlex ? p.name+' (primary: '+p.pos+', flexing here)' : p.name;
+          chip.addEventListener('click', function() {
+            if(full) return;
+            if(isStarter(pos, p.name)) {
+              delete starters[pos][p.name];
+            } else {
+              // Remove from other position starters first (can't start in two spots)
+              if(otherPos) delete starters[otherPos][p.name];
+              starters[pos][p.name] = true;
+            }
+            renderStarterPicker();
+          });
+          cont.appendChild(chip);
+        })(avail[j], avail[j].flex===pos);
+      }
+      ctr.textContent = count + ' / ' + need;
+      ctr.className   = 's-counter ' + (count===need ? 'ok' : 'bad');
+    })(POS[i], FORM[POS[i]], POS[i]==='defense'?'def':POS[i]==='middie'?'mid':'atk');
+  }
+}
+
+// ============================================================
+// ROTATION ENGINE - LAYER 1: PRIMARY SCHEDULES
+// ============================================================
+
+// Returns the interval active at time t from a list of intervals
+function ivAt(ivs, t) {
+  for(var i=ivs.length-1; i>=0; i--) {
+    if(t >= ivs[i].tS - 0.001) return ivs[i];
+  }
+  return ivs[0];
+}
+
+// Round-robin: starters go first, equal total time for all.
+// interval = TOTAL/N, one player rotates per interval.
+function buildRRIntervals(players, slots, starterNames) {
+  var N     = players.length;
+  var names = players.map(function(p){ return p.name; });
+  if(N <= slots) return [{tS:0, tE:TOTAL, on:names.slice(), newIns:[]}];
+
+  var ss = {};
+  if(starterNames) for(var i=0;i<starterNames.length;i++) ss[starterNames[i]]=true;
+  var ordered = names.filter(function(n){return ss[n];})
+    .concat(names.filter(function(n){return !ss[n];}));
+
+  var interval = TOTAL / N;
+  var field    = ordered.slice(0, slots);
+  var bench    = ordered.slice(slots);
+  var ivs      = [];
+
+  for(var i=0;i<N;i++) {
+    var tS   = Math.round(i*interval*1000)/1000;
+    var tE   = Math.round(Math.min((i+1)*interval, TOTAL)*1000)/1000;
+    var newI = (i===0) ? [] : [field[field.length-1]];
+    ivs.push({tS:tS, tE:tE, on:field.slice(), newIns:newI});
+    if(i<N-1) {
+      var out=field.shift(); var inn=bench.shift();
+      bench.push(out); field.push(inn);
+    }
+  }
+  return ivs;
+}
+
+// Midfield: perfect 2-group swap when N===2*K (H1=H2=10 min per player).
+// Falls back to round-robin for any other size.
+function buildMidIntervals(players, starterNames) {
+  var N    = players.length;
+  var K    = FORM.middie;
+  var names = players.map(function(p){ return p.name; });
+  if(N <= K) return [{tS:0, tE:TOTAL, on:names.slice(), newIns:[]}];
+  if(N === 2*K) {
+    var gA = (starterNames && starterNames.length===K) ? starterNames.slice() : names.slice(0,K);
+    var gB = names.filter(function(n){ return gA.indexOf(n)===-1; });
+    return [
+      {tS: 0, tE:10, on:gA.slice(), newIns:[]},
+      {tS:10, tE:20, on:gB.slice(), newIns:gB.slice()},
+      {tS:20, tE:30, on:gA.slice(), newIns:gA.slice()},
+      {tS:30, tE:40, on:gB.slice(), newIns:gB.slice()}
+    ];
+  }
+  return buildRRIntervals(players, K, starterNames);
+}
+
+// ============================================================
+// ROTATION ENGINE - LAYER 2: FLEX OVERLAY
+//
+// Principle: Primary position time is LOCKED and untouched.
+// Flex players are inserted only during their REST windows
+// (when they are NOT on the field in their primary schedule).
+// They REPLACE a primary player during those windows, giving
+// that primary player a rest they wouldn't otherwise get.
+// Round-robin determines WHICH primary player gets benched.
+// No player can ever be on field in two positions at once.
+// ============================================================
+function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs, slots) {
+  if(!flexPlayers || flexPlayers.length === 0) return posIvs;
+
+  // Collect all time breakpoints from both position and flex schedules
+  var timeSet = {};
+  for(var i=0;i<posIvs.length;i++) {
+    timeSet[posIvs[i].tS]=true; timeSet[posIvs[i].tE]=true;
+  }
+  for(var fi=0;fi<flexPlayers.length;fi++) {
+    var fpIvs = getPrimaryIvs(flexPlayers[fi].name);
+    for(var i=0;i<fpIvs.length;i++) {
+      timeSet[fpIvs[i].tS]=true; timeSet[fpIvs[i].tE]=true;
+    }
+  }
+  var times = Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
+
+  // Build bench queue from all primary players (round-robin fairness)
+  var allPrimary = [];
+  var seenPrimary = {};
+  for(var i=0;i<posIvs.length;i++) {
+    for(var j=0;j<posIvs[i].on.length;j++) {
+      var n = posIvs[i].on[j];
+      if(!seenPrimary[n]) { allPrimary.push(n); seenPrimary[n]=true; }
+    }
+  }
+  var benchQueue = allPrimary.slice(); // rotates as we bench people
+
+  var newIvs = [];
+  for(var i=0;i<times.length-1;i++) {
+    var tS = times[i];
+    var tE = times[i+1];
+
+    // Base lineup from primary schedule
+    var baseOn = ivAt(posIvs, tS).on.slice();
+
+    // Find flex players free for the ENTIRE window
+    var availFlex = [];
+    for(var fi=0;fi<flexPlayers.length;fi++) {
+      var fpName = flexPlayers[fi].name;
+      var fpIvs  = getPrimaryIvs(fpName);
+      // Player is free if NOT on field in any primary interval covering this window
+      var isFree = true;
+      var windowMid = (tS + tE) / 2;
+      var fpIv = ivAt(fpIvs, windowMid);
+      for(var j=0;j<fpIv.on.length;j++) {
+        if(fpIv.on[j] === fpName) { isFree = false; break; }
+      }
+      if(isFree) availFlex.push(fpName);
+    }
+
+    var finalOn = baseOn.slice();
+
+    // Insert each available flex player by benching next-in-queue primary player
+    for(var fi=0;fi<availFlex.length;fi++) {
+      var flexName = availFlex[fi];
+      if(finalOn.indexOf(flexName) !== -1) continue; // already on field
+
+      // Find next primary player in bench queue who is currently on field
+      var benched = false;
+      for(var qi=0;qi<benchQueue.length;qi++) {
+        var candidate = benchQueue[qi];
+        if(finalOn.indexOf(candidate) !== -1) {
+          // Bench them, put flex player on
+          var idx = finalOn.indexOf(candidate);
+          finalOn.splice(idx, 1);
+          finalOn.push(flexName);
+          // Rotate benched player to back of queue (they get next rest opportunity later)
+          benchQueue.push(benchQueue.splice(qi, 1)[0]);
+          benched = true;
+          break;
+        }
+      }
+    }
+
+    // Determine who just came on vs previous snapshot
+    var prevOn = newIvs.length > 0 ? newIvs[newIvs.length-1].on : [];
+    var newIns = [];
+    for(var j=0;j<finalOn.length;j++) {
+      var found = false;
+      for(var k=0;k<prevOn.length;k++) if(prevOn[k]===finalOn[j]){found=true;break;}
+      if(!found) newIns.push(finalOn[j]);
+    }
+
+    newIvs.push({tS:tS, tE:tE, on:finalOn, newIns:newIns});
+  }
+  return newIvs;
+}
+
+// ============================================================
+// GENERATE
+// Two-phase: 1) build primary schedules, 2) overlay flex
+// ============================================================
+function generate() {
+  var avail = ROSTER.filter(function(p){ return !isAbsent(p.name); });
+  var POS   = ['defense','middie','attack'];
+
+  // Primary groups (only players whose primary position matches)
+  var primaryGroups = {
+    defense: avail.filter(function(p){ return p.pos==='defense'; }),
+    middie:  avail.filter(function(p){ return p.pos==='middie';  }),
+    attack:  avail.filter(function(p){ return p.pos==='attack';  })
+  };
+
+  // Check minimum viable roster (primary only first, flex helps if short)
+  var warns = [];
+  for(var i=0;i<POS.length;i++) {
+    var pos   = POS[i];
+    var need  = FORM[pos];
+    var nPrim = primaryGroups[pos].length;
+    var nFlex = avail.filter(function(p){ return p.flex===pos && p.pos!==pos; }).length;
+    if(nPrim + nFlex < need) {
+      warns.push('Need '+need+' '+pos+' players - only '+(nPrim+nFlex)+' available. Assign FLEX players in Roster tab.');
+    }
+  }
+  if(warns.length) {
+    var html=''; for(var i=0;i<warns.length;i++) html+='<div class="warn">'+warns[i]+'</div>';
+    document.getElementById('warnArea').innerHTML=html; return;
+  }
+
+  // Validate starters
+  // Valid starters for a position = primary players + flex players assigned to this position
+  var w2 = [];
+  for(var i=0;i<POS.length;i++) {
+    var pos  = POS[i];
+    var keys = Object.keys(starters[pos]);
+    // Valid starter pool: primary players + flex-in players for this pos
+    var validNames = avail
+      .filter(function(p){ return p.pos===pos || p.flex===pos; })
+      .map(function(p){ return p.name; });
+    for(var k=0;k<keys.length;k++) {
+      if(validNames.indexOf(keys[k])===-1) delete starters[pos][keys[k]];
+    }
+    if(starterCount(pos) !== FORM[pos]) {
+      w2.push('Select exactly '+FORM[pos]+' starting '+pos+' ('+starterCount(pos)+' selected).');
+    }
+  }
+  if(w2.length) {
+    var html=''; for(var i=0;i<w2.length;i++) html+='<div class="warn">'+w2[i]+'</div>';
+    document.getElementById('warnArea').innerHTML=html; return;
+  }
+  document.getElementById('warnArea').innerHTML='';
+
+  function getStarterNames(pos) {
+    return Object.keys(starters[pos]).filter(function(n){return starters[pos][n];});
+  }
+
+  // ---- LAYER 1: Primary schedules ----
+  var defIvsPrimary = buildRRIntervals(primaryGroups.defense, FORM.defense, getStarterNames('defense'));
+  var midIvsPrimary = buildMidIntervals(primaryGroups.middie,               getStarterNames('middie'));
+  var atkIvsPrimary = buildRRIntervals(primaryGroups.attack,  FORM.attack,  getStarterNames('attack'));
+
+  // Map each player's name to their primary position intervals
+  // (used by flex overlay to determine free windows)
+  var primaryIvsByPos = {
+    defense: defIvsPrimary,
+    middie:  midIvsPrimary,
+    attack:  atkIvsPrimary
+  };
+
+  function getPrimaryIvsFor(name) {
+    var p = getRosterPlayer(name);
+    return p ? primaryIvsByPos[p.pos] : [];
+  }
+
+  // ---- LAYER 2: Flex overlay ----
+  // Flex players for each position (players whose flex===pos and pos!==pos)
+  var flexForDef = avail.filter(function(p){ return p.flex==='defense' && p.pos!=='defense'; });
+  var flexForMid = avail.filter(function(p){ return p.flex==='middie'  && p.pos!=='middie';  });
+  var flexForAtk = avail.filter(function(p){ return p.flex==='attack'  && p.pos!=='attack';  });
+
+  var defIvsFinal = applyFlexOverlay(defIvsPrimary, flexForDef, getPrimaryIvsFor, FORM.defense);
+  var midIvsFinal = applyFlexOverlay(midIvsPrimary, flexForMid, getPrimaryIvsFor, FORM.middie);
+  var atkIvsFinal = applyFlexOverlay(atkIvsPrimary, flexForAtk, getPrimaryIvsFor, FORM.attack);
+
+  // ---- Build unified snapshots ----
+  var timeSet = {};
+  timeSet[0]=true; timeSet[TOTAL]=true;
+  var allFinal = [defIvsFinal, midIvsFinal, atkIvsFinal];
+  for(var i=0;i<allFinal.length;i++) {
+    for(var j=0;j<allFinal[i].length;j++) {
+      timeSet[allFinal[i][j].tS]=true;
+      timeSet[allFinal[i][j].tE]=true;
+    }
+  }
+  var times = Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
+
+  var snapshots = [];
+  for(var i=0;i<times.length-1;i++) {
+    var tS  = times[i];
+    var tE  = times[i+1];
+    var dIv = ivAt(defIvsFinal, tS);
+    var mIv = ivAt(midIvsFinal, tS);
+    var aIv = ivAt(atkIvsFinal, tS);
+
+    // Collect all new-subs at tS across all three position schedules
+    var newIns = {};
+    if(tS > 0) {
+      var allThree = [defIvsFinal, midIvsFinal, atkIvsFinal];
+      for(var ii=0;ii<allThree.length;ii++) {
+        var iv = ivAt(allThree[ii], tS);
+        if(Math.abs(iv.tS - tS) < 0.01) {
+          for(var kk=0;kk<iv.newIns.length;kk++) newIns[iv.newIns[kk]]=true;
+        }
+      }
+    }
+
+    snapshots.push({
+      tS:     tS,
+      tE:     tE,
+      def:    dIv.on.slice(),
+      mid:    mIv.on.slice(),
+      atk:    aIv.on.slice(),
+      newIns: Object.keys(newIns),
+      isKO:   tS===0
+    });
+  }
+
+  // Compute minutes per player (primary + flex combined)
+  var mins = {};
+  for(var i=0;i<avail.length;i++) mins[avail[i].name] = 0;
+  for(var i=0;i<snapshots.length;i++) {
+    var dur = snapshots[i].tE - snapshots[i].tS;
+    var on  = snapshots[i].def.concat(snapshots[i].mid, snapshots[i].atk);
+    for(var j=0;j<on.length;j++) {
+      if(mins[on[j]] !== undefined) mins[on[j]] += dur;
+    }
+  }
+
+  // Store groups for display (use primary groups for stats)
+  PLAN = {
+    snapshots:    snapshots,
+    groups:       primaryGroups,
+    mins:         mins,
+    avail:        avail,
+    flexForDef:   flexForDef,
+    flexForMid:   flexForMid,
+    flexForAtk:   flexForAtk
+  };
+
+  renderShifts();
+  renderTime();
+
+  var navTabs = document.querySelectorAll('.nav-tab');
+  var pages   = document.querySelectorAll('.page');
+  for(var i=0;i<navTabs.length;i++) navTabs[i].classList.remove('active');
+  for(var i=0;i<pages.length;i++)   pages[i].classList.remove('active');
+  document.getElementById('page-shifts').classList.add('active');
+  navTabs[2].classList.add('active');
+}
+
+// ============================================================
+// RENDER SHIFTS
+// ============================================================
+function renderShifts() {
+  var snapshots = PLAN.snapshots;
+  var groups    = PLAN.groups;
+  var mins      = PLAN.mins;
+  var avail     = PLAN.avail;
+
+  var avg=0, keys=Object.keys(mins);
+  for(var i=0;i<keys.length;i++) avg+=mins[keys[i]];
+  avg = avg/avail.length;
+
+  var dLen=groups.defense.length, mLen=groups.middie.length, aLen=groups.attack.length;
+  var dMin=dLen<=FORM.defense?'40.0':(TOTAL*FORM.defense/dLen).toFixed(1);
+  var mMin=mLen<=FORM.middie ?'40.0':(TOTAL*FORM.middie /mLen).toFixed(1);
+  var aMin=aLen<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aLen).toFixed(1);
+
+  var html = '<div class="stats-strip">'
+    +'<div class="stat-box"><span class="sv" style="color:var(--def)">'+dMin+'m</span><span class="sl">Each DEF</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--mid)">'+mMin+'m</span><span class="sl">Each MID</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--atk)">'+aMin+'m</span><span class="sl">Each ATK</span></div>'
+    +'<div class="stat-box"><span class="sv">'+avg.toFixed(1)+'m</span><span class="sl">Avg</span></div>'
+    +'</div><div class="sched-list">';
+
+  var shownHalf = false;
+  for(var si=0;si<snapshots.length;si++) {
+    var snap     = snapshots[si];
+    var newSet   = {};
+    for(var i=0;i<snap.newIns.length;i++) newSet[snap.newIns[i]]=true;
+    var subCount = snap.newIns.length;
+    var isHT     = Math.abs(snap.tS-HALF)<0.05;
+    var isKO     = snap.isKO;
+
+    if(!shownHalf && snap.tS>=HALF) {
+      html += '<div class="half-divider">HALFTIME</div>';
+      shownHalf = true;
+    }
+
+    function chipRow(players, base, newCls) {
+      var out='';
+      for(var i=0;i<players.length;i++) {
+        var n=players[i], cls=newSet[n]?newCls:base;
+        var dot=newSet[n]?'<span class="new-dot"></span>':'';
+        out+='<span class="pchip '+cls+'">'+n+dot+' </span>';
+      }
+      return out;
+    }
+
+    html += '<div class="shift-card'+(isKO||isHT?' special':'')+'"><div class="shift-hdr">'
+      +'<span class="shift-clock">'+fmt(snap.tS)+' - '+fmt(snap.tE)+'</span>'
+      +(isKO?'<span class="badge">KICKOFF</span>':'')
+      +(isHT?'<span class="badge">HALFTIME</span>':'')
+      +(subCount>0&&!isKO?'<span class="shift-sub-count">'+subCount+' sub'+(subCount>1?'s':'')+' in</span>':'')
+      +'</div><div class="shift-body">'
+      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--atk)">ATK</span><div class="chips-wrap">'+chipRow(snap.atk,'chip-atk','chip-atk-new')+'</div></div>'
+      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--mid)">MID</span><div class="chips-wrap">'+chipRow(snap.mid,'chip-mid','chip-mid-new')+'</div></div>'
+      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--def)">DEF</span><div class="chips-wrap">'+chipRow(snap.def,'chip-def','chip-def-new')+'</div></div>'
+      +'</div></div>';
+  }
+
+  html += '</div><div class="btn-row">'
+    +'<button class="act-btn btn-gold" onclick="doPrint()">Print / PDF</button>'
+    +'<button class="act-btn btn-outline" onclick="copyText()">Copy</button>'
+    +'</div>';
+
+  document.getElementById('shifts-content').innerHTML = html;
+}
+
+// ============================================================
+// RENDER TIME
+// ============================================================
+function renderTime() {
+  var mins = PLAN.mins, avail = PLAN.avail;
+  var maxM=0, keys=Object.keys(mins);
+  for(var i=0;i<keys.length;i++) if(mins[keys[i]]>maxM) maxM=mins[keys[i]];
+  if(maxM===0) maxM=1;
+  var avg=0; for(var i=0;i<keys.length;i++) avg+=mins[keys[i]];
+  avg=avg/avail.length;
+
+  var posOrd={attack:0,middie:1,defense:2};
+  var entries=[];
+  for(var i=0;i<keys.length;i++) entries.push([keys[i],mins[keys[i]]]);
+  entries.sort(function(a,b){
+    var pa=getRosterPlayer(a[0]), pb=getRosterPlayer(b[0]);
+    var pap=pa?pa.pos:'attack', pbp=pb?pb.pos:'attack';
+    var po=(posOrd[pap]||0)-(posOrd[pbp]||0);
+    return po!==0?po:a[0].localeCompare(b[0]);
+  });
+
+  var html='<div class="note">Playing time per player. Avg: <strong>'+avg.toFixed(1)+' min</strong> (includes flex time)</div><div class="pt-list">';
+  var lastPos=null;
+  for(var i=0;i<entries.length;i++) {
+    var name=entries[i][0], m=entries[i][1];
+    var p=getRosterPlayer(name), pos=p?p.pos:'attack';
+    if(pos!==lastPos) {
+      var lbl=pos==='defense'?'DEFENSE':pos==='middie'?'MIDFIELD':'ATTACK';
+      var col=pos==='defense'?'var(--def)':pos==='middie'?'var(--mid)':'var(--atk)';
+      html+='<div style="font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;color:'+col+';padding:8px 0 4px;border-bottom:1px solid var(--border2);margin-top:'+(lastPos?'10px':'0')+'">'+lbl+'</div>';
+      lastPos=pos;
+    }
+    var pc=pos==='attack'?'var(--atk)':pos==='middie'?'var(--mid)':'var(--def)';
+    var flexTag = p&&p.flex ? ' <span style="font-size:10px;color:var(--muted)">[flex:'+p.flex.substring(0,3).toUpperCase()+']</span>' : '';
+    html+='<div class="pt-row"><div class="pt-top"><span class="pt-name" style="color:'+pc+'">'+name+flexTag+'</span><span class="pt-mins">'+m.toFixed(1)+' min</span></div>'
+      +'<div class="pt-bar-bg"><div class="pt-bar-fill" style="width:'+(m/maxM*100).toFixed(1)+'%;background:'+pc+';opacity:.82"></div></div></div>';
+  }
+  html+='</div>';
+  document.getElementById('time-content').innerHTML=html;
+}
+
+// ============================================================
+// PRINT OVERLAY
+// ============================================================
+function closeOverlay() {
+  document.getElementById('printOverlay').classList.remove('show');
+}
+
+function doPrint() {
+  if(!PLAN){alert('Build rotation first!');return;}
+  var snapshots=PLAN.snapshots, groups=PLAN.groups, mins=PLAN.mins, avail=PLAN.avail;
+  var avg=0, keys=Object.keys(mins);
+  for(var i=0;i<keys.length;i++) avg+=mins[keys[i]];
+  avg=avg/avail.length;
+  var maxM=0; for(var i=0;i<keys.length;i++) if(mins[keys[i]]>maxM)maxM=mins[keys[i]];
+  var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  var dLen=groups.defense.length,mLen=groups.middie.length,aLen=groups.attack.length;
+  var dMin=dLen<=FORM.defense?'40.0':(TOTAL*FORM.defense/dLen).toFixed(1);
+  var mMin=mLen<=FORM.middie ?'40.0':(TOTAL*FORM.middie /mLen).toFixed(1);
+  var aMin=aLen<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aLen).toFixed(1);
+  var th='padding:5px 7px;text-align:left;background:#1a5c1a;color:#f0c020;font-size:9pt;letter-spacing:1px';
+  var shownHalf=false, rotHTML='';
+  for(var si=0;si<snapshots.length;si++) {
+    var snap=snapshots[si];
+    if(!shownHalf&&snap.tS>=HALF){
+      rotHTML+='<tr><td colspan="4" style="background:#fffbe0;text-align:center;font-weight:700;color:#b08000;padding:6px;letter-spacing:2px;border-top:2px solid #c8a000;border-bottom:2px solid #c8a000">HALFTIME</td></tr>';
+      shownHalf=true;
+    }
+    var ns={};
+    for(var i=0;i<snap.newIns.length;i++) ns[snap.newIns[i]]=true;
+
+    // Compute who went OUT by comparing to previous snapshot
+    var prevSnap = si>0 ? snapshots[si-1] : null;
+    var outsAtk=[], outsMid=[], outsDef=[];
+    if(prevSnap && !snap.isKO) {
+      var prevAll={atk:{},mid:{},def:{}};
+      for(var i=0;i<prevSnap.atk.length;i++) prevAll.atk[prevSnap.atk[i]]=true;
+      for(var i=0;i<prevSnap.mid.length;i++) prevAll.mid[prevSnap.mid[i]]=true;
+      for(var i=0;i<prevSnap.def.length;i++) prevAll.def[prevSnap.def[i]]=true;
+      for(var i=0;i<prevSnap.atk.length;i++) if(snap.atk.indexOf(prevSnap.atk[i])===-1) outsAtk.push(prevSnap.atk[i]);
+      for(var i=0;i<prevSnap.mid.length;i++) if(snap.mid.indexOf(prevSnap.mid[i])===-1) outsMid.push(prevSnap.mid[i]);
+      for(var i=0;i<prevSnap.def.length;i++) if(snap.def.indexOf(prevSnap.def[i])===-1) outsDef.push(prevSnap.def[i]);
+    }
+
+    // Format a position's players: bold+underline for IN, strikethrough+grey for OUT
+    var fn=function(onArr, outArr, col){
+      var parts=[];
+      for(var i=0;i<onArr.length;i++){
+        var n=onArr[i];
+        if(ns[n]){
+          var s=document.createElement('b');
+          s.style.color=col; s.style.textDecoration='underline';
+          s.textContent=n+' IN'; parts.push(s.outerHTML);
+        } else {
+          parts.push(n);
+        }
+      }
+      for(var i=0;i<outArr.length;i++){
+        var s=document.createElement('span');
+        s.style.color='#aaa'; s.style.textDecoration='line-through';
+        s.textContent=outArr[i]+' OUT'; parts.push(s.outerHTML);
+      }
+      return parts.join(', ');
+    };
+    var subCount = snap.newIns.length;
+    var sub=snap.isKO?'Kickoff':subCount?subCount+' sub'+(subCount>1?'s':''):'';
+    rotHTML+='<tr style="background:'+(si%2===0?'#fff':'#f4f8f4')+'"><td style="padding:5px 7px;white-space:nowrap;font-weight:700;color:#1a5c1a;font-size:10pt">'
+      +fmt(snap.tS)+'-'+fmt(snap.tE)+(sub?'<br><small style="color:#888;font-weight:400">'+sub+'</small>':'')
+      +'</td><td style="padding:5px 7px;font-size:10pt">'+fn(snap.atk,outsAtk,'#c05010')+'</td>'
+      +'<td style="padding:5px 7px;font-size:10pt">'+fn(snap.mid,outsMid,'#1070a0')+'</td>'
+      +'<td style="padding:5px 7px;font-size:10pt">'+fn(snap.def,outsDef,'#6020a0')+'</td></tr>';
+  }
+  var posOrd={attack:0,middie:1,defense:2};
+  var ptE=[];
+  for(var i=0;i<keys.length;i++) ptE.push([keys[i],mins[keys[i]]]);
+  ptE.sort(function(a,b){
+    var pa=getRosterPlayer(a[0]),pb=getRosterPlayer(b[0]);
+    var po=(posOrd[pa?pa.pos:'attack']||0)-(posOrd[pb?pb.pos:'attack']||0);
+    return po!==0?po:a[0].localeCompare(b[0]);
+  });
+  var ptHTML='';
+  for(var i=0;i<ptE.length;i++){
+    var name=ptE[i][0],m=ptE[i][1];
+    var p=getRosterPlayer(name),pos=p?p.pos:'attack';
+    var col=pos==='attack'?'#c05010':pos==='middie'?'#1070a0':'#6020a0';
+    var lbl=pos==='attack'?'ATK':pos==='middie'?'MID':'DEF';
+    ptHTML+='<tr style="background:'+(i%2===0?'#fff':'#f4f8f4')+'"><td style="padding:5px 7px;font-size:11pt"><b>'+name+'</b>'+(p&&p.flex?' <small>(flex)</small>':'')+'</td>'
+      +'<td style="padding:5px 7px;color:'+col+';font-weight:700">'+lbl+'</td>'
+      +'<td style="padding:5px 7px;font-size:11pt"><b>'+m.toFixed(1)+'</b> min</td>'
+      +'<td style="padding:5px 7px"><div style="width:'+Math.round(m/maxM*90)+'px;height:9px;background:'+col+';border-radius:3px;opacity:.75"></div></td></tr>';
+  }
+  document.getElementById('overlayBody').innerHTML=
+    '<div style="border-bottom:2px solid #1a5c1a;padding-bottom:8px;margin-bottom:10px">'
+    +'<div style="font-size:14pt;font-weight:900;color:#1a5c1a">JR. LIONS LACROSSE</div>'
+    +'<div style="font-size:9pt;color:#555">'+now+' - '+avail.length+' players - DEF '+dMin+'m MID '+mMin+'m ATK '+aMin+'m - Avg '+avg.toFixed(1)+'m</div></div>'
+    +'<h3>FIELD ROTATION (^ = subbed in)</h3>'
+    +'<table><thead><tr><th style="'+th+'">TIME</th><th style="'+th+'">ATTACK</th><th style="'+th+'">MID</th><th style="'+th+'">DEF</th></tr></thead><tbody>'+rotHTML+'</tbody></table>'
+    +'<h3 style="margin-top:14px">PLAYING TIME</h3>'
+    +'<table><thead><tr><th style="'+th+'">PLAYER</th><th style="'+th+'">POS</th><th style="'+th+'">MIN</th><th style="'+th+'">BAR</th></tr></thead><tbody>'+ptHTML+'</tbody></table>'
+    +'<p style="font-size:7pt;color:#888;margin-top:10px;border-top:1px solid #ddd;padding-top:6px">Jr. Lions Lacrosse - Game Day Manager - Avg: '+avg.toFixed(1)+' min/player</p>';
+  document.getElementById('printOverlay').classList.add('show');
+}
+
+function copyText() {
+  if(!PLAN){alert('Build rotation first!');return;}
+  var snapshots=PLAN.snapshots, mins=PLAN.mins;
+  var t='JR. LIONS - GAME DAY ROTATION\n\n';
+  for(var i=0;i<snapshots.length;i++){
+    var s=snapshots[i];
+    t+=fmt(s.tS)+' - '+fmt(s.tE)+'\n';
+    t+='  ATK: '+s.atk.join(', ')+'\n';
+    t+='  MID: '+s.mid.join(', ')+'\n';
+    t+='  DEF: '+s.def.join(', ')+'\n\n';
+  }
+  t+='PLAYING TIME\n';
+  var keys=Object.keys(mins).sort(function(a,b){return mins[b]-mins[a];});
+  for(var i=0;i<keys.length;i++) t+=keys[i]+': '+mins[keys[i]].toFixed(1)+' min\n';
+  navigator.clipboard.writeText(t).then(function(){alert('Copied!');});
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderRoster();
+updatePlanNote();
+renderStarterPicker();
+
+
+
+</script>
+<div id="printOverlay" class="overlay">
+  <div class="ov-bar">
+    <h2>Jr. Lions - Game Day</h2>
+    <button class="ov-close" onclick="closeOverlay()">&#x2715; CLOSE</button>
+  </div>
+  <div class="ov-hint">&#128247; iPhone: tap the <strong>Share button</strong> (box with arrow) at the bottom of Safari &rarr; tap <strong>Print</strong></div>
+  <div class="ov-body" id="overlayBody"></div>
+</div>
+</body>
+</html>
