@@ -107,6 +107,10 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .grp-green{border-color:#2aaa2a;color:#2aaa2a;background:rgba(42,170,42,.12)}
 .grp-gold{border-color:var(--gold);color:var(--gold);background:rgba(240,192,32,.12)}
 .grp-black{border-color:#aaa;color:#ccc;background:rgba(255,255,255,.06)}
+.subpos-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:.5px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:6px;user-select:none;transition:all .15s;min-width:26px;text-align:center}
+.subpos-badge:active{opacity:.7}
+.subpos-badge.subpos-set{border-color:var(--gold2);color:var(--gold);background:rgba(240,192,0,.1)}
+.subpos-tag{font-size:10px;font-weight:700;opacity:.7;margin-left:2px}
 .plan-divider{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 16px;margin:16px 0 10px;border-radius:10px;line-height:1.4}
 .plan-divider-a{background:rgba(255,60,60,.08);border:1.5px solid rgba(255,60,60,.35);color:#ff7777}
 .plan-divider-b{background:rgba(42,170,42,.08);border:1.5px solid rgba(42,170,42,.35);color:var(--green)}
@@ -123,6 +127,25 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .ov-body th{background:#1a5c1a;color:#f0c020;padding:5px 7px;text-align:left;font-size:9pt;letter-spacing:1px}
 .ov-body td{padding:5px 7px;border-bottom:1px solid #ddd;font-size:10pt;vertical-align:top}
 .ov-body tr:nth-child(even) td{background:#f4f8f4}
+@media print{
+  .ov-bar,.ov-hint,.ov-close{display:none!important}
+  .overlay{position:static!important;overflow:visible!important}
+  .ov-body{padding:0;font-family:Arial,Helvetica,sans-serif;font-size:12pt;color:#000}
+  .ov-body h3{font-size:14pt;font-weight:900;color:#000;background:#e8e8e8;padding:6px 10px;margin:18px 0 6px;letter-spacing:2px;border-left:5px solid #000}
+  .ov-body table{border-collapse:collapse;width:100%;margin-bottom:10px;page-break-inside:auto}
+  .ov-body tr{page-break-inside:avoid}
+  .ov-body th{background:#222!important;color:#fff!important;padding:8px 10px;text-align:left;font-size:12pt;font-weight:700;letter-spacing:1px;border:1px solid #222}
+  .ov-body td{padding:8px 10px;border:1px solid #ccc;font-size:13pt;vertical-align:top;line-height:1.4}
+  .ov-body tr:nth-child(even) td{background:#f5f5f5}
+  .ov-body tr:nth-child(odd) td{background:#fff}
+  .print-hdr{font-size:20pt!important;font-weight:900!important;color:#000!important;border-bottom:3px solid #000!important;padding-bottom:6px!important;margin-bottom:4px!important}
+  .print-meta{font-size:11pt!important;color:#333!important}
+  .print-plan-label{background:#f0f0f0!important;border:2px solid #000!important;color:#000!important;padding:8px 12px!important;font-size:13pt!important;font-weight:700!important;margin:14px 0 8px!important}
+  .print-qbreak td{background:#e8e8e8!important;font-size:13pt!important;font-weight:900!important;color:#000!important;text-align:center!important;letter-spacing:3px!important;border-top:3px solid #000!important;border-bottom:3px solid #000!important;padding:8px!important}
+  .print-sub-in{font-weight:900!important;text-decoration:underline!important;color:#000!important}
+  .print-sub-out{color:#999!important;text-decoration:line-through!important}
+  .print-pt-bar{height:12px!important;background:#333!important;border-radius:2px!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+}
 </style>
 </head>
 <body>
@@ -207,23 +230,23 @@ var FORM  = {defense:4, middie:3, attack:4};
 // Any player can flex to any other position (toggled by coach)
 // ============================================================
 var ROSTER = [
-  {name:'Anya',     pos:'defense', flex:null},
-  {name:'Rachael',  pos:'defense', flex:null},
-  {name:'Elowyn',   pos:'defense', flex:null},
-  {name:'Raegan',   pos:'defense', flex:null},
-  {name:'Addie',    pos:'defense', flex:null},
-  {name:'Zadlock',  pos:'defense', flex:null},
-  {name:'Colby',    pos:'middie',  flex:null},
-  {name:'Emerson',  pos:'middie',  flex:null},
-  {name:'Lia',      pos:'middie',  flex:null},
-  {name:'Jolene',   pos:'middie',  flex:null},
-  {name:'Anna',     pos:'middie',  flex:null},
-  {name:'Meredith', pos:'middie',  flex:null},
-  {name:'Emma',     pos:'attack',  flex:null},
-  {name:'Juliette', pos:'attack',  flex:null},
-  {name:'Maya',     pos:'attack',  flex:null},
-  {name:'Gia',      pos:'attack',  flex:null},
-  {name:'Cam',      pos:'attack',  flex:null}
+  {name:'Anya',     pos:'defense', flex:null, subpos:null},
+  {name:'Rachael',  pos:'defense', flex:null, subpos:null},
+  {name:'Elowyn',   pos:'defense', flex:null, subpos:null},
+  {name:'Raegan',   pos:'defense', flex:null, subpos:null},
+  {name:'Addie',    pos:'defense', flex:null, subpos:null},
+  {name:'Zadlock',  pos:'defense', flex:null, subpos:null},
+  {name:'Colby',    pos:'middie',  flex:null, subpos:null},
+  {name:'Emerson',  pos:'middie',  flex:null, subpos:null},
+  {name:'Lia',      pos:'middie',  flex:null, subpos:null},
+  {name:'Jolene',   pos:'middie',  flex:null, subpos:null},
+  {name:'Anna',     pos:'middie',  flex:null, subpos:null},
+  {name:'Meredith', pos:'middie',  flex:null, subpos:null},
+  {name:'Emma',     pos:'attack',  flex:null, subpos:null},
+  {name:'Juliette', pos:'attack',  flex:null, subpos:null},
+  {name:'Maya',     pos:'attack',  flex:null, subpos:null},
+  {name:'Gia',      pos:'attack',  flex:null, subpos:null},
+  {name:'Cam',      pos:'attack',  flex:null, subpos:null}
 ];
 
 var absent      = {};
@@ -322,10 +345,14 @@ function makePlayerRow(p) {
 
   if(!ab && !unc) row.appendChild(makeFlexBadge(p));
   if(!ab && !unc) row.appendChild(makeGroupBadge(p));
+  if(!ab && !unc) {
+    var spBadge = makeSubPosBadge(p);
+    if(spBadge) row.appendChild(spBadge);
+  }
 
   row.addEventListener('click', function(evt) {
     var t = evt.target;
-    if(t.className && typeof t.className==='string' && (t.className.indexOf('flex-badge')!==-1 || t.className.indexOf('grp-badge')!==-1)) return;
+    if(t.className && typeof t.className==='string' && (t.className.indexOf('flex-badge')!==-1 || t.className.indexOf('grp-badge')!==-1 || t.className.indexOf('subpos-badge')!==-1)) return;
     togglePlayerState(p.name);
   });
   return row;
@@ -411,6 +438,46 @@ function sortByGroup(players) {
     var gb = b.group ? ORDER[b.group] : 3;
     return ga - gb;
   });
+}
+
+// Sub-position options per position type
+var SUBPOS_OPTIONS = {
+  defense: ['LD','HD'],
+  attack:  ['LA','HA'],
+  middie:  []
+};
+
+function getSubPosLabel(name) {
+  var p = getRosterPlayer(name);
+  if(!p || !p.subpos) return '';
+  return p.subpos;
+}
+
+function toggleSubPos(name) {
+  var p = getRosterPlayer(name);
+  if(!p) return;
+  var opts = SUBPOS_OPTIONS[p.pos];
+  if(!opts || opts.length === 0) return;
+  var cur = p.subpos || null;
+  var withNull = opts.slice();
+  withNull.push(null);
+  var idx = withNull.indexOf(cur);
+  p.subpos = withNull[(idx + 1) % withNull.length];
+  renderRoster();
+}
+
+function makeSubPosBadge(p) {
+  var opts = SUBPOS_OPTIONS[p.pos];
+  if(!opts || opts.length === 0) return null;
+  var badge = document.createElement('button');
+  var sp = p.subpos || null;
+  badge.className = 'subpos-badge' + (sp ? ' subpos-set' : '');
+  badge.textContent = sp ? sp : 'POS';
+  badge.addEventListener('click', function(evt) {
+    evt.stopPropagation();
+    toggleSubPos(p.name);
+  });
+  return badge;
 }
 
 // ============================================================
@@ -978,7 +1045,9 @@ function renderShiftsForPlan(plan) {
       for(var i=0;i<players.length;i++) {
         var n=players[i], cls=newSet[n]?newCls:base;
         var dot=newSet[n]?'<span class="new-dot"></span>':'';
-        out+='<span class="pchip '+cls+'">'+n+dot+' </span>';
+        var sp=getSubPosLabel(n);
+        var spTag=sp?'<span class="subpos-tag">'+sp+'</span>':'';
+        out+='<span class="pchip '+cls+'">'+n+spTag+dot+' </span>';
       }
       return out;
     }
@@ -1059,7 +1128,8 @@ function renderTimeForPlan(plan) {
     }
     var pc=pos==='attack'?'var(--atk)':pos==='middie'?'var(--mid)':'var(--def)';
     var flexTag = p&&p.flex ? ' <span style="font-size:10px;color:var(--muted)">[flex:'+p.flex.substring(0,3).toUpperCase()+']</span>' : '';
-    html+='<div class="pt-row"><div class="pt-top"><span class="pt-name" style="color:'+pc+'">'+name+flexTag+'</span><span class="pt-mins">'+m.toFixed(1)+' min</span></div>'
+    var spTag2 = p&&p.subpos ? ' <span style="font-size:10px;color:var(--gold)">'+p.subpos+'</span>' : '';
+    html+='<div class="pt-row"><div class="pt-top"><span class="pt-name" style="color:'+pc+'">'+name+spTag2+flexTag+'</span><span class="pt-mins">'+m.toFixed(1)+' min</span></div>'
       +'<div class="pt-bar-bg"><div class="pt-bar-fill" style="width:'+(m/maxM*100).toFixed(1)+'%;background:'+pc+';opacity:.82"></div></div></div>';
   }
   html+='</div>';
@@ -1104,7 +1174,7 @@ function buildPrintHTML(plan, label) {
   var dMin=dLen<=FORM.defense?'40.0':(TOTAL*FORM.defense/dLen).toFixed(1);
   var mMin=mLen<=FORM.middie ?'40.0':(TOTAL*FORM.middie /mLen).toFixed(1);
   var aMin=aLen<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aLen).toFixed(1);
-  var th='padding:5px 7px;text-align:left;background:#1a5c1a;color:#f0c020;font-size:9pt;letter-spacing:1px';
+
   var shownPrintBreaks={}, rotHTML='';
   var P_BREAKS = [
     {time:QUARTER,   label:'END OF Q1'},
@@ -1115,7 +1185,7 @@ function buildPrintHTML(plan, label) {
     var snap=snapshots[si];
     for(var pbi=0;pbi<P_BREAKS.length;pbi++) {
       if(!shownPrintBreaks[pbi]&&snap.tS>=P_BREAKS[pbi].time-0.05){
-        rotHTML+='<tr><td colspan="4" style="background:#fffbe0;text-align:center;font-weight:700;color:#b08000;padding:6px;letter-spacing:2px;border-top:2px solid #c8a000;border-bottom:2px solid #c8a000">'+P_BREAKS[pbi].label+'</td></tr>';
+        rotHTML+='<tr class="print-qbreak"><td colspan="4">'+P_BREAKS[pbi].label+'</td></tr>';
         shownPrintBreaks[pbi]=true;
       }
     }
@@ -1125,41 +1195,35 @@ function buildPrintHTML(plan, label) {
     var prevSnap = si>0 ? snapshots[si-1] : null;
     var outsAtk=[], outsMid=[], outsDef=[];
     if(prevSnap && !snap.isKO) {
-      var prevAll={atk:{},mid:{},def:{}};
-      for(var i=0;i<prevSnap.atk.length;i++) prevAll.atk[prevSnap.atk[i]]=true;
-      for(var i=0;i<prevSnap.mid.length;i++) prevAll.mid[prevSnap.mid[i]]=true;
-      for(var i=0;i<prevSnap.def.length;i++) prevAll.def[prevSnap.def[i]]=true;
       for(var i=0;i<prevSnap.atk.length;i++) if(snap.atk.indexOf(prevSnap.atk[i])===-1) outsAtk.push(prevSnap.atk[i]);
       for(var i=0;i<prevSnap.mid.length;i++) if(snap.mid.indexOf(prevSnap.mid[i])===-1) outsMid.push(prevSnap.mid[i]);
       for(var i=0;i<prevSnap.def.length;i++) if(snap.def.indexOf(prevSnap.def[i])===-1) outsDef.push(prevSnap.def[i]);
     }
 
-    var fn=function(onArr, outArr, col){
+    var fn=function(onArr, outArr){
       var parts=[];
       for(var i=0;i<onArr.length;i++){
         var n=onArr[i];
+        var sp=getSubPosLabel(n);
+        var spStr=sp?' <small style="font-size:9pt;font-weight:400">('+sp+')</small>':'';
         if(ns[n]){
-          var s=document.createElement('b');
-          s.style.color=col; s.style.textDecoration='underline';
-          s.textContent=n+' IN'; parts.push(s.outerHTML);
+          parts.push('<span class="print-sub-in">'+n+spStr+' \u25b2</span>');
         } else {
-          parts.push(n);
+          parts.push('<span>'+n+spStr+'</span>');
         }
       }
       for(var i=0;i<outArr.length;i++){
-        var s=document.createElement('span');
-        s.style.color='#aaa'; s.style.textDecoration='line-through';
-        s.textContent=outArr[i]+' OUT'; parts.push(s.outerHTML);
+        parts.push('<span class="print-sub-out">'+outArr[i]+' \u25bc</span>');
       }
       return parts.join(', ');
     };
     var subCount = snap.newIns.length;
-    var sub=snap.isKO?'Kickoff':subCount?subCount+' sub'+(subCount>1?'s':''):'';
-    rotHTML+='<tr style="background:'+(si%2===0?'#fff':'#f4f8f4')+'"><td style="padding:5px 7px;white-space:nowrap;font-weight:700;color:#1a5c1a;font-size:10pt">'
-      +fmt(snap.tS)+'-'+fmt(snap.tE)+(sub?'<br><small style="color:#888;font-weight:400">'+sub+'</small>':'')
-      +'</td><td style="padding:5px 7px;font-size:10pt">'+fn(snap.atk,outsAtk,'#c05010')+'</td>'
-      +'<td style="padding:5px 7px;font-size:10pt">'+fn(snap.mid,outsMid,'#1070a0')+'</td>'
-      +'<td style="padding:5px 7px;font-size:10pt">'+fn(snap.def,outsDef,'#6020a0')+'</td></tr>';
+    var sub=snap.isKO?'KICKOFF':subCount?subCount+' sub'+(subCount>1?'s':''):'';
+    rotHTML+='<tr><td style="white-space:nowrap;font-weight:700">'
+      +fmt(snap.tS)+' - '+fmt(snap.tE)+(sub?'<br><small style="font-weight:400;color:#666">'+sub+'</small>':'')
+      +'</td><td>'+fn(snap.atk,outsAtk)+'</td>'
+      +'<td>'+fn(snap.mid,outsMid)+'</td>'
+      +'<td>'+fn(snap.def,outsDef)+'</td></tr>';
   }
   var posOrd={attack:0,middie:1,defense:2};
   var ptE=[];
@@ -1173,22 +1237,24 @@ function buildPrintHTML(plan, label) {
   for(var i=0;i<ptE.length;i++){
     var name=ptE[i][0],m=ptE[i][1];
     var p=getRosterPlayer(name),pos=p?p.pos:'attack';
-    var col=pos==='attack'?'#c05010':pos==='middie'?'#1070a0':'#6020a0';
     var lbl=pos==='attack'?'ATK':pos==='middie'?'MID':'DEF';
-    ptHTML+='<tr style="background:'+(i%2===0?'#fff':'#f4f8f4')+'"><td style="padding:5px 7px;font-size:11pt"><b>'+name+'</b>'+(p&&p.flex?' <small>(flex)</small>':'')+'</td>'
-      +'<td style="padding:5px 7px;color:'+col+';font-weight:700">'+lbl+'</td>'
-      +'<td style="padding:5px 7px;font-size:11pt"><b>'+m.toFixed(1)+'</b> min</td>'
-      +'<td style="padding:5px 7px"><div style="width:'+Math.round(m/maxM*90)+'px;height:9px;background:'+col+';border-radius:3px;opacity:.75"></div></td></tr>';
+    var sp=p&&p.subpos?p.subpos:'';
+    var posLabel = sp ? sp : lbl;
+    var flexNote = p&&p.flex?' <small>(flex)</small>':'';
+    ptHTML+='<tr><td><b>'+name+'</b>'+flexNote+'</td>'
+      +'<td style="font-weight:700">'+posLabel+'</td>'
+      +'<td><b>'+m.toFixed(1)+'</b> min</td>'
+      +'<td><div class="print-pt-bar" style="width:'+Math.round(m/maxM*120)+'px"></div></td></tr>';
   }
 
-  var labelHTML = label ? '<div style="background:#fffbe0;border:2px solid #c8a000;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-weight:700;font-size:11pt;color:#8a6800;letter-spacing:1px">'+label+' ('+avail.length+' players)</div>' : '';
+  var labelHTML = label ? '<div class="print-plan-label">'+label+' ('+avail.length+' players)</div>' : '';
 
   return labelHTML
-    +'<div style="font-size:9pt;color:#555;margin-bottom:8px">DEF '+dMin+'m MID '+mMin+'m ATK '+aMin+'m - Avg '+avg.toFixed(1)+'m</div>'
+    +'<div class="print-meta" style="margin-bottom:8px">DEF '+dMin+'m &nbsp; MID '+mMin+'m &nbsp; ATK '+aMin+'m &nbsp; Avg '+avg.toFixed(1)+'m</div>'
     +'<h3>FIELD ROTATION</h3>'
-    +'<table><thead><tr><th style="'+th+'">TIME</th><th style="'+th+'">ATTACK</th><th style="'+th+'">MID</th><th style="'+th+'">DEF</th></tr></thead><tbody>'+rotHTML+'</tbody></table>'
-    +'<h3 style="margin-top:14px">PLAYING TIME</h3>'
-    +'<table><thead><tr><th style="'+th+'">PLAYER</th><th style="'+th+'">POS</th><th style="'+th+'">MIN</th><th style="'+th+'">BAR</th></tr></thead><tbody>'+ptHTML+'</tbody></table>';
+    +'<table><thead><tr><th>TIME</th><th>ATTACK</th><th>MIDFIELD</th><th>DEFENSE</th></tr></thead><tbody>'+rotHTML+'</tbody></table>'
+    +'<h3>PLAYING TIME</h3>'
+    +'<table><thead><tr><th>PLAYER</th><th>POS</th><th>MINUTES</th><th></th></tr></thead><tbody>'+ptHTML+'</tbody></table>';
 }
 
 function doPrint() {
@@ -1197,14 +1263,14 @@ function doPrint() {
   var uncNames = getUnconfirmedNames();
   var content = '';
 
-  content += '<div style="border-bottom:2px solid #1a5c1a;padding-bottom:8px;margin-bottom:10px">'
-    +'<div style="font-size:14pt;font-weight:900;color:#1a5c1a">JR. LIONS LACROSSE</div>'
-    +'<div style="font-size:9pt;color:#555">'+now+'</div></div>';
+  content += '<div class="print-hdr" style="border-bottom:3px solid #000;padding-bottom:6px;margin-bottom:4px">'
+    +'<div style="font-size:20pt;font-weight:900;color:#000">JR. LIONS LACROSSE</div>'
+    +'<div class="print-meta" style="font-size:11pt;color:#333">Game Day Rotation &mdash; '+now+' &mdash; '+ROSTER.filter(function(p){return !absent[p.name];}).length+' players</div></div>';
 
   if(PLAN_A || PLAN_B) {
     if(PLAN_A) {
       content += buildPrintHTML(PLAN_A, 'ROTATION A — IF UNCONFIRMED ABSENT (without: '+uncNames.join(', ')+')');
-      if(PLAN_B) content += '<div style="border-top:3px solid #1a5c1a;margin:18px 0"></div>';
+      if(PLAN_B) content += '<div style="border-top:4px solid #000;margin:20px 0"></div>';
     }
     if(PLAN_B) {
       content += buildPrintHTML(PLAN_B, 'ROTATION B — IF UNCONFIRMED PRESENT (with: '+uncNames.join(', ')+')');
@@ -1213,7 +1279,7 @@ function doPrint() {
     content += buildPrintHTML(PLAN, null);
   }
 
-  content += '<p style="font-size:7pt;color:#888;margin-top:10px;border-top:1px solid #ddd;padding-top:6px">Jr. Lions Lacrosse - Game Day Manager</p>';
+  content += '<p style="font-size:8pt;color:#666;margin-top:12px;border-top:1px solid #999;padding-top:6px">Jr. Lions Lacrosse &mdash; Game Day Manager</p>';
 
   document.getElementById('overlayBody').innerHTML = content;
   document.getElementById('printOverlay').classList.add('show');
@@ -1237,9 +1303,17 @@ function copyTextForPlan(plan, label) {
       }
     }
     t+=fmt(s.tS)+' - '+fmt(s.tE)+'\n';
-    t+='  ATK: '+s.atk.join(', ')+'\n';
-    t+='  MID: '+s.mid.join(', ')+'\n';
-    t+='  DEF: '+s.def.join(', ')+'\n\n';
+    var cpFn = function(arr) {
+      var parts = [];
+      for(var ci=0;ci<arr.length;ci++) {
+        var sp = getSubPosLabel(arr[ci]);
+        parts.push(sp ? arr[ci]+' ('+sp+')' : arr[ci]);
+      }
+      return parts.join(', ');
+    };
+    t+='  ATK: '+cpFn(s.atk)+'\n';
+    t+='  MID: '+cpFn(s.mid)+'\n';
+    t+='  DEF: '+cpFn(s.def)+'\n\n';
   }
   t+='PLAYING TIME\n';
   var keys=Object.keys(mins).sort(function(a,b){return mins[b]-mins[a];});
