@@ -102,6 +102,11 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .flex-active.flex-attack{border-color:var(--atk);color:var(--atk);background:rgba(255,140,66,.15)}
 .flex-active.flex-middie{border-color:var(--mid);color:var(--mid);background:rgba(91,200,245,.15)}
 .flex-starter-chip{border-style:dashed !important}
+.grp-badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:6px;user-select:none;transition:all .15s}
+.grp-badge:active{opacity:.7}
+.grp-green{border-color:#2aaa2a;color:#2aaa2a;background:rgba(42,170,42,.12)}
+.grp-gold{border-color:var(--gold);color:var(--gold);background:rgba(240,192,32,.12)}
+.grp-black{border-color:#aaa;color:#ccc;background:rgba(255,255,255,.06)}
 .plan-divider{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 16px;margin:16px 0 10px;border-radius:10px;line-height:1.4}
 .plan-divider-a{background:rgba(255,60,60,.08);border:1.5px solid rgba(255,60,60,.35);color:#ff7777}
 .plan-divider-b{background:rgba(42,170,42,.08);border:1.5px solid rgba(42,170,42,.35);color:var(--green)}
@@ -314,13 +319,27 @@ function makePlayerRow(p) {
   row.appendChild(nameSpan);
 
   if(!ab && !unc) row.appendChild(makeFlexBadge(p));
+  if(!ab && !unc) row.appendChild(makeGroupBadge(p));
 
   row.addEventListener('click', function(evt) {
     var t = evt.target;
-    if(t.className && typeof t.className==='string' && t.className.indexOf('flex-badge')!==-1) return;
+    if(t.className && typeof t.className==='string' && (t.className.indexOf('flex-badge')!==-1 || t.className.indexOf('grp-badge')!==-1)) return;
     togglePlayerState(p.name);
   });
   return row;
+}
+
+function makeGroupBadge(p) {
+  var LABELS = {green:'GRN', gold:'GLD', black:'BLK'};
+  var badge  = document.createElement('button');
+  var grp    = p.group || null;
+  badge.className = 'grp-badge' + (grp ? ' grp-'+grp : '');
+  badge.textContent = grp ? LABELS[grp] : 'GRP';
+  badge.addEventListener('click', function(evt) {
+    evt.stopPropagation();
+    toggleGroup(p.name);
+  });
+  return badge;
 }
 
 function makeFlexBadge(p) {
@@ -369,6 +388,27 @@ function toggleFlex(name) {
   var curIdx = others.indexOf(p.flex);
   p.flex = others[(curIdx + 1) % others.length];
   renderRoster();
+}
+
+function toggleGroup(name) {
+  var p = getRosterPlayer(name);
+  if(!p) return;
+  var GROUPS = ['green','gold','black',null];
+  var cur = p.group || null;
+  var idx = GROUPS.indexOf(cur);
+  p.group = GROUPS[(idx + 1) % GROUPS.length];
+  renderRoster();
+}
+
+// Sort players by group so same-group players are adjacent in rotation order.
+// Ungrouped players go last. Preserves relative order within each group.
+function sortByGroup(players) {
+  var ORDER = {green:0, gold:1, black:2};
+  return players.slice().sort(function(a,b) {
+    var ga = a.group ? ORDER[a.group] : 3;
+    var gb = b.group ? ORDER[b.group] : 3;
+    return ga - gb;
+  });
 }
 
 // ============================================================
@@ -518,8 +558,28 @@ function buildMidIntervals(players, starterNames) {
   var names = players.map(function(p){ return p.name; });
   if(N <= K) return [{tS:0, tE:TOTAL, on:names.slice(), newIns:[]}];
   if(N === 2*K) {
-    var gA = (starterNames && starterNames.length===K) ? starterNames.slice() : names.slice(0,K);
-    var gB = names.filter(function(n){ return gA.indexOf(n)===-1; });
+    // Check if players form exactly 2 color groups of size K
+    var grpMap = {};
+    for(var gi=0; gi<players.length; gi++) {
+      var g = players[gi].group || ('_u_'+players[gi].name);
+      if(!grpMap[g]) grpMap[g] = [];
+      grpMap[g].push(players[gi].name);
+    }
+    var grpKeys = Object.keys(grpMap);
+    var twoEvenGroups = (grpKeys.length === 2 && grpMap[grpKeys[0]].length === K && grpMap[grpKeys[1]].length === K);
+    var gA, gB;
+    if(twoEvenGroups) {
+      // Use color groups; group with more starters goes first
+      var ss = {};
+      if(starterNames) for(var si=0;si<starterNames.length;si++) ss[starterNames[si]]=true;
+      var cnt0 = grpMap[grpKeys[0]].filter(function(n){return ss[n];}).length;
+      var cnt1 = grpMap[grpKeys[1]].filter(function(n){return ss[n];}).length;
+      if(cnt0 >= cnt1) { gA = grpMap[grpKeys[0]].slice(); gB = grpMap[grpKeys[1]].slice(); }
+      else             { gA = grpMap[grpKeys[1]].slice(); gB = grpMap[grpKeys[0]].slice(); }
+    } else {
+      gA = (starterNames && starterNames.length===K) ? starterNames.slice() : names.slice(0,K);
+      gB = names.filter(function(n){ return gA.indexOf(n)===-1; });
+    }
     return [
       {tS: 0, tE:10, on:gA.slice(), newIns:[]},
       {tS:10, tE:20, on:gB.slice(), newIns:gB.slice()},
@@ -661,9 +721,13 @@ function computeRotation(effectiveAbsent) {
   }
 
   // ---- LAYER 1: Primary schedules ----
-  var defIvsPrimary = buildRRIntervals(primaryGroups.defense, FORM.defense, getStarterNames('defense'));
-  var midIvsPrimary = buildMidIntervals(primaryGroups.middie,               getStarterNames('middie'));
-  var atkIvsPrimary = buildRRIntervals(primaryGroups.attack,  FORM.attack,  getStarterNames('attack'));
+  // Sort by color group so same-group players are adjacent in rotation order
+  var defSorted = sortByGroup(primaryGroups.defense);
+  var midSorted = sortByGroup(primaryGroups.middie);
+  var atkSorted = sortByGroup(primaryGroups.attack);
+  var defIvsPrimary = buildRRIntervals(defSorted, FORM.defense, getStarterNames('defense'));
+  var midIvsPrimary = buildMidIntervals(midSorted,               getStarterNames('middie'));
+  var atkIvsPrimary = buildRRIntervals(atkSorted,  FORM.attack,  getStarterNames('attack'));
 
   var primaryIvsByPos = {
     defense: defIvsPrimary,
