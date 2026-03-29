@@ -129,88 +129,77 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .ov-body tr:nth-child(even) td{background:#f4f8f4}
 
 /* ═══════════════════════════════════════════════════════════
-   PRINT STYLES — redesigned for coaching card clarity
-   Color-coded columns, countdown clock, portrait portrait
+   PRINT STYLES — single-page rotation card
+   Green sub-in, red sub-out, dominant quarter breaks
    ═══════════════════════════════════════════════════════════ */
+@page{size:portrait;margin:0.35in 0.3in}
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .ov-bar,.ov-hint,.ov-close{display:none!important}
   .overlay{position:static!important;overflow:visible!important}
-  .ov-body{padding:0;font-family:'Arial',sans-serif;font-size:11pt;color:#000;background:#fff}
+  .ov-body{padding:0;font-family:'Arial',sans-serif;font-size:10pt;color:#000;background:#fff}
 
-  /* Page wrapper */
-  .print-page{max-width:100%;padding:0.2in 0.3in 0.2in 0.3in}
+  /* hide playing time section — rotation card only */
+  .print-pt-section{display:none!important}
+
+  /* Page wrapper — tight padding since @page handles margins */
+  .print-page{max-width:100%;padding:0}
 
   /* ── HEADER ── */
-  .print-hdr-block{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:4px solid #1a5c1a;padding-bottom:7px;margin-bottom:10px}
-  .print-hdr-title{font-family:'Arial Black',Arial,sans-serif;font-size:17pt;font-weight:900;color:#1a5c1a;letter-spacing:1px;line-height:1;margin:0}
-  .print-hdr-sub{font-size:7.5pt;color:#666;margin-top:3px;letter-spacing:2px;text-transform:uppercase}
+  .print-hdr-block{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:4px solid #1a5c1a;padding-bottom:6px;margin-bottom:7px}
+  .print-hdr-title{font-family:'Arial Black',Arial,sans-serif;font-size:15pt;font-weight:900;color:#1a5c1a;letter-spacing:1px;line-height:1;margin:0}
+  .print-hdr-sub{font-size:7pt;color:#666;margin-top:2px;letter-spacing:2px;text-transform:uppercase}
   .print-hdr-right{text-align:right}
-  .print-hdr-date{font-size:10pt;color:#222;font-weight:700}
-  .print-hdr-stats{font-size:7.5pt;color:#666;margin-top:3px;letter-spacing:.5px}
+  .print-hdr-date{font-size:9pt;color:#222;font-weight:700}
+  .print-hdr-stats{font-size:7pt;color:#666;margin-top:2px;letter-spacing:.5px}
 
   /* ── PLAN LABEL (A/B) ── */
-  .print-plan-label{border-left:5px solid #1a5c1a!important;background:#f5f5f5!important;color:#000!important;padding:6px 12px!important;font-size:9.5pt!important;font-weight:700!important;margin:12px 0 6px!important;font-family:Arial,sans-serif;letter-spacing:.5px}
+  .print-plan-label{border-left:5px solid #1a5c1a!important;background:#f5f5f5!important;color:#000!important;padding:5px 10px!important;font-size:8.5pt!important;font-weight:700!important;margin:8px 0 5px!important;font-family:Arial,sans-serif;letter-spacing:.5px}
 
   /* ── SECTION HEADING ── */
-  .print-section-label{font-family:'Arial Black',Arial,sans-serif;font-size:7pt;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:5px 10px;margin:8px 0 0;color:#fff!important;background:#1a5c1a!important;display:block}
+  .print-section-label{font-family:'Arial Black',Arial,sans-serif;font-size:6.5pt;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:4px 8px;margin:6px 0 0;color:#fff!important;background:#1a5c1a!important;display:block}
 
   /* ── ROTATION TABLE ── */
-  .print-rot-table{border-collapse:collapse;width:100%;margin-bottom:0;page-break-inside:auto;table-layout:fixed}
-  .print-rot-table tr{page-break-inside:avoid}
+  .print-rot-table{border-collapse:collapse;width:100%;margin-bottom:0;table-layout:fixed}
 
   /* Column headers */
-  .print-rot-table thead tr th{padding:6px 8px;font-size:8pt;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2.5px solid #000;text-align:left;vertical-align:bottom}
-  .th-time{color:#444;width:14%}
-  .th-atk{color:#9a3300!important;background:rgba(154,51,0,.09)!important;width:28%}
-  .th-mid{color:#004f78!important;background:rgba(0,79,120,.09)!important;width:28%}
-  .th-def{color:#3e0f6e!important;background:rgba(62,15,110,.09)!important;width:30%}
+  .print-rot-table thead tr th{padding:5px 7px;font-size:7.5pt;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2.5px solid #000;text-align:left;vertical-align:bottom}
+  .th-time{color:#444;width:13%}
+  .th-atk{color:#9a3300!important;background:rgba(154,51,0,.09)!important;width:29%}
+  .th-mid{color:#004f78!important;background:rgba(0,79,120,.09)!important;width:29%}
+  .th-def{color:#3e0f6e!important;background:rgba(62,15,110,.09)!important;width:29%}
 
-  /* Body rows */
-  .print-rot-table tbody tr td{padding:5px 8px;vertical-align:top;border-bottom:1px solid #e2e2e2;font-size:10.5pt;line-height:1.45;word-wrap:break-word}
-  .print-rot-table tbody tr:nth-child(even) td{background:#f9f9f9!important}
+  /* Body rows — compact but readable */
+  .print-rot-table tbody tr td{padding:4px 7px;vertical-align:top;border-bottom:1px solid #e5e5e5;font-size:9.5pt;line-height:1.5;word-wrap:break-word}
+  .print-rot-table tbody tr:nth-child(even) td{background:#f8f8f8!important}
   .print-rot-table tbody tr:nth-child(odd) td{background:#fff!important}
 
   /* Time cell */
-  .td-time{font-family:'Courier New',monospace;font-size:10.5pt;font-weight:700;color:#111;white-space:nowrap;vertical-align:middle!important}
-  .td-time-lbl{display:block;font-family:Arial,sans-serif;font-size:6.5pt;font-weight:400;color:#aaa;letter-spacing:.5px;margin-top:2px;text-transform:uppercase}
+  .td-time{font-family:'Courier New',monospace;font-size:9.5pt;font-weight:700;color:#111;white-space:nowrap;vertical-align:middle!important}
+  .td-time-lbl{display:block;font-family:Arial,sans-serif;font-size:6pt;font-weight:400;color:#aaa;letter-spacing:.5px;margin-top:1px;text-transform:uppercase}
 
-  /* Position cells with subtle tint */
+  /* Position cells — subtle tint */
   .td-atk{background:rgba(154,51,0,.03)!important}
   .td-mid{background:rgba(0,79,120,.03)!important}
   .td-def{background:rgba(62,15,110,.03)!important}
 
-  /* SUB IN: bold + green arrow */
-  .print-sub-in{font-weight:900!important;color:#000!important}
-  .print-sub-arrow{color:#1a5c1a;font-size:8.5pt;margin-right:2px}
+  /* ── SUB IN: solid green, bold, ▲ arrow ── */
+  .print-sub-in{font-weight:900!important;color:#1a6b1a!important;background:rgba(26,107,26,.1)!important;border-radius:3px;padding:0 3px}
+  .print-sub-arrow{color:#1a6b1a!important;font-size:8pt;margin-right:1px}
 
-  /* SUB OUT: faded strikethrough */
-  .print-sub-out{color:#c0c0c0!important;text-decoration:line-through!important;font-size:9pt;font-weight:400!important}
+  /* ── SUB OUT: red, strikethrough, ▼ arrow ── */
+  .print-sub-out{color:#c0000c!important;text-decoration:line-through!important;font-size:9pt;font-weight:600!important;opacity:.85}
+  .print-sub-out-arrow{color:#c0000c!important;font-size:8pt;margin-right:1px}
 
-  /* Quarter break rows */
-  .print-qbreak td{background:#1a5c1a!important;color:#f0c020!important;font-family:'Arial Black',Arial,sans-serif;font-size:7.5pt!important;font-weight:900!important;letter-spacing:5px!important;text-align:center!important;padding:5px 8px!important;border:none!important}
-
-  /* ── PLAYING TIME TABLE ── */
-  .print-pt-table{border-collapse:collapse;width:100%;page-break-inside:auto;table-layout:fixed}
-  .print-pt-table tr{page-break-inside:avoid}
-  .print-pt-table td{padding:3px 8px;font-size:9.5pt;border-bottom:1px solid #ebebeb;vertical-align:middle}
-  .print-pt-table tr:nth-child(even) td{background:#f9f9f9!important}
-  .print-pt-table tr:nth-child(odd) td{background:#fff!important}
-  .pt-name-c{font-weight:700;color:#000;width:30%}
-  .pt-pos-c{width:10%;text-align:center}
-  .pt-pos-pill{font-size:7pt;font-weight:700;letter-spacing:1px;padding:2px 5px;border-radius:3px;display:inline-block}
-  .pill-atk{color:#9a3300!important;background:rgba(154,51,0,.11)!important}
-  .pill-mid{color:#004f78!important;background:rgba(0,79,120,.11)!important}
-  .pill-def{color:#3e0f6e!important;background:rgba(62,15,110,.11)!important}
-  .pt-mins-c{font-family:'Courier New',monospace;font-weight:700;font-size:9.5pt;width:18%;text-align:right;color:#222}
-  .pt-bar-c{width:42%;padding-right:12px}
-  .pt-bar-bg{height:8px;background:#ebebeb!important;border-radius:3px;overflow:hidden}
-  .bar-atk{height:100%;border-radius:3px;background:#9a3300!important}
-  .bar-mid{height:100%;border-radius:3px;background:#004f78!important}
-  .bar-def{height:100%;border-radius:3px;background:#3e0f6e!important}
+  /* ── QUARTER BREAK ROWS — dominant, impossible to miss ── */
+  .print-qbreak{border-top:3px solid #1a5c1a!important;border-bottom:3px solid #1a5c1a!important}
+  .print-qbreak td{background:#1a5c1a!important;color:#f0c020!important;
+    font-family:'Arial Black',Arial,sans-serif;font-size:9pt!important;font-weight:900!important;
+    letter-spacing:6px!important;text-align:center!important;
+    padding:7px 8px!important;border:none!important;text-transform:uppercase}
 
   /* ── FOOTER ── */
-  .print-footer{font-size:6.5pt;color:#bbb;margin-top:10px;padding-top:5px;border-top:1px solid #ddd;text-align:center;letter-spacing:.5px}
+  .print-footer{font-size:6pt;color:#aaa;margin-top:8px;padding-top:4px;border-top:1px solid #ddd;text-align:center;letter-spacing:.5px}
 }
 </style>
 </head>
@@ -1215,15 +1204,17 @@ function buildPrintHTML(plan, label) {
       for(var i=0;i<onArr.length;i++) {
         var n = onArr[i];
         var sp = getSubPosLabel(n);
-        var spStr = sp ? ' <small style="font-size:7.5pt;opacity:.6">'+sp+'</small>' : '';
+        var spStr = sp ? ' <small style="font-size:7pt;opacity:.65">'+sp+'</small>' : '';
         if(ns[n]) {
+          // SUB IN — green, bold, ▲
           parts.push('<span class="print-sub-in"><span class="print-sub-arrow">&#9650;</span>'+n+spStr+'</span>');
         } else {
           parts.push('<span>'+n+spStr+'</span>');
         }
       }
       for(var i=0;i<outArr.length;i++) {
-        parts.push('<span class="print-sub-out">&#9660;'+outArr[i]+'</span>');
+        // SUB OUT — red, strikethrough, ▼
+        parts.push('<span class="print-sub-out"><span class="print-sub-out-arrow">&#9660;</span>'+outArr[i]+'</span>');
       }
       return parts.join('&ensp;');
     };
@@ -1245,37 +1236,10 @@ function buildPrintHTML(plan, label) {
       + '</tr>';
   }
 
-  // ── PLAYING TIME ROWS ──
-  var posOrd={attack:0,middie:1,defense:2};
-  var ptE=[];
-  for(var i=0;i<keys.length;i++) ptE.push([keys[i],mins[keys[i]]]);
-  ptE.sort(function(a,b){
-    var pa=getRosterPlayer(a[0]),pb=getRosterPlayer(b[0]);
-    var po=(posOrd[pa?pa.pos:'attack']||0)-(posOrd[pb?pb.pos:'attack']||0);
-    return po!==0?po:a[0].localeCompare(b[0]);
-  });
-
-  var ptHTML='';
-  for(var i=0;i<ptE.length;i++){
-    var name=ptE[i][0], m=ptE[i][1];
-    var p=getRosterPlayer(name), pos=p?p.pos:'attack';
-    var sp = p&&p.subpos ? p.subpos : (pos==='attack'?'ATK':pos==='middie'?'MID':'DEF');
-    var flexNote = p&&p.flex ? ' <small style="font-size:7pt;opacity:.55">(flex)</small>' : '';
-    var pillClass = pos==='attack' ? 'pill-atk' : pos==='middie' ? 'pill-mid' : 'pill-def';
-    var barClass  = pos==='attack' ? 'bar-atk'  : pos==='middie' ? 'bar-mid'  : 'bar-def';
-    var barW = Math.round(m/maxM*100);
-    ptHTML += '<tr>'
-      + '<td class="pt-name-c"><b>'+name+'</b>'+flexNote+'</td>'
-      + '<td class="pt-pos-c"><span class="pt-pos-pill '+pillClass+'">'+sp+'</span></td>'
-      + '<td class="pt-mins-c">'+m.toFixed(1)+' min</td>'
-      + '<td class="pt-bar-c"><div class="pt-bar-bg"><div class="'+barClass+'" style="width:'+barW+'%"></div></div></td>'
-      + '</tr>';
-  }
-
   var labelHTML = label ? '<div class="print-plan-label">'+label+'</div>' : '';
 
   return labelHTML
-    + '<div style="font-size:8pt;color:#555;margin-bottom:7px;letter-spacing:.3px">'
+    + '<div style="font-size:7.5pt;color:#555;margin-bottom:6px;letter-spacing:.3px">'
     + '<span style="color:#9a3300;font-weight:700">ATK</span> '+aMin+' min &nbsp;&bull;&nbsp; '
     + '<span style="color:#004f78;font-weight:700">MID</span> '+mMin+' min &nbsp;&bull;&nbsp; '
     + '<span style="color:#3e0f6e;font-weight:700">DEF</span> '+dMin+' min &nbsp;&bull;&nbsp; '
@@ -1290,9 +1254,7 @@ function buildPrintHTML(plan, label) {
     + '<th class="th-def">&#9650; DEFENSE</th>'
     + '</tr></thead>'
     + '<tbody>'+rotHTML+'</tbody>'
-    + '</table>'
-    + '<span class="print-section-label" style="margin-top:12px">PLAYING TIME</span>'
-    + '<table class="print-pt-table"><tbody>'+ptHTML+'</tbody></table>';
+    + '</table>';
 }
 
 function doPrint() {
@@ -1326,7 +1288,7 @@ function doPrint() {
     content += buildPrintHTML(PLAN, null);
   }
 
-  content += '<div class="print-footer">Jr. Lions Lacrosse &mdash; Game Day Manager &mdash; &#9650; = sub in &nbsp; &#9660; = sub out &nbsp; Clock shows time remaining in quarter</div>';
+  content += '<div class="print-footer">Jr. Lions Lacrosse &mdash; Game Day Rotation Card &mdash; <span style="color:#1a6b1a;font-weight:700">&#9650; Green = Sub IN</span> &nbsp;&nbsp; <span style="color:#c0000c;font-weight:700">&#9660; Red = Sub OUT</span> &nbsp;&nbsp; Clock shows time remaining in quarter</div>';
   content += '</div>';
 
   document.getElementById('overlayBody').innerHTML = content;
