@@ -195,8 +195,10 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 // ============================================================
 // CONSTANTS & CONFIG
 // ============================================================
-var TOTAL = 40;
-var HALF  = 20;
+var TOTAL   = 40;
+var HALF    = 20;
+var QUARTER = 10;
+var MIN_REST = 5;
 var FORM  = {defense:4, middie:3, attack:4};
 
 // ============================================================
@@ -432,7 +434,7 @@ function updatePlanNote() {
       parts.push('<span style="color:#ff7777">Need '+slots+' '+LABEL[pos]+', only '+(n+nFlex)+' available</span>');
     } else {
       var minsStr = n>=slots ? (n===slots?'40.0':(TOTAL*slots/n).toFixed(1)) : 'flex needed';
-      var scheme  = (pos==='middie'&&n===2*slots) ? 'group swap every 10 min'
+      var scheme  = (pos==='middie'&&n===2*slots) ? 'group swap each quarter'
                   : n<=slots ? 'all play full game'
                   : 'sub every '+fmt(TOTAL/n);
       var flexNote = nFlex>0 ? ' <span style="color:var(--muted)">(+'+nFlex+' flex avail)</span>' : '';
@@ -604,6 +606,23 @@ function buildMidIntervals(players, starterNames) {
 function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs, slots) {
   if(!flexPlayers || flexPlayers.length === 0) return posIvs;
 
+  // Compute primary field time for each flex player (used for rest cap)
+  var flexPrimaryTime = {};
+  var flexAccum = {};
+  for(var fi=0;fi<flexPlayers.length;fi++) {
+    var fpName = flexPlayers[fi].name;
+    var fpIvs  = getPrimaryIvs(fpName);
+    var totalP = 0;
+    for(var pi=0;pi<fpIvs.length;pi++) {
+      for(var pj=0;pj<fpIvs[pi].on.length;pj++) {
+        if(fpIvs[pi].on[pj] === fpName) { totalP += (fpIvs[pi].tE - fpIvs[pi].tS); break; }
+      }
+    }
+    flexPrimaryTime[fpName] = totalP;
+    flexAccum[fpName] = 0;
+  }
+  var MAX_PLAY = TOTAL - MIN_REST;
+
   // Collect all time breakpoints from both position and flex schedules
   var timeSet = {};
   for(var i=0;i<posIvs.length;i++) {
@@ -658,6 +677,10 @@ function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs, slots) {
       var flexName = availFlex[fi];
       if(finalOn.indexOf(flexName) !== -1) continue; // already on field
 
+      // Enforce rest cap: skip if adding this window would exceed max play time
+      var projected = flexPrimaryTime[flexName] + flexAccum[flexName] + (tE - tS);
+      if(projected > MAX_PLAY + 0.01) continue;
+
       // Find next primary player in bench queue who is currently on field
       var benched = false;
       for(var qi=0;qi<benchQueue.length;qi++) {
@@ -669,6 +692,7 @@ function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs, slots) {
           finalOn.push(flexName);
           // Rotate benched player to back of queue (they get next rest opportunity later)
           benchQueue.push(benchQueue.splice(qi, 1)[0]);
+          flexAccum[flexName] += (tE - tS);
           benched = true;
           break;
         }
@@ -921,19 +945,33 @@ function renderShiftsForPlan(plan) {
     +'<div class="stat-box"><span class="sv">'+avg.toFixed(1)+'m</span><span class="sl">Avg</span></div>'
     +'</div><div class="sched-list">';
 
-  var shownHalf = false;
+  var shownBreaks = {};
+  var Q_BREAKS = [
+    {time:QUARTER,   label:'END OF Q1'},
+    {time:HALF,      label:'HALFTIME'},
+    {time:3*QUARTER, label:'END OF Q3'}
+  ];
   for(var si=0;si<snapshots.length;si++) {
     var snap     = snapshots[si];
     var newSet   = {};
     for(var i=0;i<snap.newIns.length;i++) newSet[snap.newIns[i]]=true;
     var subCount = snap.newIns.length;
-    var isHT     = Math.abs(snap.tS-HALF)<0.05;
     var isKO     = snap.isKO;
 
-    if(!shownHalf && snap.tS>=HALF) {
-      html += '<div class="half-divider">HALFTIME</div>';
-      shownHalf = true;
+    // Insert quarter/half dividers before this shift
+    for(var bi=0;bi<Q_BREAKS.length;bi++) {
+      if(!shownBreaks[bi] && snap.tS >= Q_BREAKS[bi].time - 0.05) {
+        html += '<div class="half-divider">'+Q_BREAKS[bi].label+'</div>';
+        shownBreaks[bi] = true;
+      }
     }
+
+    // Determine if this shift starts a new quarter
+    var isQStart = false;
+    var qBadge   = '';
+    if(Math.abs(snap.tS - QUARTER) < 0.05)   { isQStart=true; qBadge='Q2'; }
+    if(Math.abs(snap.tS - HALF) < 0.05)       { isQStart=true; qBadge='Q3'; }
+    if(Math.abs(snap.tS - 3*QUARTER) < 0.05)  { isQStart=true; qBadge='Q4'; }
 
     function chipRow(players, base, newCls) {
       var out='';
@@ -945,10 +983,10 @@ function renderShiftsForPlan(plan) {
       return out;
     }
 
-    html += '<div class="shift-card'+(isKO||isHT?' special':'')+'"><div class="shift-hdr">'
+    html += '<div class="shift-card'+(isKO||isQStart?' special':'')+'"><div class="shift-hdr">'
       +'<span class="shift-clock">'+fmt(snap.tS)+' - '+fmt(snap.tE)+'</span>'
       +(isKO?'<span class="badge">KICKOFF</span>':'')
-      +(isHT?'<span class="badge">HALFTIME</span>':'')
+      +(isQStart?'<span class="badge">'+qBadge+'</span>':'')
       +(subCount>0&&!isKO?'<span class="shift-sub-count">'+subCount+' sub'+(subCount>1?'s':'')+' in</span>':'')
       +'</div><div class="shift-body">'
       +'<div class="pos-row"><span class="pos-lbl" style="color:var(--atk)">ATK</span><div class="chips-wrap">'+chipRow(snap.atk,'chip-atk','chip-atk-new')+'</div></div>'
@@ -1067,12 +1105,19 @@ function buildPrintHTML(plan, label) {
   var mMin=mLen<=FORM.middie ?'40.0':(TOTAL*FORM.middie /mLen).toFixed(1);
   var aMin=aLen<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aLen).toFixed(1);
   var th='padding:5px 7px;text-align:left;background:#1a5c1a;color:#f0c020;font-size:9pt;letter-spacing:1px';
-  var shownHalf=false, rotHTML='';
+  var shownPrintBreaks={}, rotHTML='';
+  var P_BREAKS = [
+    {time:QUARTER,   label:'END OF Q1'},
+    {time:HALF,      label:'HALFTIME'},
+    {time:3*QUARTER, label:'END OF Q3'}
+  ];
   for(var si=0;si<snapshots.length;si++) {
     var snap=snapshots[si];
-    if(!shownHalf&&snap.tS>=HALF){
-      rotHTML+='<tr><td colspan="4" style="background:#fffbe0;text-align:center;font-weight:700;color:#b08000;padding:6px;letter-spacing:2px;border-top:2px solid #c8a000;border-bottom:2px solid #c8a000">HALFTIME</td></tr>';
-      shownHalf=true;
+    for(var pbi=0;pbi<P_BREAKS.length;pbi++) {
+      if(!shownPrintBreaks[pbi]&&snap.tS>=P_BREAKS[pbi].time-0.05){
+        rotHTML+='<tr><td colspan="4" style="background:#fffbe0;text-align:center;font-weight:700;color:#b08000;padding:6px;letter-spacing:2px;border-top:2px solid #c8a000;border-bottom:2px solid #c8a000">'+P_BREAKS[pbi].label+'</td></tr>';
+        shownPrintBreaks[pbi]=true;
+      }
     }
     var ns={};
     for(var i=0;i<snap.newIns.length;i++) ns[snap.newIns[i]]=true;
@@ -1178,8 +1223,19 @@ function copyTextForPlan(plan, label) {
   var snapshots=plan.snapshots, mins=plan.mins;
   var t = '';
   if(label) t += label + '\n\n';
+  var copyBreaks = [
+    {time:QUARTER,   label:'--- END OF Q1 ---', shown:false},
+    {time:HALF,      label:'--- HALFTIME ---',   shown:false},
+    {time:3*QUARTER, label:'--- END OF Q3 ---', shown:false}
+  ];
   for(var i=0;i<snapshots.length;i++){
     var s=snapshots[i];
+    for(var cb=0;cb<copyBreaks.length;cb++) {
+      if(!copyBreaks[cb].shown && s.tS >= copyBreaks[cb].time - 0.05) {
+        t += copyBreaks[cb].label + '\n\n';
+        copyBreaks[cb].shown = true;
+      }
+    }
     t+=fmt(s.tS)+' - '+fmt(s.tE)+'\n';
     t+='  ATK: '+s.atk.join(', ')+'\n';
     t+='  MID: '+s.mid.join(', ')+'\n';
