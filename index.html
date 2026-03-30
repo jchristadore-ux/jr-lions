@@ -159,16 +159,18 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 #printCard{display:none}
 
 /* ═══ PRINT MEDIA ═══ */
-@page{size:portrait;margin:0.4in 0.35in}
+@page{size:landscape;margin:0.3in 0.3in}
 @media print{
+  /* Kill the dark app background */
+  html,body{background:#fff!important;color:#000!important}
   /* Hide every direct child of body — app UI, overlay, everything */
   body > *{display:none!important}
   /* Show ONLY the print card */
-  #printCard{display:block!important;font-family:Arial,sans-serif;font-size:9pt;color:#000;background:#fff}
+  #printCard{display:block!important;font-family:Arial,sans-serif;font-size:9.5pt;color:#000;background:#fff}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .print-page{max-width:100%;padding:0}
   .print-hdr-block{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #1a5c1a;padding-bottom:5px;margin-bottom:7px}
-  .print-hdr-title{font-family:'Arial Black',Arial,sans-serif;font-size:13pt;font-weight:900;color:#1a5c1a;letter-spacing:1px;line-height:1;margin:0}
+  .print-hdr-title{font-family:'Arial Black',Arial,sans-serif;font-size:14pt;font-weight:900;color:#1a5c1a;letter-spacing:1px;line-height:1;margin:0}
   .print-hdr-sub{font-size:7pt;color:#666;margin-top:2px;letter-spacing:2px;text-transform:uppercase}
   .print-hdr-right{text-align:right}
   .print-hdr-date{font-size:9pt;color:#222;font-weight:700}
@@ -177,26 +179,26 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
   .print-legend-in{color:#1a6b1a}
   .print-legend-out{color:#b00010}
   .print-plan-label{border-left:5px solid #1a5c1a!important;background:#f5f5f5!important;color:#000!important;padding:4px 8px!important;font-size:8pt!important;font-weight:700!important;margin:6px 0 4px!important;font-family:Arial,sans-serif;letter-spacing:.5px}
-  .print-stat-bar{display:flex;gap:12px;font-size:7pt;color:#555;margin-bottom:5px;align-items:center}
+  .print-stat-bar{display:flex;gap:14px;font-size:7.5pt;color:#555;margin-bottom:6px;align-items:center}
   .print-stat-bar span{font-weight:700}
   .print-rot-table{border-collapse:collapse;width:100%;margin-bottom:0;table-layout:fixed}
-  .print-rot-table thead tr th{padding:4px 6px;font-size:7pt;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2.5px solid #000;text-align:left;vertical-align:bottom;white-space:nowrap}
-  .th-shift{color:#444;width:14%}
+  .print-rot-table thead tr th{padding:5px 7px;font-size:7.5pt;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2.5px solid #000;text-align:left;vertical-align:bottom;white-space:nowrap}
+  .th-shift{color:#444;width:13%}
   .th-atk{color:#9a3300!important;background:rgba(154,51,0,.07)!important;width:29%}
-  .th-mid{color:#004f78!important;background:rgba(0,79,120,.07)!important;width:28%}
+  .th-mid{color:#004f78!important;background:rgba(0,79,120,.07)!important;width:29%}
   .th-def{color:#3e0f6e!important;background:rgba(62,15,110,.07)!important;width:29%}
-  .print-rot-table tbody tr td{padding:4px 6px;vertical-align:top;border-bottom:1px solid #ebebeb;font-size:8.5pt;line-height:1.5;word-wrap:break-word}
+  .print-rot-table tbody tr td{padding:5px 7px;vertical-align:top;border-bottom:1px solid #e8e8e8;font-size:9.5pt;line-height:1.55;word-wrap:break-word}
   .print-rot-table tbody tr:nth-child(even) td{background:#f8f8f8!important}
   .print-rot-table tbody tr:nth-child(odd) td{background:#fff!important}
-  .td-shift{font-family:'Arial',sans-serif;font-size:7.5pt;font-weight:700;color:#111;white-space:nowrap;vertical-align:middle!important;line-height:1.4}
+  .td-shift{font-family:'Arial',sans-serif;font-size:8pt;font-weight:700;color:#111;white-space:nowrap;vertical-align:middle!important;line-height:1.4}
   .td-sublbl{display:block;font-size:6pt;color:#aaa;letter-spacing:.5px;font-weight:400;margin-top:1px;text-transform:uppercase}
   .p-in{font-weight:900!important;color:#1a6b1a!important}
   .p-in-arrow{color:#1a6b1a!important;font-size:8pt;margin-right:1px}
-  .p-out{color:#b00010!important;text-decoration:line-through!important;font-size:8pt;opacity:.8}
+  .p-out{color:#b00010!important;text-decoration:line-through!important;font-size:9pt;opacity:.8}
   .p-out-arrow{color:#b00010!important;font-size:7pt;margin-right:1px}
   .p-stay{color:#333}
-  .print-qbreak td{background:#1a5c1a!important;color:#f0c020!important;font-family:'Arial Black',Arial,sans-serif;font-size:8pt!important;font-weight:900!important;letter-spacing:4px!important;text-align:center!important;padding:5px 6px!important;border:none!important;text-transform:uppercase}
-  .print-footer{font-size:6pt;color:#aaa;margin-top:6px;padding-top:3px;border-top:1px solid #ddd;text-align:center;letter-spacing:.5px}
+  .print-qbreak td{background:#1a5c1a!important;color:#f0c020!important;font-family:'Arial Black',Arial,sans-serif;font-size:9pt!important;font-weight:900!important;letter-spacing:5px!important;text-align:center!important;padding:6px 7px!important;border:none!important;text-transform:uppercase}
+  .print-footer{font-size:6pt;color:#aaa;margin-top:8px;padding-top:4px;border-top:1px solid #ddd;text-align:center;letter-spacing:.5px}
 }
 </style>
 </head>
@@ -430,9 +432,6 @@ function setGameFormat(fmt){
   else{TOTAL=40;HALF=20;QUARTER=10;}
   document.getElementById('fmtQbtn').classList.toggle('active',fmt==='quarters');
   document.getElementById('fmtHbtn').classList.toggle('active',fmt==='halves');
-  // In halves mode, middie shifts must divide into 20 evenly — clamp to 10 or 20
-  if(fmt==='halves'&&midShiftMinutes===5){setMidShift(10);}
-  document.getElementById('mid5btn').style.display=fmt==='halves'?'none':'';
   updatePlanNote();
 }
 function setMidShift(m){
