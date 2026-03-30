@@ -239,6 +239,16 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
     <div id="planNote" style="font-size:13px;color:var(--muted);line-height:1.9"></div>
   </div>
   <div class="ctrl-card">
+    <div class="ctrl-lbl">Game Format</div>
+    <div class="opt-row">
+      <span class="opt-lbl">Period structure:</span>
+      <div class="toggle-group">
+        <button class="tog-btn active" id="fmtQbtn" onclick="setGameFormat('quarters')">4 &times; 10 MIN</button>
+        <button class="tog-btn" id="fmtHbtn" onclick="setGameFormat('halves')">2 &times; 20 MIN</button>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl-card">
     <div class="ctrl-lbl">Middie Shift Length</div>
     <div class="opt-row">
       <span class="opt-lbl">Swap midfielders every:</span>
@@ -319,6 +329,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 var TOTAL=40, HALF=20, QUARTER=10, MIN_REST=5;
 var FORM={defense:4,middie:3,attack:4};
 var midShiftMinutes=5;
+var gameFormat='quarters'; // 'quarters' = 4x10min, 'halves' = 2x20min
 var ptMode='equal', ptMorePlayer='', ptLessPlayer='';
 
 // Per-plan edit state: {PLAN:{snapshots:[...],manualAdds:{si:[{name,pos}]}}, PLAN_A:{...}, PLAN_B:{...}}
@@ -387,31 +398,43 @@ function recomputeNewIns(snaps,si){
 }
 
 /* ─── clock label ─── */
+function periodLabel(n){return gameFormat==='halves'?'H'+n:'Q'+n;}
+function periodsCount(){return gameFormat==='halves'?2:4;}
 function _clockPoint(t,isEnd){
   var snap=Math.round(t*1000)/1000;
   var isBnd=(Math.abs(snap%QUARTER)<0.01&&snap>0&&snap<TOTAL);
   if(isBnd){
     var q=Math.round(snap/QUARTER);
     if(isEnd)return{q:q,str:'0:00'};
-    q++;if(q>4)q=4;return{q:q,str:'10:00'};
+    q++;if(q>periodsCount())q=periodsCount();return{q:q,str:QUARTER+':00'};
   }
-  if(snap>=TOTAL-0.01)return{q:4,str:'0:00'};
+  if(snap>=TOTAL-0.01)return{q:periodsCount(),str:'0:00'};
   var qN,qE;
-  if(t<QUARTER){qN=1;qE=t;}
-  else if(t<HALF){qN=2;qE=t-QUARTER;}
-  else if(t<3*QUARTER){qN=3;qE=t-HALF;}
-  else{qN=4;qE=t-3*QUARTER;}
+  var p=Math.floor(t/QUARTER);
+  qN=p+1; qE=t-p*QUARTER;
   var rem=QUARTER-qE;if(rem<0)rem=0;
   var m=Math.floor(rem+0.0001),s=Math.round((rem+0.0001-m)*60);
   return{q:qN,str:m+':'+(s<10?'0':'')+s};
 }
 function shiftLabel(tS,tE){
   var ptS=_clockPoint(tS,false),ptE=_clockPoint(tE,true);
-  if(ptS.q===ptE.q)return'Q'+ptS.q+' '+ptS.str+' \u2192 '+ptE.str;
-  return'Q'+ptS.q+' '+ptS.str+' \u2192 Q'+ptE.q+' '+ptE.str;
+  var pl=periodLabel;
+  if(ptS.q===ptE.q)return pl(ptS.q)+' '+ptS.str+' \u2192 '+ptE.str;
+  return pl(ptS.q)+' '+ptS.str+' \u2192 '+pl(ptE.q)+' '+ptE.str;
 }
 
 /* ─── settings ─── */
+function setGameFormat(fmt){
+  gameFormat=fmt;
+  if(fmt==='halves'){TOTAL=40;HALF=20;QUARTER=20;}
+  else{TOTAL=40;HALF=20;QUARTER=10;}
+  document.getElementById('fmtQbtn').classList.toggle('active',fmt==='quarters');
+  document.getElementById('fmtHbtn').classList.toggle('active',fmt==='halves');
+  // In halves mode, middie shifts must divide into 20 evenly — clamp to 10 or 20
+  if(fmt==='halves'&&midShiftMinutes===5){setMidShift(10);}
+  document.getElementById('mid5btn').style.display=fmt==='halves'?'none':'';
+  updatePlanNote();
+}
 function setMidShift(m){
   midShiftMinutes=m;
   document.getElementById('mid5btn').classList.toggle('active',m===5);
@@ -855,7 +878,9 @@ function renderShiftsForPlan(plan,pk){
     +'</div>';
 
   html+='<div class="sched-list">';
-  var Q_BREAKS=[{time:QUARTER,label:'END OF Q1'},{time:HALF,label:'HALFTIME'},{time:3*QUARTER,label:'END OF Q3'}];
+  var Q_BREAKS=gameFormat==='halves'
+    ?[{time:HALF,label:'HALFTIME'}]
+    :[{time:QUARTER,label:'END OF Q1'},{time:HALF,label:'HALFTIME'},{time:3*QUARTER,label:'END OF Q3'}];
   var shownBreaks={};
 
   for(var si=0;si<snapshots.length;si++){
@@ -866,9 +891,13 @@ function renderShiftsForPlan(plan,pk){
       if(!shownBreaks[bi]&&snap.tS>=Q_BREAKS[bi].time-0.05){html+='<div class="half-divider">'+Q_BREAKS[bi].label+'</div>';shownBreaks[bi]=true;}
     }
     var isQS=false,qBadge='';
-    if(Math.abs(snap.tS-QUARTER)<0.05){isQS=true;qBadge='Q2';}
-    if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='Q3';}
-    if(Math.abs(snap.tS-3*QUARTER)<0.05){isQS=true;qBadge='Q4';}
+    if(gameFormat==='halves'){
+      if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='H2';}
+    }else{
+      if(Math.abs(snap.tS-QUARTER)<0.05){isQS=true;qBadge='Q2';}
+      if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='Q3';}
+      if(Math.abs(snap.tS-3*QUARTER)<0.05){isQS=true;qBadge='Q4';}
+    }
 
     // figure out who is benched for the add panel
     var onField=snap.atk.concat(snap.mid,snap.def);
@@ -1000,7 +1029,9 @@ function buildPrintHTML(plan,pk,label){
   var aMin=aL<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aL).toFixed(1);
 
   var shownB={},rotHTML='';
-  var PB=[{time:QUARTER,label:'END OF Q1 \u2014 BREAK'},{time:HALF,label:'HALFTIME \u2014 BREAK'},{time:3*QUARTER,label:'END OF Q3 \u2014 BREAK'}];
+  var PB=gameFormat==='halves'
+    ?[{time:HALF,label:'HALFTIME \u2014 BREAK'}]
+    :[{time:QUARTER,label:'END OF Q1 \u2014 BREAK'},{time:HALF,label:'HALFTIME \u2014 BREAK'},{time:3*QUARTER,label:'END OF Q3 \u2014 BREAK'}];
 
   for(var si=0;si<snapshots.length;si++){
     var snap=snapshots[si];
@@ -1025,7 +1056,9 @@ function buildPrintHTML(plan,pk,label){
       return parts.join('&ensp;');
     }
     var sc=snap.newIns.length,sLbl=snap.isKO?'KICKOFF':(sc?sc+' sub'+(sc>1?'s':'')+' in':'');
-    var isQS=Math.abs(snap.tS-QUARTER)<0.05||Math.abs(snap.tS-HALF)<0.05||Math.abs(snap.tS-3*QUARTER)<0.05;
+    var isQS=gameFormat==='halves'
+      ?Math.abs(snap.tS-HALF)<0.05
+      :(Math.abs(snap.tS-QUARTER)<0.05||Math.abs(snap.tS-HALF)<0.05||Math.abs(snap.tS-3*QUARTER)<0.05);
     rotHTML+='<tr'+(snap.isKO||isQS?' style="background:#fffbe6!important"':'')+'>'
       +'<td class="td-shift">'+shiftLabel(snap.tS,snap.tE)+(sLbl?'<span class="td-sublbl">'+sLbl+'</span>':'')+'</td>'
       +'<td class="td-atk">'+rCell(snap.atk,oA)+'</td>'
@@ -1050,7 +1083,7 @@ function doPrint(){
   content+='<div class="print-hdr-block">'
     +'<div><div class="print-hdr-title">JR. LIONS LACROSSE</div><div class="print-hdr-sub">Game Day Rotation Card</div></div>'
     +'<div class="print-hdr-right"><div class="print-hdr-date">'+now+'</div>'
-    +'<div class="print-hdr-stats">'+totalActive+' active &bull; 4 qtrs &times; '+QUARTER+' min</div>'
+    +'<div class="print-hdr-stats">'+totalActive+' active &bull; '+(gameFormat==='halves'?'2 halves &times; 20 min':'4 qtrs &times; 10 min')+'</div>'
     +'<div class="print-legend"><span class="print-legend-in">\u25b2 Sub IN</span> &nbsp; <span class="print-legend-out">\u25bc Sub OUT</span></div>'
     +'</div></div>';
   if(PLAN_A||PLAN_B){
