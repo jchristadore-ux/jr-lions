@@ -59,6 +59,8 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .stat-box .sv{font-family:'Oswald',sans-serif;font-size:20px;display:block;line-height:1;margin-bottom:1px}
 .stat-box .sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .sched-list{display:flex;flex-direction:column;gap:8px}
+
+/* ── SHIFT CARDS ── */
 .shift-card{background:var(--card);border:1px solid var(--border2);border-radius:12px;overflow:hidden}
 .shift-card.special{border-color:var(--gold2)}
 .shift-hdr{background:#000;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border2)}
@@ -115,6 +117,29 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .plan-divider-a{background:rgba(255,60,60,.08);border:1.5px solid rgba(255,60,60,.35);color:#ff7777}
 .plan-divider-b{background:rgba(42,170,42,.08);border:1.5px solid rgba(42,170,42,.35);color:var(--green)}
 .plan-divider .plan-divider-names{font-family:'Source Sans 3',sans-serif;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;opacity:.8;margin-top:3px}
+
+/* ── SETTING ROWS (toggle options) ── */
+.opt-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.opt-lbl{font-size:13px;color:var(--muted);flex:1;min-width:120px}
+.toggle-group{display:flex;gap:6px}
+.tog-btn{padding:7px 14px;border-radius:8px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-family:'Oswald',sans-serif;font-size:13px;cursor:pointer;letter-spacing:1px;transition:all .15s}
+.tog-btn.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.tog-btn:active{opacity:.7}
+.pt-adj-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.pt-adj-lbl{font-size:12px;color:var(--muted);min-width:60px}
+.pt-adj-sel{background:var(--card2);border:1px solid var(--border2);color:var(--gold);font-family:'Oswald',sans-serif;font-size:14px;border-radius:6px;padding:6px 10px;cursor:pointer;flex:1;min-width:100px}
+
+/* ── DRAG / DROP EDITOR ── */
+.edit-banner{background:rgba(240,192,32,.08);border:1.5px solid var(--gold2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--gold);margin-bottom:10px;line-height:1.6;display:flex;align-items:center;gap:8px}
+.edit-banner .ei{font-size:18px}
+.shift-edit-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:4px}
+.drag-chip{padding:6px 12px;border-radius:6px;font-size:14px;font-weight:700;cursor:grab;user-select:none;transition:opacity .15s,transform .1s;touch-action:none}
+.drag-chip.dragging{opacity:.4;transform:scale(.95)}
+.drag-chip.drag-over-target{outline:2px dashed var(--gold);outline-offset:2px}
+.drop-zone{min-width:32px;min-height:32px;border:2px dashed var(--border2);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);padding:4px 6px;transition:border-color .15s,background .15s}
+.drop-zone.dz-over{border-color:var(--gold);background:rgba(240,192,32,.08)}
+
+/* ── PRINT OVERLAY ── */
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow-y:auto;display:none}
 .overlay.show{display:block}
 .ov-bar{background:#1a5c1a;color:#f0c020;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
@@ -122,84 +147,74 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .ov-close{background:#f0c020;color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Oswald',sans-serif}
 .ov-hint{background:#e8f5e8;border-bottom:2px solid #1a5c1a;padding:12px 16px;font-size:14px;color:#1a3a1a;text-align:center;line-height:1.5}
 .ov-body{padding:16px;font-family:Arial,sans-serif;font-size:10pt;color:#000}
-.ov-body h3{font-size:10pt;font-weight:700;color:#f0c020;background:#1a5c1a;padding:4px 9px;margin:12px 0 5px;letter-spacing:1px}
-.ov-body table{border-collapse:collapse;width:100%;margin-bottom:6px}
-.ov-body th{background:#1a5c1a;color:#f0c020;padding:5px 7px;text-align:left;font-size:9pt;letter-spacing:1px}
-.ov-body td{padding:5px 7px;border-bottom:1px solid #ddd;font-size:10pt;vertical-align:top}
-.ov-body tr:nth-child(even) td{background:#f4f8f4}
 
-/* ═══════════════════════════════════════════════════════════
-   PRINT STYLES — single-page rotation card
-   Green sub-in, red sub-out, dominant quarter breaks
-   ═══════════════════════════════════════════════════════════ */
-@page{size:portrait;margin:0.35in 0.3in}
+/* ═══════════════════════════════════════════════════════
+   PRINT — clean landscape coaching card
+   ═══════════════════════════════════════════════════════ */
+@page{size:landscape;margin:0.3in 0.3in}
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   .ov-bar,.ov-hint,.ov-close{display:none!important}
   .overlay{position:static!important;overflow:visible!important}
-  .ov-body{padding:0;font-family:'Arial',sans-serif;font-size:10pt;color:#000;background:#fff}
-
-  /* hide playing time section — rotation card only */
+  .ov-body{padding:0;font-family:'Arial',sans-serif;font-size:9pt;color:#000;background:#fff}
   .print-pt-section{display:none!important}
-
-  /* Page wrapper — tight padding since @page handles margins */
   .print-page{max-width:100%;padding:0}
 
-  /* ── HEADER ── */
-  .print-hdr-block{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:4px solid #1a5c1a;padding-bottom:6px;margin-bottom:7px}
-  .print-hdr-title{font-family:'Arial Black',Arial,sans-serif;font-size:15pt;font-weight:900;color:#1a5c1a;letter-spacing:1px;line-height:1;margin:0}
+  /* HEADER */
+  .print-hdr-block{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #1a5c1a;padding-bottom:5px;margin-bottom:6px}
+  .print-hdr-title{font-family:'Arial Black',Arial,sans-serif;font-size:14pt;font-weight:900;color:#1a5c1a;letter-spacing:1px;line-height:1;margin:0}
   .print-hdr-sub{font-size:7pt;color:#666;margin-top:2px;letter-spacing:2px;text-transform:uppercase}
   .print-hdr-right{text-align:right}
   .print-hdr-date{font-size:9pt;color:#222;font-weight:700}
   .print-hdr-stats{font-size:7pt;color:#666;margin-top:2px;letter-spacing:.5px}
+  .print-plan-label{border-left:5px solid #1a5c1a!important;background:#f5f5f5!important;color:#000!important;padding:4px 8px!important;font-size:8pt!important;font-weight:700!important;margin:6px 0 4px!important;font-family:Arial,sans-serif;letter-spacing:.5px}
+  .print-stat-bar{display:flex;gap:12px;font-size:7pt;color:#555;margin-bottom:5px;align-items:center}
+  .print-stat-bar span{font-weight:700}
 
-  /* ── PLAN LABEL (A/B) ── */
-  .print-plan-label{border-left:5px solid #1a5c1a!important;background:#f5f5f5!important;color:#000!important;padding:5px 10px!important;font-size:8.5pt!important;font-weight:700!important;margin:8px 0 5px!important;font-family:Arial,sans-serif;letter-spacing:.5px}
-
-  /* ── SECTION HEADING ── */
-  .print-section-label{font-family:'Arial Black',Arial,sans-serif;font-size:6.5pt;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:4px 8px;margin:6px 0 0;color:#fff!important;background:#1a5c1a!important;display:block}
-
-  /* ── ROTATION TABLE ── */
+  /* MAIN TABLE — the coaching card */
   .print-rot-table{border-collapse:collapse;width:100%;margin-bottom:0;table-layout:fixed}
-
-  /* Column headers */
-  .print-rot-table thead tr th{padding:5px 7px;font-size:7.5pt;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2.5px solid #000;text-align:left;vertical-align:bottom}
-  .th-time{color:#444;width:13%}
-  .th-atk{color:#9a3300!important;background:rgba(154,51,0,.09)!important;width:29%}
-  .th-mid{color:#004f78!important;background:rgba(0,79,120,.09)!important;width:29%}
-  .th-def{color:#3e0f6e!important;background:rgba(62,15,110,.09)!important;width:29%}
-
-  /* Body rows — compact but readable */
-  .print-rot-table tbody tr td{padding:4px 7px;vertical-align:top;border-bottom:1px solid #e5e5e5;font-size:9.5pt;line-height:1.5;word-wrap:break-word}
-  .print-rot-table tbody tr:nth-child(even) td{background:#f8f8f8!important}
+  .print-rot-table thead tr th{padding:4px 6px;font-size:7pt;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2.5px solid #000;text-align:left;vertical-align:bottom;white-space:nowrap}
+  .th-shift{color:#444;width:10%}
+  .th-atk{color:#9a3300!important;background:rgba(154,51,0,.08)!important;width:30%}
+  .th-mid{color:#004f78!important;background:rgba(0,79,120,.08)!important;width:30%}
+  .th-def{color:#3e0f6e!important;background:rgba(62,15,110,.08)!important;width:30%}
+  .print-rot-table tbody tr td{padding:5px 6px;vertical-align:top;border-bottom:1px solid #e8e8e8;font-size:9.5pt;line-height:1.55;word-wrap:break-word}
+  .print-rot-table tbody tr:nth-child(even) td{background:#f9f9f9!important}
   .print-rot-table tbody tr:nth-child(odd) td{background:#fff!important}
 
   /* Time cell */
-  .td-time{font-family:'Courier New',monospace;font-size:9.5pt;font-weight:700;color:#111;white-space:nowrap;vertical-align:middle!important}
-  .td-time-lbl{display:block;font-family:Arial,sans-serif;font-size:6pt;font-weight:400;color:#aaa;letter-spacing:.5px;margin-top:1px;text-transform:uppercase}
+  .td-shift{font-family:'Arial',sans-serif;font-size:8pt;font-weight:700;color:#111;white-space:nowrap;vertical-align:middle!important;line-height:1.4}
+  .td-shift .td-qlbl{display:block;font-size:6.5pt;color:#888;letter-spacing:.5px;font-weight:400;margin-top:1px;text-transform:uppercase}
+  .td-shift .td-sublbl{display:block;font-size:6pt;color:#999;letter-spacing:.5px;font-weight:400;margin-top:1px;text-transform:uppercase}
 
-  /* Position cells — subtle tint */
-  .td-atk{background:rgba(154,51,0,.03)!important}
-  .td-mid{background:rgba(0,79,120,.03)!important}
-  .td-def{background:rgba(62,15,110,.03)!important}
+  /* Sub annotations */
+  .p-in{font-weight:900!important;color:#1a6b1a!important}
+  .p-in-arrow{color:#1a6b1a!important;font-size:8pt;margin-right:1px}
+  .p-out{color:#b00010!important;text-decoration:line-through!important;font-size:8.5pt;opacity:.75}
+  .p-out-arrow{color:#b00010!important;font-size:7pt;margin-right:1px}
+  .p-stay{color:#333}
 
-  /* ── SUB IN: solid green, bold, ▲ arrow ── */
-  .print-sub-in{font-weight:900!important;color:#1a6b1a!important;background:rgba(26,107,26,.1)!important;border-radius:3px;padding:0 3px}
-  .print-sub-arrow{color:#1a6b1a!important;font-size:8pt;margin-right:1px}
+  /* Quarter break rows */
+  .print-qbreak{border-top:2.5px solid #1a5c1a!important;border-bottom:2.5px solid #1a5c1a!important}
+  .print-qbreak td{background:#1a5c1a!important;color:#f0c020!important;font-family:'Arial Black',Arial,sans-serif;font-size:8.5pt!important;font-weight:900!important;letter-spacing:4px!important;text-align:center!important;padding:5px 6px!important;border:none!important;text-transform:uppercase}
 
-  /* ── SUB OUT: red, strikethrough, ▼ arrow ── */
-  .print-sub-out{color:#c0000c!important;text-decoration:line-through!important;font-size:9pt;font-weight:600!important;opacity:.85}
-  .print-sub-out-arrow{color:#c0000c!important;font-size:8pt;margin-right:1px}
+  /* PLAYING TIME — right column */
+  .print-pt-col{width:140px;flex-shrink:0;display:block}
+  .print-pt-title{font-family:'Arial Black',Arial,sans-serif;font-size:6.5pt;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:4px 0;margin-bottom:4px;color:#fff!important;background:#1a5c1a!important;display:block;text-align:center}
+  .print-pt-item{display:flex;align-items:center;gap:4px;margin-bottom:2px;font-size:8pt}
+  .print-pt-name{flex:1;font-weight:700;color:#111}
+  .print-pt-min{font-size:7.5pt;color:#555;white-space:nowrap}
+  .print-pt-bar-bg{height:5px;background:#eee;border-radius:2px;overflow:hidden;margin-top:1px}
+  .print-pt-bar-fill{height:100%;border-radius:2px}
 
-  /* ── QUARTER BREAK ROWS — dominant, impossible to miss ── */
-  .print-qbreak{border-top:3px solid #1a5c1a!important;border-bottom:3px solid #1a5c1a!important}
-  .print-qbreak td{background:#1a5c1a!important;color:#f0c020!important;
-    font-family:'Arial Black',Arial,sans-serif;font-size:9pt!important;font-weight:900!important;
-    letter-spacing:6px!important;text-align:center!important;
-    padding:7px 8px!important;border:none!important;text-transform:uppercase}
+  /* Two-column layout: rotation left, playing time right */
+  .print-body-wrap{display:flex;gap:12px;align-items:flex-start}
+  .print-rot-col{flex:1;min-width:0}
 
-  /* ── FOOTER ── */
-  .print-footer{font-size:6pt;color:#aaa;margin-top:8px;padding-top:4px;border-top:1px solid #ddd;text-align:center;letter-spacing:.5px}
+  .print-footer{font-size:6pt;color:#aaa;margin-top:6px;padding-top:3px;border-top:1px solid #ddd;text-align:center;letter-spacing:.5px}
+  .print-legend{font-size:7pt;font-weight:700;margin-left:10px}
+  .print-legend-in{color:#1a6b1a}
+  .print-legend-out{color:#b00010}
 }
 </style>
 </head>
@@ -228,17 +243,55 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
   <button class="nav-tab" onclick="showPage('shifts',this)">SHIFTS</button>
   <button class="nav-tab" onclick="showPage('time',this)">TIME</button>
 </div>
+
+<!-- ROSTER TAB -->
 <div class="page active" id="page-roster">
   <div class="note">Tap a name to cycle: <strong>Present</strong> &#10132; <strong style="color:var(--gold)">Unconfirmed?</strong> &#10132; <strong style="color:var(--muted)">Absent</strong>. Rotation adjusts automatically.</div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-def">DEFENSE</span></div><div id="list-defense"></div></div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-mid">MIDFIELD</span></div><div id="list-middie"></div></div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-atk">ATTACK</span></div><div id="list-attack"></div></div>
 </div>
+
+<!-- SETTINGS TAB -->
 <div class="page" id="page-settings">
   <div class="ctrl-card">
     <div class="ctrl-lbl">Playing Time Targets</div>
     <div id="planNote" style="font-size:13px;color:var(--muted);line-height:1.9"></div>
   </div>
+
+  <div class="ctrl-card">
+    <div class="ctrl-lbl">Middie Shift Length</div>
+    <div class="opt-row">
+      <span class="opt-lbl">Swap midfielders every:</span>
+      <div class="toggle-group">
+        <button class="tog-btn active" id="mid5btn" onclick="setMidShift(5)">5 MIN</button>
+        <button class="tog-btn" id="mid10btn" onclick="setMidShift(10)">10 MIN</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctrl-card">
+    <div class="ctrl-lbl">Playing Time Distribution</div>
+    <div class="opt-row">
+      <span class="opt-lbl">Distribution:</span>
+      <div class="toggle-group">
+        <button class="tog-btn active" id="ptEqualBtn" onclick="setPTMode('equal')">EQUAL</button>
+        <button class="tog-btn" id="ptCustomBtn" onclick="setPTMode('custom')">CUSTOM</button>
+      </div>
+    </div>
+    <div id="ptCustomArea" style="display:none">
+      <div class="note" style="margin-bottom:10px">Select one player to receive <strong>more</strong> time and one to receive <strong>less</strong>. Algorithm will prioritize field time accordingly.</div>
+      <div class="pt-adj-row">
+        <span class="pt-adj-lbl" style="color:var(--green)">&#9650; MORE:</span>
+        <select class="pt-adj-sel" id="ptMoreSel"><option value="">— none —</option></select>
+      </div>
+      <div class="pt-adj-row">
+        <span class="pt-adj-lbl" style="color:#ff7777">&#9660; LESS:</span>
+        <select class="pt-adj-sel" id="ptLessSel"><option value="">— none —</option></select>
+      </div>
+    </div>
+  </div>
+
   <div class="ctrl-card">
     <div class="ctrl-lbl">Starting Lineup</div>
     <div class="note" style="margin-bottom:12px">Tap exactly the right number of starters per position. <span id="starterUncNote"></span></div>
@@ -258,19 +311,33 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
   <div id="warnArea"></div>
   <button class="gen-btn" onclick="generate()">BUILD ROTATION</button>
 </div>
+
+<!-- SHIFTS TAB -->
 <div class="page" id="page-shifts">
-  <div id="shifts-content"><div class="empty"><div class="ico">&#129409;</div>Go to Settings - Build Rotation</div></div>
+  <div id="shifts-content"><div class="empty"><div class="ico">&#129409;</div>Go to Settings → Build Rotation</div></div>
 </div>
+
+<!-- TIME TAB -->
 <div class="page" id="page-time">
   <div id="time-content"><div class="empty"><div class="ico">&#128202;</div>Build your rotation first</div></div>
 </div>
-<script>
 
+<script>
 var TOTAL   = 40;
 var HALF    = 20;
 var QUARTER = 10;
 var MIN_REST = 5;
 var FORM  = {defense:4, middie:3, attack:4};
+
+// ── Settings state ──
+var midShiftMinutes = 5;   // 5 or 10
+var ptMode = 'equal';      // 'equal' or 'custom'
+var ptMorePlayer = '';
+var ptLessPlayer = '';
+
+// ── Drag-drop overlay state ──
+var editSnapshots = null;  // null = no edits; array of snapshot copies if user edited
+var editPlanKey  = null;   // 'PLAN','PLAN_A','PLAN_B'
 
 var ROSTER = [
   {name:'Anya',     pos:'defense', flex:null, subpos:null},
@@ -299,6 +366,41 @@ var PLAN        = null;
 var PLAN_A      = null;
 var PLAN_B      = null;
 
+// ── SETTINGS CONTROLS ──
+function setMidShift(mins) {
+  midShiftMinutes = mins;
+  document.getElementById('mid5btn').classList.toggle('active', mins===5);
+  document.getElementById('mid10btn').classList.toggle('active', mins===10);
+}
+
+function setPTMode(mode) {
+  ptMode = mode;
+  document.getElementById('ptEqualBtn').classList.toggle('active', mode==='equal');
+  document.getElementById('ptCustomBtn').classList.toggle('active', mode==='custom');
+  document.getElementById('ptCustomArea').style.display = mode==='custom' ? 'block' : 'none';
+  if(mode==='custom') populatePTSelects();
+}
+
+function populatePTSelects() {
+  var avail = ROSTER.filter(function(p){ return !isAbsent(p.name) && !isUnconfirmed(p.name); });
+  var moreEl = document.getElementById('ptMoreSel');
+  var lessEl = document.getElementById('ptLessSel');
+  var curMore = moreEl.value || ptMorePlayer;
+  var curLess = lessEl.value || ptLessPlayer;
+  moreEl.innerHTML = '<option value="">— none —</option>';
+  lessEl.innerHTML = '<option value="">— none —</option>';
+  for(var i=0;i<avail.length;i++) {
+    var n = avail[i].name;
+    moreEl.innerHTML += '<option value="'+n+'"'+(curMore===n?' selected':'')+'>'+n+'</option>';
+    lessEl.innerHTML += '<option value="'+n+'"'+(curLess===n?' selected':'')+'>'+n+'</option>';
+  }
+  moreEl.onchange = function(){ ptMorePlayer = this.value; };
+  lessEl.onchange = function(){ ptLessPlayer = this.value; };
+  ptMorePlayer = curMore;
+  ptLessPlayer = curLess;
+}
+
+// ── PAGE NAV ──
 function showPage(id, btn) {
   var pages = document.querySelectorAll('.page');
   var tabs  = document.querySelectorAll('.nav-tab');
@@ -306,7 +408,7 @@ function showPage(id, btn) {
   for(var i=0;i<tabs.length;i++)  tabs[i].classList.remove('active');
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
-  if(id === 'settings') { updatePlanNote(); renderStarterPicker(); }
+  if(id === 'settings') { updatePlanNote(); renderStarterPicker(); if(ptMode==='custom') populatePTSelects(); }
 }
 
 function fmt(t) {
@@ -315,29 +417,14 @@ function fmt(t) {
   return m + ':' + (s < 10 ? '0' : '') + s;
 }
 
-// Convert a single game-elapsed time to a remaining-time clock point.
-// isEnd=true means this is a shift-end time: at an exact quarter boundary it reads as
-// 0:00 (end of the outgoing quarter). isEnd=false (shift-start) reads it as 10:00
-// (start of the incoming quarter), which is the natural coaching-clock perspective.
 function _clockPoint(tElapsed, isEnd) {
   var snap = Math.round(tElapsed * 1000) / 1000;
   var isExactBoundary = (Math.abs(snap % QUARTER) < 0.01 && snap > 0 && snap < TOTAL);
   if(isExactBoundary) {
-    if(isEnd) {
-      // 0:00 remaining in the quarter that just ended
-      var qNum = Math.round(snap / QUARTER);
-      return {q: qNum, str: '0:00'};
-    } else {
-      // 10:00 remaining — start of the next quarter
-      var qNum = Math.round(snap / QUARTER) + 1;
-      if(qNum > 4) qNum = 4;
-      return {q: qNum, str: '10:00'};
-    }
+    if(isEnd) { var qNum=Math.round(snap/QUARTER); return {q:qNum,str:'0:00'}; }
+    else { var qNum=Math.round(snap/QUARTER)+1; if(qNum>4)qNum=4; return {q:qNum,str:'10:00'}; }
   }
-  // tElapsed == TOTAL: end of game
-  if(snap >= TOTAL - 0.01) {
-    return {q: 4, str: '0:00'};
-  }
+  if(snap >= TOTAL - 0.01) return {q:4,str:'0:00'};
   var qNum, qElapsed;
   if(tElapsed < QUARTER)        { qNum=1; qElapsed=tElapsed; }
   else if(tElapsed < HALF)      { qNum=2; qElapsed=tElapsed-QUARTER; }
@@ -347,94 +434,70 @@ function _clockPoint(tElapsed, isEnd) {
   if(rem < 0) rem = 0;
   var m = Math.floor(rem + 0.0001);
   var s = Math.round((rem + 0.0001 - m) * 60);
-  return {q: qNum, str: m + ':' + (s < 10 ? '0' : '') + s};
+  return {q:qNum,str:m+':'+(s<10?'0':'')+s};
 }
 
-// Returns a countdown range string for a shift, e.g. "10:00 &rarr; 8:00".
-// If the shift spans a quarter boundary both sides are labelled with their quarter number.
-function printClockRange(tS, tE) {
+function shiftLabel(tS, tE) {
   var ptS = _clockPoint(tS, false);
   var ptE = _clockPoint(tE, true);
-  if(ptS.q === ptE.q) {
-    return ptS.str + ' &rarr; ' + ptE.str;
-  }
-  return 'Q' + ptS.q + ' ' + ptS.str + ' &rarr; Q' + ptE.q + ' ' + ptE.str;
+  if(ptS.q === ptE.q) return 'Q'+ptS.q+'  '+ptS.str+' → '+ptE.str;
+  return 'Q'+ptS.q+' '+ptS.str+' → Q'+ptE.q+' '+ptE.str;
 }
 
 function isAbsent(name) { return absent[name] === true; }
 function isUnconfirmed(name) { return unconfirmed[name] === true; }
 function isStarter(pos, name) { return starters[pos][name] === true; }
 function starterCount(pos) {
-  var n = 0, keys = Object.keys(starters[pos]);
+  var n=0, keys=Object.keys(starters[pos]);
   for(var i=0;i<keys.length;i++) if(starters[pos][keys[i]]) n++;
   return n;
 }
-
 function getRosterPlayer(name) {
   for(var i=0;i<ROSTER.length;i++) if(ROSTER[i].name===name) return ROSTER[i];
   return null;
 }
-
 function getUnconfirmedNames() {
-  var names = [];
-  for(var i=0;i<ROSTER.length;i++) {
-    if(unconfirmed[ROSTER[i].name]) names.push(ROSTER[i].name);
-  }
+  var names=[];
+  for(var i=0;i<ROSTER.length;i++) if(unconfirmed[ROSTER[i].name]) names.push(ROSTER[i].name);
   return names;
 }
 
+// ── ROSTER RENDER ──
 function renderRoster() {
   var POS = ['defense','middie','attack'];
-  for(var gi=0; gi<POS.length; gi++) {
-    var pos       = POS[gi];
+  for(var gi=0;gi<POS.length;gi++) {
+    var pos = POS[gi];
     var container = document.getElementById('list-'+pos);
     while(container.firstChild) container.removeChild(container.firstChild);
     var players = ROSTER.filter(function(p){ return p.pos===pos; });
-    for(var pi=0; pi<players.length; pi++) {
-      container.appendChild(makePlayerRow(players[pi]));
-    }
+    for(var pi=0;pi<players.length;pi++) container.appendChild(makePlayerRow(players[pi]));
   }
   var confirmed = ROSTER.filter(function(p){ return !isAbsent(p.name) && !isUnconfirmed(p.name); }).length;
   var uncCount  = getUnconfirmedNames().length;
   var countEl   = document.getElementById('activeCount');
-  if(uncCount > 0) {
-    countEl.textContent = confirmed + '+' + uncCount + '?';
-  } else {
-    countEl.textContent = confirmed;
-  }
+  countEl.textContent = uncCount>0 ? confirmed+'+'+uncCount+'?' : confirmed;
 }
 
 function makePlayerRow(p) {
   var ab  = isAbsent(p.name);
   var unc = isUnconfirmed(p.name);
   var row = document.createElement('div');
-  row.className = 'player-row' + (ab ? ' absent' : '') + (unc ? ' unconfirmed' : '');
-
+  row.className = 'player-row'+(ab?' absent':'')+(unc?' unconfirmed':'');
   var chk = document.createElement('div');
   chk.className = 'chk';
-  if(unc) {
-    chk.textContent = '?';
-  } else {
-    chk.textContent = ab ? '' : '\u2713';
-  }
-
+  chk.textContent = unc ? '?' : (ab ? '' : '\u2713');
   var nameSpan = document.createElement('span');
   nameSpan.className = 'pname';
   nameSpan.textContent = p.name;
-
   row.appendChild(chk);
   row.appendChild(nameSpan);
-
   if(!ab && !unc) row.appendChild(makeFlexBadge(p));
   if(!ab && !unc) row.appendChild(makeGroupBadge(p));
-  if(!ab && !unc) {
-    var spBadge = makeSubPosBadge(p);
-    if(spBadge) row.appendChild(spBadge);
-  }
-
+  if(!ab && !unc) { var spBadge = makeSubPosBadge(p); if(spBadge) row.appendChild(spBadge); }
   row.addEventListener('click', function(evt) {
     var t = evt.target;
-    if(t.className && typeof t.className==='string' && (t.className.indexOf('flex-badge')!==-1 || t.className.indexOf('grp-badge')!==-1 || t.className.indexOf('subpos-badge')!==-1)) return;
+    if(t.className && typeof t.className==='string' &&
+      (t.className.indexOf('flex-badge')!==-1 || t.className.indexOf('grp-badge')!==-1 || t.className.indexOf('subpos-badge')!==-1)) return;
     togglePlayerState(p.name);
   });
   return row;
@@ -444,24 +507,18 @@ function makeGroupBadge(p) {
   var LABELS = {green:'GRN', gold:'GLD', black:'BLK'};
   var badge  = document.createElement('button');
   var grp    = p.group || null;
-  badge.className = 'grp-badge' + (grp ? ' grp-'+grp : '');
+  badge.className = 'grp-badge'+(grp?' grp-'+grp:'');
   badge.textContent = grp ? LABELS[grp] : 'GRP';
-  badge.addEventListener('click', function(evt) {
-    evt.stopPropagation();
-    toggleGroup(p.name);
-  });
+  badge.addEventListener('click', function(evt){ evt.stopPropagation(); toggleGroup(p.name); });
   return badge;
 }
 
 function makeFlexBadge(p) {
   var LABELS = {defense:'DEF', middie:'MID', attack:'ATK'};
   var badge  = document.createElement('button');
-  badge.className = 'flex-badge' + (p.flex ? ' flex-active flex-'+p.flex : '');
+  badge.className = 'flex-badge'+(p.flex?' flex-active flex-'+p.flex:'');
   badge.textContent = p.flex ? ('FLEX: '+LABELS[p.flex]) : '+ FLEX';
-  badge.addEventListener('click', function(evt) {
-    evt.stopPropagation();
-    toggleFlex(p.name);
-  });
+  badge.addEventListener('click', function(evt){ evt.stopPropagation(); toggleFlex(p.name); });
   return badge;
 }
 
@@ -471,11 +528,11 @@ function togglePlayerState(name) {
   } else if(isUnconfirmed(name)) {
     delete unconfirmed[name];
     absent[name] = true;
-    var pos = ['defense','middie','attack'];
+    var pos=['defense','middie','attack'];
     for(var i=0;i<pos.length;i++) delete starters[pos[i]][name];
   } else {
     unconfirmed[name] = true;
-    var pos = ['defense','middie','attack'];
+    var pos=['defense','middie','attack'];
     for(var i=0;i<pos.length;i++) delete starters[pos[i]][name];
   }
   renderRoster(); updatePlanNote(); renderStarterPicker();
@@ -504,88 +561,73 @@ function toggleGroup(name) {
 
 function sortByGroup(players) {
   var ORDER = {green:0, gold:1, black:2};
-  return players.slice().sort(function(a,b) {
+  return players.slice().sort(function(a,b){
     var ga = a.group ? ORDER[a.group] : 3;
     var gb = b.group ? ORDER[b.group] : 3;
     return ga - gb;
   });
 }
 
-var SUBPOS_OPTIONS = {
-  defense: ['LD','HD'],
-  attack:  ['LA','HA'],
-  middie:  []
-};
+var SUBPOS_OPTIONS = {defense:['LD','HD'], attack:['LA','HA'], middie:[]};
 
 function getSubPosLabel(name) {
   var p = getRosterPlayer(name);
-  if(!p || !p.subpos) return '';
-  return p.subpos;
+  return (p && p.subpos) ? p.subpos : '';
 }
 
 function toggleSubPos(name) {
   var p = getRosterPlayer(name);
   if(!p) return;
   var opts = SUBPOS_OPTIONS[p.pos];
-  if(!opts || opts.length === 0) return;
+  if(!opts || opts.length===0) return;
   var cur = p.subpos || null;
-  var withNull = opts.slice();
-  withNull.push(null);
+  var withNull = opts.slice(); withNull.push(null);
   var idx = withNull.indexOf(cur);
-  p.subpos = withNull[(idx + 1) % withNull.length];
+  p.subpos = withNull[(idx+1) % withNull.length];
   renderRoster();
 }
 
 function makeSubPosBadge(p) {
   var opts = SUBPOS_OPTIONS[p.pos];
-  if(!opts || opts.length === 0) return null;
+  if(!opts || opts.length===0) return null;
   var badge = document.createElement('button');
   var sp = p.subpos || null;
-  badge.className = 'subpos-badge' + (sp ? ' subpos-set' : '');
+  badge.className = 'subpos-badge'+(sp?' subpos-set':'');
   badge.textContent = sp ? sp : 'POS';
-  badge.addEventListener('click', function(evt) {
-    evt.stopPropagation();
-    toggleSubPos(p.name);
-  });
+  badge.addEventListener('click', function(evt){ evt.stopPropagation(); toggleSubPos(p.name); });
   return badge;
 }
 
 function updatePlanNote() {
-  var avail = ROSTER.filter(function(p){ return !isAbsent(p.name) && !isUnconfirmed(p.name); });
+  var avail    = ROSTER.filter(function(p){ return !isAbsent(p.name) && !isUnconfirmed(p.name); });
   var uncNames = getUnconfirmedNames();
-  var parts = [];
-  var POS   = ['defense','middie','attack'];
-  var LABEL = {defense:'Defense', middie:'Midfield', attack:'Attack'};
-  var COL   = {defense:'var(--def)', middie:'var(--mid)', attack:'var(--atk)'};
-
+  var parts    = [];
+  var POS      = ['defense','middie','attack'];
+  var LABEL    = {defense:'Defense', middie:'Midfield', attack:'Attack'};
+  var COL      = {defense:'var(--def)', middie:'var(--mid)', attack:'var(--atk)'};
   for(var i=0;i<POS.length;i++) {
     var pos   = POS[i];
     var slots = FORM[pos];
     var n     = avail.filter(function(p){ return p.pos===pos; }).length;
     var nFlex = avail.filter(function(p){ return p.flex===pos && p.pos!==pos; }).length;
-
-    if(n < slots && n+nFlex < slots) {
+    if(n<slots && n+nFlex<slots) {
       parts.push('<span style="color:#ff7777">Need '+slots+' '+LABEL[pos]+', only '+(n+nFlex)+' available</span>');
     } else {
       var minsStr = n>=slots ? (n===slots?'40.0':(TOTAL*slots/n).toFixed(1)) : 'flex needed';
-      var scheme  = (pos==='middie'&&n===2*slots) ? 'group swap each quarter'
-                  : n<=slots ? 'all play full game'
-                  : 'sub every '+fmt(TOTAL/n);
+      var scheme  = (pos==='middie'&&n===2*slots)?'group swap each '+(midShiftMinutes)+'min'
+                  : n<=slots?'all play full game':'sub every '+fmt(TOTAL/n);
       var flexNote = nFlex>0 ? ' <span style="color:var(--muted)">(+'+nFlex+' flex avail)</span>' : '';
       parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '
-        +n+' players -> <strong style="color:var(--gold)">'+minsStr+' min each</strong>'
+        +n+' players → <strong style="color:var(--gold)">'+minsStr+' min each</strong>'
         +flexNote+' <span style="color:var(--muted)">('+scheme+')</span>');
     }
   }
-  if(uncNames.length > 0) {
-    parts.push('<br><span style="color:var(--gold)">&#9888; '+uncNames.length+' unconfirmed ('+uncNames.join(', ')+') — two rotations will be built.</span>');
+  if(uncNames.length>0) {
+    parts.push('<br><span style="color:var(--gold)">⚠ '+uncNames.length+' unconfirmed ('+uncNames.join(', ')+') — two rotations will be built.</span>');
   }
   document.getElementById('planNote').innerHTML = parts.join('<br>');
-
   var noteEl = document.getElementById('starterUncNote');
-  if(noteEl) {
-    noteEl.innerHTML = uncNames.length > 0 ? '<br><span style="color:var(--gold)">Unconfirmed players cannot be starters.</span>' : '';
-  }
+  if(noteEl) noteEl.innerHTML = uncNames.length>0 ? '<br><span style="color:var(--gold)">Unconfirmed players cannot be starters.</span>' : '';
 }
 
 function renderStarterPicker() {
@@ -594,208 +636,209 @@ function renderStarterPicker() {
     (function(pos, need, key) {
       var cont = document.getElementById(key+'-chips');
       var ctr  = document.getElementById(key+'-counter');
-      if(!cont || !ctr) return;
+      if(!cont||!ctr) return;
       while(cont.firstChild) cont.removeChild(cont.firstChild);
-
-      var primary  = ROSTER.filter(function(p){ return p.pos===pos && !isAbsent(p.name) && !isUnconfirmed(p.name); });
-      var flexIn   = ROSTER.filter(function(p){ return p.flex===pos && p.pos!==pos && !isAbsent(p.name) && !isUnconfirmed(p.name); });
-      var avail    = primary.concat(flexIn);
-      var count    = starterCount(pos);
-
+      var primary = ROSTER.filter(function(p){ return p.pos===pos && !isAbsent(p.name) && !isUnconfirmed(p.name); });
+      var flexIn  = ROSTER.filter(function(p){ return p.flex===pos && p.pos!==pos && !isAbsent(p.name) && !isUnconfirmed(p.name); });
+      var avail   = primary.concat(flexIn);
+      var count   = starterCount(pos);
       for(var j=0;j<avail.length;j++) {
         (function(p, isFlex) {
           var sel  = isStarter(pos, p.name);
           var otherPos = isFlex ? p.pos : p.flex;
           var startedElsewhere = otherPos ? isStarter(otherPos, p.name) : false;
-          var full = ((count >= need) && !sel) || (startedElsewhere && !sel);
+          var full = ((count>=need)&&!sel)||(startedElsewhere&&!sel);
           var chip = document.createElement('div');
-          var chipClass = isFlex ? 's-chip flex-starter-chip' : 's-chip';
-          chip.className = chipClass+(sel?' sel-'+key:'')+(full?' full':'');
+          chip.className = (isFlex?'s-chip flex-starter-chip':'s-chip')+(sel?' sel-'+key:'')+(full?' full':'');
           chip.textContent = isFlex ? p.name+' *' : p.name;
-          chip.title       = isFlex ? p.name+' (primary: '+p.pos+', flexing here)' : p.name;
+          chip.title = isFlex ? p.name+' (primary: '+p.pos+', flexing here)' : p.name;
           chip.addEventListener('click', function() {
             if(full) return;
-            if(isStarter(pos, p.name)) {
-              delete starters[pos][p.name];
-            } else {
-              if(otherPos) delete starters[otherPos][p.name];
-              starters[pos][p.name] = true;
-            }
+            if(isStarter(pos, p.name)) { delete starters[pos][p.name]; }
+            else { if(otherPos) delete starters[otherPos][p.name]; starters[pos][p.name]=true; }
             renderStarterPicker();
           });
           cont.appendChild(chip);
         })(avail[j], avail[j].flex===pos);
       }
-      ctr.textContent = count + ' / ' + need;
-      ctr.className   = 's-counter ' + (count===need ? 'ok' : 'bad');
+      ctr.textContent = count+' / '+need;
+      ctr.className = 's-counter '+(count===need?'ok':'bad');
     })(POS[i], FORM[POS[i]], POS[i]==='defense'?'def':POS[i]==='middie'?'mid':'atk');
   }
 }
 
+// ── INTERVAL BUILDERS ──
 function ivAt(ivs, t) {
-  for(var i=ivs.length-1; i>=0; i--) {
-    if(t >= ivs[i].tS - 0.001) return ivs[i];
-  }
+  for(var i=ivs.length-1;i>=0;i--) if(t>=ivs[i].tS-0.001) return ivs[i];
   return ivs[0];
 }
 
-function buildRRIntervals(players, slots, starterNames) {
-  var N     = players.length;
+function buildRRIntervals(players, slots, starterNames, ptPriority) {
+  // ptPriority: {more:'name', less:'name'} or null
+  var N    = players.length;
   var names = players.map(function(p){ return p.name; });
-  if(N <= slots) return [{tS:0, tE:TOTAL, on:names.slice(), newIns:[]}];
-
+  if(N<=slots) return [{tS:0,tE:TOTAL,on:names.slice(),newIns:[]}];
   var ss = {};
   if(starterNames) for(var i=0;i<starterNames.length;i++) ss[starterNames[i]]=true;
-  var ordered = names.filter(function(n){return ss[n];})
-    .concat(names.filter(function(n){return !ss[n];}));
 
+  // Build ordered array: starters first, then bench
+  // If custom PT: put 'less' player last (gets fewer shifts), 'more' player first among bench
+  var stList  = names.filter(function(n){return ss[n];});
+  var bList   = names.filter(function(n){return !ss[n];});
+
+  if(ptPriority && ptPriority.less && names.indexOf(ptPriority.less)!==-1) {
+    var idx = bList.indexOf(ptPriority.less);
+    if(idx===-1) idx = stList.indexOf(ptPriority.less);
+    // Move 'less' to end of bench so they get subbed out sooner & back in later
+    bList = bList.filter(function(n){return n!==ptPriority.less;});
+    stList = stList.filter(function(n){return n!==ptPriority.less;});
+    bList.push(ptPriority.less);
+  }
+  if(ptPriority && ptPriority.more && names.indexOf(ptPriority.more)!==-1) {
+    // Move 'more' to front of starters so they start and come back in sooner
+    stList = stList.filter(function(n){return n!==ptPriority.more;});
+    bList  = bList.filter(function(n){return n!==ptPriority.more;});
+    stList.unshift(ptPriority.more);
+  }
+
+  var ordered = stList.concat(bList);
   var interval = TOTAL / N;
   var field    = ordered.slice(0, slots);
   var bench    = ordered.slice(slots);
   var ivs      = [];
-
   for(var i=0;i<N;i++) {
     var tS   = Math.round(i*interval*1000)/1000;
-    var tE   = Math.round(Math.min((i+1)*interval, TOTAL)*1000)/1000;
+    var tE   = Math.round(Math.min((i+1)*interval,TOTAL)*1000)/1000;
     var newI = (i===0) ? [] : [field[field.length-1]];
-    ivs.push({tS:tS, tE:tE, on:field.slice(), newIns:newI});
-    if(i<N-1) {
-      var out=field.shift(); var inn=bench.shift();
-      bench.push(out); field.push(inn);
-    }
+    ivs.push({tS:tS,tE:tE,on:field.slice(),newIns:newI});
+    if(i<N-1) { var out=field.shift(); var inn=bench.shift(); bench.push(out); field.push(inn); }
   }
   return ivs;
 }
 
-function buildMidIntervals(players, starterNames) {
-  var N    = players.length;
-  var K    = FORM.middie;
+function buildMidIntervals(players, starterNames, ptPriority) {
+  var N     = players.length;
+  var K     = FORM.middie;
   var names = players.map(function(p){ return p.name; });
-  if(N <= K) return [{tS:0, tE:TOTAL, on:names.slice(), newIns:[]}];
-  if(N === 2*K) {
+  if(N<=K) return [{tS:0,tE:TOTAL,on:names.slice(),newIns:[]}];
+
+  // ── Use midShiftMinutes to determine swap points ──
+  var swapInterval = midShiftMinutes; // 5 or 10
+  var swapTimes = [];
+  for(var t=swapInterval; t<TOTAL; t+=swapInterval) swapTimes.push(Math.round(t*1000)/1000);
+
+  if(N===2*K) {
+    // Group swap mode
     var grpMap = {};
-    for(var gi=0; gi<players.length; gi++) {
+    for(var gi=0;gi<players.length;gi++) {
       var g = players[gi].group || ('_u_'+players[gi].name);
-      if(!grpMap[g]) grpMap[g] = [];
+      if(!grpMap[g]) grpMap[g]=[];
       grpMap[g].push(players[gi].name);
     }
     var grpKeys = Object.keys(grpMap);
-    var twoEvenGroups = (grpKeys.length === 2 && grpMap[grpKeys[0]].length === K && grpMap[grpKeys[1]].length === K);
+    var twoEvenGroups = (grpKeys.length===2 && grpMap[grpKeys[0]].length===K && grpMap[grpKeys[1]].length===K);
     var gA, gB;
     if(twoEvenGroups) {
-      var ss = {};
+      var ss={};
       if(starterNames) for(var si=0;si<starterNames.length;si++) ss[starterNames[si]]=true;
       var cnt0 = grpMap[grpKeys[0]].filter(function(n){return ss[n];}).length;
       var cnt1 = grpMap[grpKeys[1]].filter(function(n){return ss[n];}).length;
-      if(cnt0 >= cnt1) { gA = grpMap[grpKeys[0]].slice(); gB = grpMap[grpKeys[1]].slice(); }
-      else             { gA = grpMap[grpKeys[1]].slice(); gB = grpMap[grpKeys[0]].slice(); }
+      if(cnt0>=cnt1){ gA=grpMap[grpKeys[0]].slice(); gB=grpMap[grpKeys[1]].slice(); }
+      else           { gA=grpMap[grpKeys[1]].slice(); gB=grpMap[grpKeys[0]].slice(); }
     } else {
-      gA = (starterNames && starterNames.length===K) ? starterNames.slice() : names.slice(0,K);
+      gA = (starterNames&&starterNames.length===K) ? starterNames.slice() : names.slice(0,K);
       gB = names.filter(function(n){ return gA.indexOf(n)===-1; });
     }
-    return [
-      {tS: 0, tE:10, on:gA.slice(), newIns:[]},
-      {tS:10, tE:20, on:gB.slice(), newIns:gB.slice()},
-      {tS:20, tE:30, on:gA.slice(), newIns:gA.slice()},
-      {tS:30, tE:40, on:gB.slice(), newIns:gB.slice()}
-    ];
+    // Build intervals based on swap times
+    var all = []; var cur=gA, other=gB;
+    var prev = 0;
+    for(var si=0;si<swapTimes.length;si++) {
+      all.push({tS:prev, tE:swapTimes[si], on:cur.slice(), newIns:prev===0?[]:[].concat(cur)});
+      var tmp=cur; cur=other; other=tmp;
+      prev=swapTimes[si];
+    }
+    all.push({tS:prev,tE:TOTAL,on:cur.slice(),newIns:prev===0?[]:[].concat(cur)});
+    // Fix newIns for first entry
+    all[0].newIns = [];
+    return all;
   }
-  return buildRRIntervals(players, K, starterNames);
+  // Not exactly 2K — fall back to round-robin
+  return buildRRIntervals(players, K, starterNames, ptPriority);
 }
 
 function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs, slots) {
-  if(!flexPlayers || flexPlayers.length === 0) return posIvs;
-
-  var flexPrimaryTime = {};
-  var flexAccum = {};
+  if(!flexPlayers||flexPlayers.length===0) return posIvs;
+  var flexPrimaryTime={};
+  var flexAccum={};
   for(var fi=0;fi<flexPlayers.length;fi++) {
-    var fpName = flexPlayers[fi].name;
-    var fpIvs  = getPrimaryIvs(fpName);
-    var totalP = 0;
+    var fpName=flexPlayers[fi].name;
+    var fpIvs=getPrimaryIvs(fpName);
+    var totalP=0;
     for(var pi=0;pi<fpIvs.length;pi++) {
       for(var pj=0;pj<fpIvs[pi].on.length;pj++) {
-        if(fpIvs[pi].on[pj] === fpName) { totalP += (fpIvs[pi].tE - fpIvs[pi].tS); break; }
+        if(fpIvs[pi].on[pj]===fpName){totalP+=(fpIvs[pi].tE-fpIvs[pi].tS);break;}
       }
     }
-    flexPrimaryTime[fpName] = totalP;
-    flexAccum[fpName] = 0;
+    flexPrimaryTime[fpName]=totalP;
+    flexAccum[fpName]=0;
   }
-  var MAX_PLAY = TOTAL - MIN_REST;
-
-  var timeSet = {};
-  for(var i=0;i<posIvs.length;i++) {
-    timeSet[posIvs[i].tS]=true; timeSet[posIvs[i].tE]=true;
+  var MAX_PLAY=TOTAL-MIN_REST;
+  var timeSet={};
+  for(var i=0;i<posIvs.length;i++){timeSet[posIvs[i].tS]=true;timeSet[posIvs[i].tE]=true;}
+  for(var fi=0;fi<flexPlayers.length;fi++){
+    var fpIvs=getPrimaryIvs(flexPlayers[fi].name);
+    for(var i=0;i<fpIvs.length;i++){timeSet[fpIvs[i].tS]=true;timeSet[fpIvs[i].tE]=true;}
   }
-  for(var fi=0;fi<flexPlayers.length;fi++) {
-    var fpIvs = getPrimaryIvs(flexPlayers[fi].name);
-    for(var i=0;i<fpIvs.length;i++) {
-      timeSet[fpIvs[i].tS]=true; timeSet[fpIvs[i].tE]=true;
-    }
-  }
-  var times = Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
-
-  var allPrimary = [];
-  var seenPrimary = {};
+  var times=Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
+  var allPrimary=[];
+  var seenPrimary={};
   for(var i=0;i<posIvs.length;i++) {
     for(var j=0;j<posIvs[i].on.length;j++) {
-      var n = posIvs[i].on[j];
-      if(!seenPrimary[n]) { allPrimary.push(n); seenPrimary[n]=true; }
+      var n=posIvs[i].on[j];
+      if(!seenPrimary[n]){allPrimary.push(n);seenPrimary[n]=true;}
     }
   }
-  var benchQueue = allPrimary.slice();
-
-  var newIvs = [];
+  var benchQueue=allPrimary.slice();
+  var newIvs=[];
   for(var i=0;i<times.length-1;i++) {
-    var tS = times[i];
-    var tE = times[i+1];
-    var baseOn = ivAt(posIvs, tS).on.slice();
-
-    var availFlex = [];
+    var tS=times[i],tE=times[i+1];
+    var baseOn=ivAt(posIvs,tS).on.slice();
+    var availFlex=[];
     for(var fi=0;fi<flexPlayers.length;fi++) {
-      var fpName = flexPlayers[fi].name;
-      var fpIvs  = getPrimaryIvs(fpName);
-      var isFree = true;
-      var windowMid = (tS + tE) / 2;
-      var fpIv = ivAt(fpIvs, windowMid);
-      for(var j=0;j<fpIv.on.length;j++) {
-        if(fpIv.on[j] === fpName) { isFree = false; break; }
-      }
+      var fpName=flexPlayers[fi].name;
+      var fpIvs=getPrimaryIvs(fpName);
+      var isFree=true;
+      var windowMid=(tS+tE)/2;
+      var fpIv=ivAt(fpIvs,windowMid);
+      for(var j=0;j<fpIv.on.length;j++){if(fpIv.on[j]===fpName){isFree=false;break;}}
       if(isFree) availFlex.push(fpName);
     }
-
-    var finalOn = baseOn.slice();
-
+    var finalOn=baseOn.slice();
     for(var fi=0;fi<availFlex.length;fi++) {
-      var flexName = availFlex[fi];
-      if(finalOn.indexOf(flexName) !== -1) continue;
-
-      var projected = flexPrimaryTime[flexName] + flexAccum[flexName] + (tE - tS);
-      if(projected > MAX_PLAY + 0.01) continue;
-
-      var benched = false;
+      var flexName=availFlex[fi];
+      if(finalOn.indexOf(flexName)!==-1) continue;
+      var projected=flexPrimaryTime[flexName]+flexAccum[flexName]+(tE-tS);
+      if(projected>MAX_PLAY+0.01) continue;
+      var benched=false;
       for(var qi=0;qi<benchQueue.length;qi++) {
-        var candidate = benchQueue[qi];
-        if(finalOn.indexOf(candidate) !== -1) {
-          var idx = finalOn.indexOf(candidate);
-          finalOn.splice(idx, 1);
-          finalOn.push(flexName);
-          benchQueue.push(benchQueue.splice(qi, 1)[0]);
-          flexAccum[flexName] += (tE - tS);
-          benched = true;
-          break;
+        var candidate=benchQueue[qi];
+        if(finalOn.indexOf(candidate)!==-1) {
+          var idx2=finalOn.indexOf(candidate);
+          finalOn.splice(idx2,1); finalOn.push(flexName);
+          benchQueue.push(benchQueue.splice(qi,1)[0]);
+          flexAccum[flexName]+=(tE-tS);
+          benched=true; break;
         }
       }
     }
-
-    var prevOn = newIvs.length > 0 ? newIvs[newIvs.length-1].on : [];
-    var newIns = [];
-    for(var j=0;j<finalOn.length;j++) {
-      var found = false;
+    var prevOn=newIvs.length>0?newIvs[newIvs.length-1].on:[];
+    var newIns=[];
+    for(var j=0;j<finalOn.length;j++){
+      var found=false;
       for(var k=0;k<prevOn.length;k++) if(prevOn[k]===finalOn[j]){found=true;break;}
       if(!found) newIns.push(finalOn[j]);
     }
-
-    newIvs.push({tS:tS, tE:tE, on:finalOn, newIns:newIns});
+    newIvs.push({tS:tS,tE:tE,on:finalOn,newIns:newIns});
   }
   return newIvs;
 }
@@ -803,34 +846,38 @@ function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs, slots) {
 function computeRotation(effectiveAbsent) {
   var avail = ROSTER.filter(function(p){ return !effectiveAbsent[p.name]; });
   var POS   = ['defense','middie','attack'];
-
   var primaryGroups = {
     defense: avail.filter(function(p){ return p.pos==='defense'; }),
     middie:  avail.filter(function(p){ return p.pos==='middie';  }),
     attack:  avail.filter(function(p){ return p.pos==='attack';  })
   };
-
   for(var i=0;i<POS.length;i++) {
-    var pos   = POS[i];
-    var need  = FORM[pos];
-    var nPrim = primaryGroups[pos].length;
-    var nFlex = avail.filter(function(p){ return p.flex===pos && p.pos!==pos; }).length;
-    if(nPrim + nFlex < need) { return null; }
+    var pos=POS[i], need=FORM[pos];
+    var nPrim=primaryGroups[pos].length;
+    var nFlex=avail.filter(function(p){ return p.flex===pos && p.pos!==pos; }).length;
+    if(nPrim+nFlex<need) return null;
+  }
+  function getStarterNames(pos) {
+    return Object.keys(starters[pos]).filter(function(n){return starters[pos][n]&&!effectiveAbsent[n];});
   }
 
-  function getStarterNames(pos) {
-    return Object.keys(starters[pos]).filter(function(n){return starters[pos][n] && !effectiveAbsent[n];});
+  // Build PT priority object
+  var ptp = null;
+  if(ptMode==='custom' && (ptMorePlayer||ptLessPlayer)) {
+    ptp = {};
+    if(ptMorePlayer && !effectiveAbsent[ptMorePlayer]) ptp.more = ptMorePlayer;
+    if(ptLessPlayer && !effectiveAbsent[ptLessPlayer]) ptp.less = ptLessPlayer;
   }
 
   var defSorted = sortByGroup(primaryGroups.defense);
   var midSorted = sortByGroup(primaryGroups.middie);
   var atkSorted = sortByGroup(primaryGroups.attack);
-  var defIvsPrimary = buildRRIntervals(defSorted, FORM.defense, getStarterNames('defense'));
-  var midIvsPrimary = buildMidIntervals(midSorted,               getStarterNames('middie'));
-  var atkIvsPrimary = buildRRIntervals(atkSorted,  FORM.attack,  getStarterNames('attack'));
+
+  var defIvsPrimary = buildRRIntervals(defSorted, FORM.defense, getStarterNames('defense'), ptp);
+  var midIvsPrimary = buildMidIntervals(midSorted, getStarterNames('middie'), ptp);
+  var atkIvsPrimary = buildRRIntervals(atkSorted, FORM.attack, getStarterNames('attack'), ptp);
 
   var primaryIvsByPos = {defense:defIvsPrimary, middie:midIvsPrimary, attack:atkIvsPrimary};
-
   function getPrimaryIvsFor(name) {
     var p = getRosterPlayer(name);
     return p ? primaryIvsByPos[p.pos] : [];
@@ -844,289 +891,359 @@ function computeRotation(effectiveAbsent) {
   var midIvsFinal = applyFlexOverlay(midIvsPrimary, flexForMid, getPrimaryIvsFor, FORM.middie);
   var atkIvsFinal = applyFlexOverlay(atkIvsPrimary, flexForAtk, getPrimaryIvsFor, FORM.attack);
 
-  var timeSet = {};
+  var timeSet={};
   timeSet[0]=true; timeSet[TOTAL]=true;
-  var allFinal = [defIvsFinal, midIvsFinal, atkIvsFinal];
+  var allFinal=[defIvsFinal, midIvsFinal, atkIvsFinal];
   for(var i=0;i<allFinal.length;i++) {
-    for(var j=0;j<allFinal[i].length;j++) {
-      timeSet[allFinal[i][j].tS]=true;
-      timeSet[allFinal[i][j].tE]=true;
-    }
+    for(var j=0;j<allFinal[i].length;j++){timeSet[allFinal[i][j].tS]=true;timeSet[allFinal[i][j].tE]=true;}
   }
-  var times = Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
+  var times=Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
 
-  var snapshots = [];
+  var snapshots=[];
   for(var i=0;i<times.length-1;i++) {
-    var tS  = times[i];
-    var tE  = times[i+1];
-    var dIv = ivAt(defIvsFinal, tS);
-    var mIv = ivAt(midIvsFinal, tS);
-    var aIv = ivAt(atkIvsFinal, tS);
-
-    var newIns = {};
-    if(tS > 0) {
-      var allThree = [defIvsFinal, midIvsFinal, atkIvsFinal];
+    var tS=times[i], tE=times[i+1];
+    var dIv=ivAt(defIvsFinal,tS), mIv=ivAt(midIvsFinal,tS), aIv=ivAt(atkIvsFinal,tS);
+    var newIns={};
+    if(tS>0) {
+      var allThree=[defIvsFinal,midIvsFinal,atkIvsFinal];
       for(var ii=0;ii<allThree.length;ii++) {
-        var iv = ivAt(allThree[ii], tS);
-        if(Math.abs(iv.tS - tS) < 0.01) {
-          for(var kk=0;kk<iv.newIns.length;kk++) newIns[iv.newIns[kk]]=true;
-        }
+        var iv=ivAt(allThree[ii],tS);
+        if(Math.abs(iv.tS-tS)<0.01) for(var kk=0;kk<iv.newIns.length;kk++) newIns[iv.newIns[kk]]=true;
       }
     }
-
-    snapshots.push({tS:tS, tE:tE, def:dIv.on.slice(), mid:mIv.on.slice(), atk:aIv.on.slice(), newIns:Object.keys(newIns), isKO:tS===0});
-  }
-
-  // ── LIA END-OF-GAME GUARANTEE ──
-  // If Lia is available (present, not absent) and not on the field in the last
-  // snapshot, swap her into her primary position (middie) by replacing whichever
-  // middie has already accumulated the most playing time in this rotation.
-  // This is done before mins are tallied so the accounting stays correct.
-  var liaPlayer = null;
-  for(var i=0;i<avail.length;i++) { if(avail[i].name==='Lia') { liaPlayer=avail[i]; break; } }
-  if(liaPlayer && snapshots.length > 0) {
-    var lastSnap = snapshots[snapshots.length-1];
-    var liaOnField = false;
-    var allOnLast = lastSnap.def.concat(lastSnap.mid, lastSnap.atk);
-    for(var i=0;i<allOnLast.length;i++) { if(allOnLast[i]==='Lia') { liaOnField=true; break; } }
-
-    if(!liaOnField) {
-      // Tally playing time up to (but not including) last snapshot so we can
-      // pick the most-rested middie to swap out.
-      var preMins = {};
-      for(var i=0;i<avail.length;i++) preMins[avail[i].name] = 0;
-      for(var i=0;i<snapshots.length-1;i++) {
-        var dur2 = snapshots[i].tE - snapshots[i].tS;
-        var on2  = snapshots[i].def.concat(snapshots[i].mid, snapshots[i].atk);
-        for(var j=0;j<on2.length;j++) { if(preMins[on2[j]]!==undefined) preMins[on2[j]] += dur2; }
-      }
-
-      // Find the middie currently on in the last snapshot who has the most pre-game time
-      // (i.e. the one who has played the most and can best afford to sit).
-      var midOnLast = lastSnap.mid.slice();
-      var swapOutIdx = 0;
-      var swapOutMins = -1;
-      for(var i=0;i<midOnLast.length;i++) {
-        var pm = preMins[midOnLast[i]] !== undefined ? preMins[midOnLast[i]] : 0;
-        if(pm > swapOutMins) { swapOutMins = pm; swapOutIdx = i; }
-      }
-
-      // Perform the swap on the last snapshot
-      var swappedOut = midOnLast[swapOutIdx];
-      lastSnap.mid = midOnLast.slice();
-      lastSnap.mid[swapOutIdx] = 'Lia';
-
-      // Update newIns to reflect Lia coming on (and swapped-out player is implicitly out)
-      var newInsSet = {};
-      for(var i=0;i<lastSnap.newIns.length;i++) newInsSet[lastSnap.newIns[i]]=true;
-      newInsSet['Lia'] = true;
-      // Remove swappedOut from newIns if it was there (they're no longer coming in)
-      delete newInsSet[swappedOut];
-      lastSnap.newIns = Object.keys(newInsSet);
-    }
+    snapshots.push({tS:tS,tE:tE,def:dIv.on.slice(),mid:mIv.on.slice(),atk:aIv.on.slice(),newIns:Object.keys(newIns),isKO:tS===0});
   }
 
   // ── PLAYING TIME TALLY ──
-  var mins = {};
-  for(var i=0;i<avail.length;i++) mins[avail[i].name] = 0;
+  var mins={};
+  for(var i=0;i<avail.length;i++) mins[avail[i].name]=0;
   for(var i=0;i<snapshots.length;i++) {
-    var dur = snapshots[i].tE - snapshots[i].tS;
-    var on  = snapshots[i].def.concat(snapshots[i].mid, snapshots[i].atk);
-    for(var j=0;j<on.length;j++) {
-      if(mins[on[j]] !== undefined) mins[on[j]] += dur;
-    }
+    var dur=snapshots[i].tE-snapshots[i].tS;
+    var on=snapshots[i].def.concat(snapshots[i].mid,snapshots[i].atk);
+    for(var j=0;j<on.length;j++) if(mins[on[j]]!==undefined) mins[on[j]]+=dur;
   }
 
   return {snapshots:snapshots, groups:primaryGroups, mins:mins, avail:avail, flexForDef:flexForDef, flexForMid:flexForMid, flexForAtk:flexForAtk};
 }
 
+// ── GENERATE ──
 function generate() {
   var uncNames = getUnconfirmedNames();
-  var hasUnconfirmed = uncNames.length > 0;
-
-  var confirmedAbsent = {};
-  for(var k in absent) confirmedAbsent[k] = true;
-  for(var i=0;i<uncNames.length;i++) confirmedAbsent[uncNames[i]] = true;
-
-  var availForStarters = ROSTER.filter(function(p){ return !confirmedAbsent[p.name]; });
-  var POS = ['defense','middie','attack'];
-  var w2 = [];
+  var hasUnconfirmed = uncNames.length>0;
+  var confirmedAbsent={};
+  for(var k in absent) confirmedAbsent[k]=true;
+  for(var i=0;i<uncNames.length;i++) confirmedAbsent[uncNames[i]]=true;
+  var availForStarters=ROSTER.filter(function(p){return !confirmedAbsent[p.name];});
+  var POS=['defense','middie','attack'];
+  var w2=[];
   for(var i=0;i<POS.length;i++) {
-    var pos  = POS[i];
-    var keys = Object.keys(starters[pos]);
-    var validNames = availForStarters.filter(function(p){ return p.pos===pos || p.flex===pos; }).map(function(p){ return p.name; });
-    for(var k=0;k<keys.length;k++) {
-      if(validNames.indexOf(keys[k])===-1) delete starters[pos][keys[k]];
-    }
-    if(starterCount(pos) !== FORM[pos]) {
-      w2.push('Select exactly '+FORM[pos]+' starting '+pos+' ('+starterCount(pos)+' selected).');
-    }
+    var pos=POS[i], keys=Object.keys(starters[pos]);
+    var validNames=availForStarters.filter(function(p){return p.pos===pos||p.flex===pos;}).map(function(p){return p.name;});
+    for(var k=0;k<keys.length;k++) if(validNames.indexOf(keys[k])===-1) delete starters[pos][keys[k]];
+    if(starterCount(pos)!==FORM[pos]) w2.push('Select exactly '+FORM[pos]+' starting '+pos+' ('+starterCount(pos)+' selected).');
   }
   if(w2.length) {
     var html=''; for(var i=0;i<w2.length;i++) html+='<div class="warn">'+w2[i]+'</div>';
     document.getElementById('warnArea').innerHTML=html; return;
   }
   document.getElementById('warnArea').innerHTML='';
+  editSnapshots=null; editPlanKey=null;
 
   if(hasUnconfirmed) {
-    var absentA = {};
-    for(var k in absent) absentA[k] = true;
-    for(var i=0;i<uncNames.length;i++) absentA[uncNames[i]] = true;
-    PLAN_A = computeRotation(absentA);
-
-    var absentB = {};
-    for(var k in absent) absentB[k] = true;
-    PLAN_B = computeRotation(absentB);
-    PLAN = null;
-
-    var warns = [];
+    var absentA={}; for(var k in absent) absentA[k]=true; for(var i=0;i<uncNames.length;i++) absentA[uncNames[i]]=true;
+    PLAN_A=computeRotation(absentA);
+    var absentB={}; for(var k in absent) absentB[k]=true;
+    PLAN_B=computeRotation(absentB);
+    PLAN=null;
+    var warns=[];
     if(!PLAN_A) warns.push('Cannot build rotation if unconfirmed are absent — not enough players at one or more positions.');
     if(!PLAN_B) warns.push('Cannot build rotation if unconfirmed are present — roster issue at one or more positions.');
-    if(warns.length) {
-      var html=''; for(var i=0;i<warns.length;i++) html+='<div class="warn">'+warns[i]+'</div>';
-      document.getElementById('warnArea').innerHTML=html;
-      if(!PLAN_A && !PLAN_B) return;
-    }
+    if(warns.length){ var html='';for(var i=0;i<warns.length;i++) html+='<div class="warn">'+warns[i]+'</div>';document.getElementById('warnArea').innerHTML=html;if(!PLAN_A&&!PLAN_B) return;}
   } else {
-    var absentMap = {};
-    for(var k in absent) absentMap[k] = true;
-    PLAN = computeRotation(absentMap);
-    PLAN_A = null; PLAN_B = null;
-    if(!PLAN) {
-      document.getElementById('warnArea').innerHTML='<div class="warn">Not enough players at one or more positions. Assign FLEX players in Roster tab.</div>';
-      return;
-    }
+    var absentMap={}; for(var k in absent) absentMap[k]=true;
+    PLAN=computeRotation(absentMap);
+    PLAN_A=null; PLAN_B=null;
+    if(!PLAN){ document.getElementById('warnArea').innerHTML='<div class="warn">Not enough players at one or more positions. Assign FLEX players in Roster tab.</div>'; return; }
   }
 
   renderShifts();
   renderTime();
-
-  var navTabs = document.querySelectorAll('.nav-tab');
-  var pages   = document.querySelectorAll('.page');
+  var navTabs=document.querySelectorAll('.nav-tab'), pages=document.querySelectorAll('.page');
   for(var i=0;i<navTabs.length;i++) navTabs[i].classList.remove('active');
   for(var i=0;i<pages.length;i++)   pages[i].classList.remove('active');
   document.getElementById('page-shifts').classList.add('active');
   navTabs[2].classList.add('active');
 }
 
-function renderShiftsForPlan(plan) {
-  var snapshots = plan.snapshots, groups = plan.groups, mins = plan.mins, avail = plan.avail;
+// ── HELPERS: get effective snapshots (with edits) ──
+function getEffectiveSnapshots(plan, planKey) {
+  if(editPlanKey===planKey && editSnapshots!==null) return editSnapshots;
+  return plan.snapshots;
+}
+
+// ── DRAG / DROP SHIFT EDITOR ──
+// State
+var dragName = null;
+var dragFromShift = null;
+var dragFromPos   = null;
+var dragTargetEl  = null;
+
+function initDragDrop(snapshots, planKey) {
+  // Deep-copy snapshots into editSnapshots so we can mutate
+  editPlanKey = planKey;
+  editSnapshots = snapshots.map(function(s){
+    return {tS:s.tS,tE:s.tE,def:s.def.slice(),mid:s.mid.slice(),atk:s.atk.slice(),newIns:s.newIns.slice(),isKO:s.isKO};
+  });
+}
+
+function swapPlayerInShift(shiftIdx, fromPos, toPos, name, snapshots) {
+  // Swap 'name' from fromPos into toPos in a single shift,
+  // swapping with whoever is at the top of toPos's bench in that shift
+  var snap = snapshots[shiftIdx];
+  var fromArr = snap[fromPos].slice();
+  var toArr   = snap[toPos].slice();
+  // Remove name from fromArr
+  var fi = fromArr.indexOf(name);
+  if(fi===-1) return;
+  fromArr.splice(fi,1);
+  // Find a player from toArr who's not in the adjacent shifts for fromPos (prefer bench player)
+  // Simple: just pick the last player in toArr to swap
+  var swappee = toArr.pop();
+  if(!swappee) { toArr = snap[toPos].slice(); return; }
+  fromArr.push(swappee);
+  toArr.push(name);
+  snap[fromPos] = fromArr;
+  snap[toPos]   = toArr;
+  // Recompute newIns for this shift
+  if(shiftIdx>0) {
+    var prev = snapshots[shiftIdx-1];
+    var prevAll = prev.def.concat(prev.mid,prev.atk);
+    var curAll  = snap.def.concat(snap.mid,snap.atk);
+    snap.newIns = curAll.filter(function(n){ return prevAll.indexOf(n)===-1; });
+  }
+}
+
+// ── RENDER SHIFTS ──
+function renderShiftsForPlan(plan, planKey) {
+  var snapshots = getEffectiveSnapshots(plan, planKey);
+  var groups = plan.groups, avail = plan.avail;
+
+  // Recompute mins from effective snapshots
+  var mins = {};
+  for(var i=0;i<avail.length;i++) mins[avail[i].name]=0;
+  for(var i=0;i<snapshots.length;i++) {
+    var dur=snapshots[i].tE-snapshots[i].tS;
+    var on=snapshots[i].def.concat(snapshots[i].mid,snapshots[i].atk);
+    for(var j=0;j<on.length;j++) if(mins[on[j]]!==undefined) mins[on[j]]+=dur;
+  }
+
   var avg=0, keys=Object.keys(mins);
   for(var i=0;i<keys.length;i++) avg+=mins[keys[i]];
-  avg = avg/avail.length;
+  avg=avg/(avail.length||1);
   var dLen=groups.defense.length, mLen=groups.middie.length, aLen=groups.attack.length;
   var dMin=dLen<=FORM.defense?'40.0':(TOTAL*FORM.defense/dLen).toFixed(1);
   var mMin=mLen<=FORM.middie ?'40.0':(TOTAL*FORM.middie /mLen).toFixed(1);
   var aMin=aLen<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aLen).toFixed(1);
 
-  var html = '<div class="stats-strip">'
+  var html='<div class="stats-strip">'
     +'<div class="stat-box"><span class="sv" style="color:var(--def)">'+dMin+'m</span><span class="sl">Each DEF</span></div>'
     +'<div class="stat-box"><span class="sv" style="color:var(--mid)">'+mMin+'m</span><span class="sl">Each MID</span></div>'
     +'<div class="stat-box"><span class="sv" style="color:var(--atk)">'+aMin+'m</span><span class="sl">Each ATK</span></div>'
     +'<div class="stat-box"><span class="sv">'+avg.toFixed(1)+'m</span><span class="sl">Avg</span></div>'
-    +'</div><div class="sched-list">';
+    +'</div>';
 
-  var shownBreaks = {};
-  var Q_BREAKS = [{time:QUARTER,label:'END OF Q1'},{time:HALF,label:'HALFTIME'},{time:3*QUARTER,label:'END OF Q3'}];
+  // Edit banner
+  var isEditing = (editPlanKey===planKey && editSnapshots!==null);
+  html += '<div class="edit-banner"><span class="ei">✏️</span>'
+    +'<span>Tap a player chip to swap positions within that shift. <button onclick="resetEdits(\''+planKey+'\')" style="background:none;border:1px solid var(--gold2);color:var(--gold);border-radius:6px;padding:2px 8px;font-family:Oswald,sans-serif;font-size:12px;cursor:pointer;margin-left:6px">Reset</button></span></div>';
+
+  html += '<div class="sched-list">';
+  var shownBreaks={};
+  var Q_BREAKS=[{time:QUARTER,label:'END OF Q1'},{time:HALF,label:'HALFTIME'},{time:3*QUARTER,label:'END OF Q3'}];
+
   for(var si=0;si<snapshots.length;si++) {
-    var snap = snapshots[si];
-    var newSet = {};
+    var snap=snapshots[si];
+    var newSet={};
     for(var i=0;i<snap.newIns.length;i++) newSet[snap.newIns[i]]=true;
-    var subCount = snap.newIns.length;
-    var isKO = snap.isKO;
+    var subCount=snap.newIns.length;
 
     for(var bi=0;bi<Q_BREAKS.length;bi++) {
-      if(!shownBreaks[bi] && snap.tS >= Q_BREAKS[bi].time - 0.05) {
-        html += '<div class="half-divider">'+Q_BREAKS[bi].label+'</div>';
-        shownBreaks[bi] = true;
+      if(!shownBreaks[bi]&&snap.tS>=Q_BREAKS[bi].time-0.05){
+        html+='<div class="half-divider">'+Q_BREAKS[bi].label+'</div>';
+        shownBreaks[bi]=true;
       }
     }
 
-    var isQStart = false, qBadge = '';
-    if(Math.abs(snap.tS - QUARTER) < 0.05)   { isQStart=true; qBadge='Q2'; }
-    if(Math.abs(snap.tS - HALF) < 0.05)       { isQStart=true; qBadge='Q3'; }
-    if(Math.abs(snap.tS - 3*QUARTER) < 0.05)  { isQStart=true; qBadge='Q4'; }
+    var isQStart=false, qBadge='';
+    if(Math.abs(snap.tS-QUARTER)<0.05){isQStart=true;qBadge='Q2';}
+    if(Math.abs(snap.tS-HALF)<0.05)   {isQStart=true;qBadge='Q3';}
+    if(Math.abs(snap.tS-3*QUARTER)<0.05){isQStart=true;qBadge='Q4';}
 
-    function chipRow(players, base, newCls) {
+    var siCapture = si;
+    var pkCapture = planKey;
+
+    function chipRow(players, base, newCls, posKey) {
       var out='';
       for(var i=0;i<players.length;i++) {
         var n=players[i], cls=newSet[n]?newCls:base;
         var dot=newSet[n]?'<span class="new-dot"></span>':'';
         var sp=getSubPosLabel(n);
         var spTag=sp?'<span class="subpos-tag">'+sp+'</span>':'';
-        out+='<span class="pchip '+cls+'">'+n+spTag+dot+' </span>';
+        out+='<span class="pchip '+cls+' drag-chip" data-name="'+n+'" data-si="'+siCapture+'" data-pos="'+posKey+'" data-pk="'+pkCapture+'" onclick="onChipClick(this)">'+n+spTag+dot+'</span>';
       }
       return out;
     }
 
-    html += '<div class="shift-card'+(isKO||isQStart?' special':'')+'"><div class="shift-hdr">'
-      +'<span class="shift-clock">'+fmt(snap.tS)+' - '+fmt(snap.tE)+'</span>'
-      +(isKO?'<span class="badge">KICKOFF</span>':'')
+    html+='<div class="shift-card'+(snap.isKO||isQStart?' special':'')+'"><div class="shift-hdr">'
+      +'<span class="shift-clock">'+fmt(snap.tS)+' – '+fmt(snap.tE)+'</span>'
+      +(snap.isKO?'<span class="badge">KICKOFF</span>':'')
       +(isQStart?'<span class="badge">'+qBadge+'</span>':'')
-      +(subCount>0&&!isKO?'<span class="shift-sub-count">'+subCount+' sub'+(subCount>1?'s':'')+' in</span>':'')
+      +(subCount>0&&!snap.isKO?'<span class="shift-sub-count">'+subCount+' sub'+(subCount>1?'s':'')+' in</span>':'')
       +'</div><div class="shift-body">'
-      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--atk)">ATK</span><div class="chips-wrap">'+chipRow(snap.atk,'chip-atk','chip-atk-new')+'</div></div>'
-      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--mid)">MID</span><div class="chips-wrap">'+chipRow(snap.mid,'chip-mid','chip-mid-new')+'</div></div>'
-      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--def)">DEF</span><div class="chips-wrap">'+chipRow(snap.def,'chip-def','chip-def-new')+'</div></div>'
+      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--atk)">ATK</span><div class="chips-wrap">'+chipRow(snap.atk,'chip-atk','chip-atk-new','atk')+'</div></div>'
+      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--mid)">MID</span><div class="chips-wrap">'+chipRow(snap.mid,'chip-mid','chip-mid-new','mid')+'</div></div>'
+      +'<div class="pos-row"><span class="pos-lbl" style="color:var(--def)">DEF</span><div class="chips-wrap">'+chipRow(snap.def,'chip-def','chip-def-new','def')+'</div></div>'
       +'</div></div>';
   }
-  html += '</div>';
+  html+='</div>';
   return html;
 }
 
-function renderShifts() {
-  var uncNames = getUnconfirmedNames();
-  var html = '';
-  if(PLAN_A || PLAN_B) {
-    var namesList = uncNames.join(', ');
-    if(PLAN_A) {
-      html += '<div class="plan-divider plan-divider-a">Rotation if Unconfirmed Player'+(uncNames.length>1?'s Are':' Is')+' Absent<div class="plan-divider-names">Without: '+namesList+'</div></div>';
-      html += renderShiftsForPlan(PLAN_A);
-    }
-    if(PLAN_B) {
-      html += '<div class="plan-divider plan-divider-b">Rotation if Unconfirmed Player'+(uncNames.length>1?'s Are':' Is')+' Present<div class="plan-divider-names">With: '+namesList+'</div></div>';
-      html += renderShiftsForPlan(PLAN_B);
-    }
-  } else if(PLAN) {
-    html += renderShiftsForPlan(PLAN);
+// ── Chip click: two-tap swap (tap first chip, then tap destination chip) ──
+var swapFirst = null; // {name, si, pos, pk}
+
+function onChipClick(el) {
+  var name = el.getAttribute('data-name');
+  var si   = parseInt(el.getAttribute('data-si'));
+  var pos  = el.getAttribute('data-pos');
+  var pk   = el.getAttribute('data-pk');
+
+  if(!swapFirst) {
+    // First tap: select
+    swapFirst = {name:name, si:si, pos:pos, pk:pk};
+    el.style.outline = '2px solid var(--gold)';
+    el.style.outlineOffset = '2px';
+    return;
   }
-  html += '<div class="btn-row"><button class="act-btn btn-gold" onclick="doPrint()">Print / PDF</button><button class="act-btn btn-outline" onclick="copyText()">Copy</button></div>';
-  document.getElementById('shifts-content').innerHTML = html;
+  // Second tap
+  if(swapFirst.pk!==pk) { clearSwap(); return; } // different plan — ignore
+
+  var plan = pk==='PLAN_A'?PLAN_A : pk==='PLAN_B'?PLAN_B : PLAN;
+  if(!plan) { clearSwap(); return; }
+
+  if(editPlanKey!==pk||editSnapshots===null) initDragDrop(plan.snapshots, pk);
+
+  var snaps = editSnapshots;
+
+  if(swapFirst.si===si && swapFirst.pos!==pos) {
+    // Same shift, different position — swap the two players
+    var snapObj = snaps[si];
+    var posMap  = {atk:'atk', mid:'mid', def:'def'};
+    var fromArr = snapObj[swapFirst.pos].slice();
+    var toArr   = snapObj[pos].slice();
+    var fi = fromArr.indexOf(swapFirst.name);
+    var ti = toArr.indexOf(name);
+    if(fi!==-1 && ti!==-1) {
+      fromArr[fi] = name;
+      toArr[ti]   = swapFirst.name;
+      snapObj[swapFirst.pos] = fromArr;
+      snapObj[pos]           = toArr;
+      // Recompute newIns
+      if(si>0) {
+        var prev=snaps[si-1];
+        var prevAll=prev.def.concat(prev.mid,prev.atk);
+        var curAll=snapObj.def.concat(snapObj.mid,snapObj.atk);
+        snapObj.newIns=curAll.filter(function(n){return prevAll.indexOf(n)===-1;});
+      }
+    }
+  } else if(swapFirst.si===si && swapFirst.pos===pos && swapFirst.name===name) {
+    // Tapped same chip twice — deselect
+    clearSwap(); return;
+  } else if(swapFirst.pos===pos && swapFirst.name!==name) {
+    // Same position, different shift — swap across shifts is not meaningful for field count, skip
+    clearSwap(); return;
+  }
+
+  clearSwap();
+  renderShifts();
+  renderTime();
 }
 
-function renderTimeForPlan(plan) {
-  var mins = plan.mins, avail = plan.avail;
+function clearSwap() {
+  swapFirst = null;
+  // Remove all outlines
+  var chips = document.querySelectorAll('.drag-chip');
+  for(var i=0;i<chips.length;i++) { chips[i].style.outline=''; chips[i].style.outlineOffset=''; }
+}
+
+function resetEdits(planKey) {
+  if(editPlanKey===planKey) { editSnapshots=null; editPlanKey=null; }
+  renderShifts();
+  renderTime();
+}
+
+function renderShifts() {
+  var uncNames=getUnconfirmedNames();
+  var html='';
+  if(PLAN_A||PLAN_B) {
+    var namesList=uncNames.join(', ');
+    if(PLAN_A){
+      html+='<div class="plan-divider plan-divider-a">Rotation if Unconfirmed Player'+(uncNames.length>1?'s Are':' Is')+' Absent<div class="plan-divider-names">Without: '+namesList+'</div></div>';
+      html+=renderShiftsForPlan(PLAN_A,'PLAN_A');
+    }
+    if(PLAN_B){
+      html+='<div class="plan-divider plan-divider-b">Rotation if Unconfirmed Player'+(uncNames.length>1?'s Are':' Is')+' Present<div class="plan-divider-names">With: '+namesList+'</div></div>';
+      html+=renderShiftsForPlan(PLAN_B,'PLAN_B');
+    }
+  } else if(PLAN) {
+    html+=renderShiftsForPlan(PLAN,'PLAN');
+  }
+  html+='<div class="btn-row"><button class="act-btn btn-gold" onclick="doPrint()">Print / PDF</button><button class="act-btn btn-outline" onclick="copyText()">Copy</button></div>';
+  document.getElementById('shifts-content').innerHTML=html;
+}
+
+function renderTimeForPlan(plan, planKey) {
+  var snapshots=getEffectiveSnapshots(plan,planKey);
+  // Recompute mins from effective snapshots
+  var avail=plan.avail;
+  var mins={};
+  for(var i=0;i<avail.length;i++) mins[avail[i].name]=0;
+  for(var i=0;i<snapshots.length;i++){
+    var dur=snapshots[i].tE-snapshots[i].tS;
+    var on=snapshots[i].def.concat(snapshots[i].mid,snapshots[i].atk);
+    for(var j=0;j<on.length;j++) if(mins[on[j]]!==undefined) mins[on[j]]+=dur;
+  }
   var maxM=0, keys=Object.keys(mins);
   for(var i=0;i<keys.length;i++) if(mins[keys[i]]>maxM) maxM=mins[keys[i]];
   if(maxM===0) maxM=1;
   var avg=0; for(var i=0;i<keys.length;i++) avg+=mins[keys[i]];
-  avg=avg/avail.length;
-
+  avg=avg/(avail.length||1);
   var posOrd={attack:0,middie:1,defense:2};
   var entries=[];
   for(var i=0;i<keys.length;i++) entries.push([keys[i],mins[keys[i]]]);
   entries.sort(function(a,b){
-    var pa=getRosterPlayer(a[0]), pb=getRosterPlayer(b[0]);
-    var pap=pa?pa.pos:'attack', pbp=pb?pb.pos:'attack';
+    var pa=getRosterPlayer(a[0]),pb=getRosterPlayer(b[0]);
+    var pap=pa?pa.pos:'attack',pbp=pb?pb.pos:'attack';
     var po=(posOrd[pap]||0)-(posOrd[pbp]||0);
     return po!==0?po:a[0].localeCompare(b[0]);
   });
-
-  var html='<div class="note">Playing time per player. Avg: <strong>'+avg.toFixed(1)+' min</strong> (includes flex time)</div><div class="pt-list">';
+  var html='<div class="note">Playing time per player. Avg: <strong>'+avg.toFixed(1)+' min</strong></div><div class="pt-list">';
   var lastPos=null;
-  for(var i=0;i<entries.length;i++) {
-    var name=entries[i][0], m=entries[i][1];
-    var p=getRosterPlayer(name), pos=p?p.pos:'attack';
-    if(pos!==lastPos) {
+  for(var i=0;i<entries.length;i++){
+    var name=entries[i][0],m=entries[i][1];
+    var p=getRosterPlayer(name),pos=p?p.pos:'attack';
+    if(pos!==lastPos){
       var lbl=pos==='defense'?'DEFENSE':pos==='middie'?'MIDFIELD':'ATTACK';
       var col=pos==='defense'?'var(--def)':pos==='middie'?'var(--mid)':'var(--atk)';
       html+='<div style="font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;color:'+col+';padding:8px 0 4px;border-bottom:1px solid var(--border2);margin-top:'+(lastPos?'10px':'0')+'">'+lbl+'</div>';
       lastPos=pos;
     }
     var pc=pos==='attack'?'var(--atk)':pos==='middie'?'var(--mid)':'var(--def)';
-    var flexTag = p&&p.flex ? ' <span style="font-size:10px;color:var(--muted)">[flex:'+p.flex.substring(0,3).toUpperCase()+']</span>' : '';
-    var spTag2 = p&&p.subpos ? ' <span style="font-size:10px;color:var(--gold)">'+p.subpos+'</span>' : '';
-    html+='<div class="pt-row"><div class="pt-top"><span class="pt-name" style="color:'+pc+'">'+name+spTag2+flexTag+'</span><span class="pt-mins">'+m.toFixed(1)+' min</span></div>'
+    var flexTag=p&&p.flex?' <span style="font-size:10px;color:var(--muted)">[flex:'+p.flex.substring(0,3).toUpperCase()+']</span>':'';
+    var spTag2=p&&p.subpos?' <span style="font-size:10px;color:var(--gold)">'+p.subpos+'</span>':'';
+    var moreFlag = (ptMode==='custom'&&ptMorePlayer===name)?'<span style="color:var(--green);font-size:10px"> ▲</span>':'';
+    var lessFlag = (ptMode==='custom'&&ptLessPlayer===name)?'<span style="color:#ff7777;font-size:10px"> ▼</span>':'';
+    html+='<div class="pt-row"><div class="pt-top"><span class="pt-name" style="color:'+pc+'">'+name+spTag2+flexTag+moreFlag+lessFlag+'</span><span class="pt-mins">'+m.toFixed(1)+' min</span></div>'
       +'<div class="pt-bar-bg"><div class="pt-bar-fill" style="width:'+(m/maxM*100).toFixed(1)+'%;background:'+pc+';opacity:.82"></div></div></div>';
   }
   html+='</div>';
@@ -1134,217 +1251,215 @@ function renderTimeForPlan(plan) {
 }
 
 function renderTime() {
-  var uncNames = getUnconfirmedNames();
-  var html = '';
-  if(PLAN_A || PLAN_B) {
-    var namesList = uncNames.join(', ');
-    if(PLAN_A) {
-      html += '<div class="plan-divider plan-divider-a">Playing Time if Unconfirmed Player'+(uncNames.length>1?'s Are':' Is')+' Absent<div class="plan-divider-names">Without: '+namesList+'</div></div>';
-      html += renderTimeForPlan(PLAN_A);
+  var uncNames=getUnconfirmedNames();
+  var html='';
+  if(PLAN_A||PLAN_B){
+    var namesList=uncNames.join(', ');
+    if(PLAN_A){
+      html+='<div class="plan-divider plan-divider-a">Playing Time if Unconfirmed Absent<div class="plan-divider-names">Without: '+namesList+'</div></div>';
+      html+=renderTimeForPlan(PLAN_A,'PLAN_A');
     }
-    if(PLAN_B) {
-      html += '<div class="plan-divider plan-divider-b">Playing Time if Unconfirmed Player'+(uncNames.length>1?'s Are':' Is')+' Present<div class="plan-divider-names">With: '+namesList+'</div></div>';
-      html += renderTimeForPlan(PLAN_B);
+    if(PLAN_B){
+      html+='<div class="plan-divider plan-divider-b">Playing Time if Unconfirmed Present<div class="plan-divider-names">With: '+namesList+'</div></div>';
+      html+=renderTimeForPlan(PLAN_B,'PLAN_B');
     }
-  } else if(PLAN) {
-    html += renderTimeForPlan(PLAN);
+  } else if(PLAN){
+    html+=renderTimeForPlan(PLAN,'PLAN');
   }
   document.getElementById('time-content').innerHTML=html;
 }
 
-// ============================================================
-// PRINT OVERLAY — redesigned coaching card
-// ============================================================
-function closeOverlay() {
-  document.getElementById('printOverlay').classList.remove('show');
-}
+// ═══════════════════════════════════════════════════════════
+// PRINT — clean landscape coaching card
+// ═══════════════════════════════════════════════════════════
+function closeOverlay(){document.getElementById('printOverlay').classList.remove('show');}
 
-function buildPrintHTML(plan, label) {
-  var snapshots=plan.snapshots, groups=plan.groups, mins=plan.mins, avail=plan.avail;
-  var avg=0, keys=Object.keys(mins);
+function buildPrintHTML(plan, planKey, label) {
+  var snapshots=getEffectiveSnapshots(plan,planKey);
+  var groups=plan.groups, avail=plan.avail;
+
+  // Recompute mins from effective snapshots
+  var mins={};
+  for(var i=0;i<avail.length;i++) mins[avail[i].name]=0;
+  for(var i=0;i<snapshots.length;i++){
+    var dur=snapshots[i].tE-snapshots[i].tS;
+    var on=snapshots[i].def.concat(snapshots[i].mid,snapshots[i].atk);
+    for(var j=0;j<on.length;j++) if(mins[on[j]]!==undefined) mins[on[j]]+=dur;
+  }
+
+  var avg=0,keys=Object.keys(mins);
   for(var i=0;i<keys.length;i++) avg+=mins[keys[i]];
-  avg=avg/avail.length;
-  var maxM=0; for(var i=0;i<keys.length;i++) if(mins[keys[i]]>maxM)maxM=mins[keys[i]];
+  avg=avg/(avail.length||1);
+  var maxM=0; for(var i=0;i<keys.length;i++) if(mins[keys[i]]>maxM) maxM=mins[keys[i]];
   var dLen=groups.defense.length,mLen=groups.middie.length,aLen=groups.attack.length;
   var dMin=dLen<=FORM.defense?'40.0':(TOTAL*FORM.defense/dLen).toFixed(1);
   var mMin=mLen<=FORM.middie ?'40.0':(TOTAL*FORM.middie /mLen).toFixed(1);
   var aMin=aLen<=FORM.attack ?'40.0':(TOTAL*FORM.attack /aLen).toFixed(1);
 
-  // ── ROTATION ROWS ──
+  // ── PLAYING TIME HTML (right column) ──
+  var ptEntries=[];
+  for(var i=0;i<keys.length;i++) ptEntries.push([keys[i],mins[keys[i]]]);
+  ptEntries.sort(function(a,b){return b[1]-a[1];});
+  var ptHTML='<span class="print-pt-title">PLAYING TIME</span>';
+  for(var i=0;i<ptEntries.length;i++){
+    var pn=ptEntries[i][0],pm=ptEntries[i][1];
+    var pp=getRosterPlayer(pn),ppos=pp?pp.pos:'attack';
+    var pColor=ppos==='attack'?'#9a3300':ppos==='middie'?'#004f78':'#3e0f6e';
+    ptHTML+='<div class="print-pt-item">'
+      +'<span class="print-pt-name" style="color:'+pColor+'">'+pn+'</span>'
+      +'<span class="print-pt-min">'+pm.toFixed(1)+'m</span>'
+      +'</div>'
+      +'<div class="print-pt-bar-bg"><div class="print-pt-bar-fill" style="width:'+(pm/maxM*100).toFixed(1)+'%;background:'+pColor+'"></div></div>';
+  }
+
+  // ── ROTATION TABLE ──
   var shownPrintBreaks={}, rotHTML='';
-  var P_BREAKS = [
-    {time:QUARTER,   label:'END OF Q1 &mdash; BREAK'},
-    {time:HALF,      label:'HALFTIME &mdash; BREAK'},
-    {time:3*QUARTER, label:'END OF Q3 &mdash; BREAK'}
+  var P_BREAKS=[
+    {time:QUARTER,   label:'END OF Q1 — BREAK'},
+    {time:HALF,      label:'HALFTIME — BREAK'},
+    {time:3*QUARTER, label:'END OF Q3 — BREAK'}
   ];
 
-  for(var si=0;si<snapshots.length;si++) {
+  for(var si=0;si<snapshots.length;si++){
     var snap=snapshots[si];
-
-    for(var pbi=0;pbi<P_BREAKS.length;pbi++) {
+    for(var pbi=0;pbi<P_BREAKS.length;pbi++){
       if(!shownPrintBreaks[pbi]&&snap.tS>=P_BREAKS[pbi].time-0.05){
         rotHTML+='<tr class="print-qbreak"><td colspan="4">'+P_BREAKS[pbi].label+'</td></tr>';
         shownPrintBreaks[pbi]=true;
       }
     }
-
     var ns={};
     for(var i=0;i<snap.newIns.length;i++) ns[snap.newIns[i]]=true;
-
-    var prevSnap = si>0 ? snapshots[si-1] : null;
-    var outsAtk=[], outsMid=[], outsDef=[];
-    if(prevSnap && !snap.isKO) {
+    var prevSnap=si>0?snapshots[si-1]:null;
+    var outsAtk=[],outsMid=[],outsDef=[];
+    if(prevSnap&&!snap.isKO){
       for(var i=0;i<prevSnap.atk.length;i++) if(snap.atk.indexOf(prevSnap.atk[i])===-1) outsAtk.push(prevSnap.atk[i]);
       for(var i=0;i<prevSnap.mid.length;i++) if(snap.mid.indexOf(prevSnap.mid[i])===-1) outsMid.push(prevSnap.mid[i]);
       for(var i=0;i<prevSnap.def.length;i++) if(snap.def.indexOf(prevSnap.def[i])===-1) outsDef.push(prevSnap.def[i]);
     }
-
-    var fn = function(onArr, outArr) {
-      var parts = [];
-      for(var i=0;i<onArr.length;i++) {
-        var n = onArr[i];
-        var sp = getSubPosLabel(n);
-        var spStr = sp ? ' <small style="font-size:7pt;opacity:.65">'+sp+'</small>' : '';
-        if(ns[n]) {
-          // SUB IN — green, bold, ▲
-          parts.push('<span class="print-sub-in"><span class="print-sub-arrow">&#9650;</span>'+n+spStr+'</span>');
-        } else {
-          parts.push('<span>'+n+spStr+'</span>');
-        }
+    function renderCell(onArr, outArr) {
+      var parts=[];
+      for(var i=0;i<onArr.length;i++){
+        var n=onArr[i];
+        var sp=getSubPosLabel(n);
+        var spStr=sp?' <small style="font-size:6.5pt;opacity:.6">'+sp+'</small>':'';
+        if(ns[n]) parts.push('<span class="p-in"><span class="p-in-arrow">▲</span>'+n+spStr+'</span>');
+        else       parts.push('<span class="p-stay">'+n+spStr+'</span>');
       }
-      for(var i=0;i<outArr.length;i++) {
-        // SUB OUT — red, strikethrough, ▼
-        parts.push('<span class="print-sub-out"><span class="print-sub-out-arrow">&#9660;</span>'+outArr[i]+'</span>');
+      for(var i=0;i<outArr.length;i++){
+        parts.push('<span class="p-out"><span class="p-out-arrow">▼</span>'+outArr[i]+'</span>');
       }
       return parts.join('&ensp;');
-    };
+    }
+    var subCount=snap.newIns.length;
+    var subLabel=snap.isKO?'KICKOFF':(subCount?subCount+' sub'+(subCount>1?'s':'')+' in':'');
+    var clockStr=shiftLabel(snap.tS,snap.tE);
 
-    var subCount = snap.newIns.length;
-    var subLabel = snap.isKO ? 'KICKOFF' : (subCount ? subCount+' sub'+(subCount>1?'s':'')+' in' : '');
+    var isQS=false;
+    if(Math.abs(snap.tS-QUARTER)<0.05) isQS=true;
+    if(Math.abs(snap.tS-HALF)<0.05)    isQS=true;
+    if(Math.abs(snap.tS-3*QUARTER)<0.05) isQS=true;
 
-    // Countdown clock: show range of time remaining in quarter (e.g. "10:00 → 6:40")
-    var clockStr = printClockRange(snap.tS, snap.tE);
-    var timeCellHTML = '<span style="display:block;font-size:10pt;font-weight:700;font-family:\'Courier New\',monospace;letter-spacing:.5px;white-space:nowrap">'
-      + clockStr + '</span>'
-      + (subLabel ? '<span class="td-time-lbl">'+subLabel+'</span>' : '');
-
-    rotHTML += '<tr>'
-      + '<td class="td-time">' + timeCellHTML + '</td>'
-      + '<td class="td-atk">' + fn(snap.atk, outsAtk) + '</td>'
-      + '<td class="td-mid">' + fn(snap.mid, outsMid) + '</td>'
-      + '<td class="td-def">' + fn(snap.def, outsDef) + '</td>'
-      + '</tr>';
+    rotHTML+='<tr'+(snap.isKO||isQS?' style="background:#fffbe6!important"':'')+'>'
+      +'<td class="td-shift"><span>'+clockStr+'</span>'
+      +(subLabel?'<span class="td-sublbl">'+subLabel+'</span>':'')
+      +'</td>'
+      +'<td class="td-atk">'+renderCell(snap.atk,outsAtk)+'</td>'
+      +'<td class="td-mid">'+renderCell(snap.mid,outsMid)+'</td>'
+      +'<td class="td-def">'+renderCell(snap.def,outsDef)+'</td>'
+      +'</tr>';
   }
 
   var labelHTML = label ? '<div class="print-plan-label">'+label+'</div>' : '';
-
   return labelHTML
-    + '<div style="font-size:7.5pt;color:#555;margin-bottom:6px;letter-spacing:.3px">'
-    + '<span style="color:#9a3300;font-weight:700">ATK</span> '+aMin+' min &nbsp;&bull;&nbsp; '
-    + '<span style="color:#004f78;font-weight:700">MID</span> '+mMin+' min &nbsp;&bull;&nbsp; '
-    + '<span style="color:#3e0f6e;font-weight:700">DEF</span> '+dMin+' min &nbsp;&bull;&nbsp; '
-    + 'Avg '+avg.toFixed(1)+' min'
-    + '</div>'
-    + '<span class="print-section-label">FIELD ROTATION &nbsp;&mdash;&nbsp; CLOCK SHOWS TIME REMAINING IN QUARTER</span>'
-    + '<table class="print-rot-table">'
-    + '<thead><tr>'
-    + '<th class="th-time">CLOCK</th>'
-    + '<th class="th-atk">&#9650; ATTACK</th>'
-    + '<th class="th-mid">&#9650; MIDFIELD</th>'
-    + '<th class="th-def">&#9650; DEFENSE</th>'
-    + '</tr></thead>'
-    + '<tbody>'+rotHTML+'</tbody>'
-    + '</table>';
+    +'<div class="print-stat-bar">'
+    +'<span style="color:#9a3300">ATK</span> '+aMin+' min &nbsp;·&nbsp; '
+    +'<span style="color:#004f78">MID</span> '+mMin+' min &nbsp;·&nbsp; '
+    +'<span style="color:#3e0f6e">DEF</span> '+dMin+' min &nbsp;·&nbsp; '
+    +'Avg '+avg.toFixed(1)+' min'
+    +'</div>'
+    +'<div class="print-body-wrap">'
+    +'<div class="print-rot-col">'
+    +'<table class="print-rot-table">'
+    +'<thead><tr>'
+    +'<th class="th-shift">CLOCK</th>'
+    +'<th class="th-atk">▲ ATTACK</th>'
+    +'<th class="th-mid">▲ MIDFIELD</th>'
+    +'<th class="th-def">▲ DEFENSE</th>'
+    +'</tr></thead>'
+    +'<tbody>'+rotHTML+'</tbody>'
+    +'</table>'
+    +'</div>'
+    +'<div class="print-pt-col">'+ptHTML+'</div>'
+    +'</div>';
 }
 
-function doPrint() {
-  if(!PLAN && !PLAN_A && !PLAN_B){alert('Build rotation first!');return;}
+function doPrint(){
+  if(!PLAN&&!PLAN_A&&!PLAN_B){alert('Build rotation first!');return;}
   var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  var uncNames = getUnconfirmedNames();
-  var totalActive = ROSTER.filter(function(p){return !absent[p.name];}).length;
-  var content = '<div class="print-page">';
-
-  // Header
-  content += '<div class="print-hdr-block">'
-    + '<div>'
-    + '<div class="print-hdr-title">JR. LIONS LACROSSE</div>'
-    + '<div class="print-hdr-sub">Game Day Rotation Card</div>'
-    + '</div>'
-    + '<div class="print-hdr-right">'
-    + '<div class="print-hdr-date">'+now+'</div>'
-    + '<div class="print-hdr-stats">'+totalActive+' players active &nbsp;&bull;&nbsp; 4 qtrs &times; 10 min</div>'
-    + '</div>'
-    + '</div>';
-
-  if(PLAN_A || PLAN_B) {
-    if(PLAN_A) {
-      content += buildPrintHTML(PLAN_A, 'PLAN A &mdash; UNCONFIRMED ABSENT &nbsp;&bull;&nbsp; without: '+uncNames.join(', '));
-      if(PLAN_B) content += '<div style="border-top:3px solid #1a5c1a;margin:16px 0 12px"></div>';
-    }
-    if(PLAN_B) {
-      content += buildPrintHTML(PLAN_B, 'PLAN B &mdash; UNCONFIRMED PRESENT &nbsp;&bull;&nbsp; with: '+uncNames.join(', '));
-    }
-  } else if(PLAN) {
-    content += buildPrintHTML(PLAN, null);
+  var uncNames=getUnconfirmedNames();
+  var totalActive=ROSTER.filter(function(p){return !absent[p.name];}).length;
+  var content='<div class="print-page">';
+  content+='<div class="print-hdr-block">'
+    +'<div><div class="print-hdr-title">JR. LIONS LACROSSE</div><div class="print-hdr-sub">Game Day Rotation Card</div></div>'
+    +'<div class="print-hdr-right"><div class="print-hdr-date">'+now+'</div>'
+    +'<div class="print-hdr-stats">'+totalActive+' active &bull; 4 qtrs &times; '+QUARTER+' min</div>'
+    +'<div class="print-legend"><span class="print-legend-in">▲ Sub IN</span> &nbsp; <span class="print-legend-out">▼ Sub OUT</span></div>'
+    +'</div></div>';
+  if(PLAN_A||PLAN_B){
+    if(PLAN_A) content+=buildPrintHTML(PLAN_A,'PLAN_A','PLAN A — UNCONFIRMED ABSENT: without '+uncNames.join(', '));
+    if(PLAN_A&&PLAN_B) content+='<div style="border-top:2px solid #1a5c1a;margin:12px 0 10px"></div>';
+    if(PLAN_B) content+=buildPrintHTML(PLAN_B,'PLAN_B','PLAN B — UNCONFIRMED PRESENT: with '+uncNames.join(', '));
+  } else if(PLAN){
+    content+=buildPrintHTML(PLAN,'PLAN',null);
   }
-
-  content += '<div class="print-footer">Jr. Lions Lacrosse &mdash; Game Day Rotation Card &mdash; <span style="color:#1a6b1a;font-weight:700">&#9650; Green = Sub IN</span> &nbsp;&nbsp; <span style="color:#c0000c;font-weight:700">&#9660; Red = Sub OUT</span> &nbsp;&nbsp; Clock shows time remaining in quarter</div>';
-  content += '</div>';
-
-  document.getElementById('overlayBody').innerHTML = content;
+  content+='<div class="print-footer">Jr. Lions Lacrosse — Game Day Rotation Card — '+now+'</div>';
+  content+='</div>';
+  document.getElementById('overlayBody').innerHTML=content;
   document.getElementById('printOverlay').classList.add('show');
 }
 
-function copyTextForPlan(plan, label) {
-  var snapshots=plan.snapshots, mins=plan.mins;
-  var t = '';
-  if(label) t += label + '\n\n';
-  var copyBreaks = [
-    {time:QUARTER,   label:'--- END OF Q1 ---', shown:false},
-    {time:HALF,      label:'--- HALFTIME ---',   shown:false},
-    {time:3*QUARTER, label:'--- END OF Q3 ---', shown:false}
+function copyTextForPlan(plan,planKey,label){
+  var snapshots=getEffectiveSnapshots(plan,planKey);
+  var avail=plan.avail;
+  var mins={};
+  for(var i=0;i<avail.length;i++) mins[avail[i].name]=0;
+  for(var i=0;i<snapshots.length;i++){
+    var dur=snapshots[i].tE-snapshots[i].tS;
+    var on=snapshots[i].def.concat(snapshots[i].mid,snapshots[i].atk);
+    for(var j=0;j<on.length;j++) if(mins[on[j]]!==undefined) mins[on[j]]+=dur;
+  }
+  var t='';
+  if(label) t+=label+'\n\n';
+  var copyBreaks=[
+    {time:QUARTER,label:'--- END OF Q1 ---',shown:false},
+    {time:HALF,label:'--- HALFTIME ---',shown:false},
+    {time:3*QUARTER,label:'--- END OF Q3 ---',shown:false}
   ];
   for(var i=0;i<snapshots.length;i++){
     var s=snapshots[i];
-    for(var cb=0;cb<copyBreaks.length;cb++) {
-      if(!copyBreaks[cb].shown && s.tS >= copyBreaks[cb].time - 0.05) {
-        t += copyBreaks[cb].label + '\n\n';
-        copyBreaks[cb].shown = true;
-      }
+    for(var cb=0;cb<copyBreaks.length;cb++){
+      if(!copyBreaks[cb].shown&&s.tS>=copyBreaks[cb].time-0.05){t+=copyBreaks[cb].label+'\n\n';copyBreaks[cb].shown=true;}
     }
     t+=fmt(s.tS)+' - '+fmt(s.tE)+'\n';
-    var cpFn = function(arr) {
-      var parts = [];
-      for(var ci=0;ci<arr.length;ci++) {
-        var sp = getSubPosLabel(arr[ci]);
-        parts.push(sp ? arr[ci]+' ('+sp+')' : arr[ci]);
-      }
-      return parts.join(', ');
-    };
-    t+='  ATK: '+cpFn(s.atk)+'\n';
-    t+='  MID: '+cpFn(s.mid)+'\n';
-    t+='  DEF: '+cpFn(s.def)+'\n\n';
+    var cpFn=function(arr){return arr.map(function(n){var sp=getSubPosLabel(n);return sp?n+' ('+sp+')':n;}).join(', ');};
+    t+='  ATK: '+cpFn(s.atk)+'\n  MID: '+cpFn(s.mid)+'\n  DEF: '+cpFn(s.def)+'\n\n';
   }
   t+='PLAYING TIME\n';
-  var keys=Object.keys(mins).sort(function(a,b){return mins[b]-mins[a];});
-  for(var i=0;i<keys.length;i++) t+=keys[i]+': '+mins[keys[i]].toFixed(1)+' min\n';
+  var ks=Object.keys(mins).sort(function(a,b){return mins[b]-mins[a];});
+  for(var i=0;i<ks.length;i++) t+=ks[i]+': '+mins[ks[i]].toFixed(1)+' min\n';
   return t;
 }
 
-function copyText() {
-  if(!PLAN && !PLAN_A && !PLAN_B){alert('Build rotation first!');return;}
-  var uncNames = getUnconfirmedNames();
-  var t = 'JR. LIONS - GAME DAY ROTATION\n\n';
-  if(PLAN_A || PLAN_B) {
-    if(PLAN_A) {
-      t += copyTextForPlan(PLAN_A, '=== ROTATION A: UNCONFIRMED ABSENT (without: '+uncNames.join(', ')+') ===');
-      t += '\n';
-    }
-    if(PLAN_B) {
-      t += copyTextForPlan(PLAN_B, '=== ROTATION B: UNCONFIRMED PRESENT (with: '+uncNames.join(', ')+') ===');
-    }
-  } else if(PLAN) {
-    t += copyTextForPlan(PLAN, null);
+function copyText(){
+  if(!PLAN&&!PLAN_A&&!PLAN_B){alert('Build rotation first!');return;}
+  var uncNames=getUnconfirmedNames();
+  var t='JR. LIONS - GAME DAY ROTATION\n\n';
+  if(PLAN_A||PLAN_B){
+    if(PLAN_A) t+=copyTextForPlan(PLAN_A,'PLAN_A','=== ROTATION A: WITHOUT '+uncNames.join(', ')+' ===');
+    if(PLAN_B) t+='\n'+copyTextForPlan(PLAN_B,'PLAN_B','=== ROTATION B: WITH '+uncNames.join(', ')+' ===');
+  } else if(PLAN){
+    t+=copyTextForPlan(PLAN,'PLAN',null);
   }
   navigator.clipboard.writeText(t).then(function(){alert('Copied!');});
 }
@@ -1352,14 +1467,14 @@ function copyText() {
 renderRoster();
 updatePlanNote();
 renderStarterPicker();
-
 </script>
+
 <div id="printOverlay" class="overlay">
   <div class="ov-bar">
-    <h2>Jr. Lions - Game Day</h2>
-    <button class="ov-close" onclick="closeOverlay()">&#x2715; CLOSE</button>
+    <h2>Jr. Lions — Game Day</h2>
+    <button class="ov-close" onclick="closeOverlay()">✕ CLOSE</button>
   </div>
-  <div class="ov-hint">&#128247; iPhone: tap the <strong>Share button</strong> (box with arrow) at the bottom of Safari &rarr; tap <strong>Print</strong></div>
+  <div class="ov-hint">📱 iPhone: tap <strong>Share</strong> (box with arrow) → <strong>Print</strong> &nbsp;|&nbsp; Set orientation to <strong>Landscape</strong></div>
   <div class="ov-body" id="overlayBody"></div>
 </div>
 </body>
