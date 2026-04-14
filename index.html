@@ -623,19 +623,47 @@ function updatePlanNote(){
   var parts=[];
   var COL={defense:'var(--def)',middie:'var(--mid)',attack:'var(--atk)'};
   var LABEL={defense:'Defense',middie:'Midfield',attack:'Attack'};
+
   ['defense','middie','attack'].forEach(function(pos){
-    var pool=buildPool(pos,avail);
-    var slots=FORM[pos];
-    if(pool.length<slots){parts.push('<span style="color:#ff7777">Need '+slots+' '+LABEL[pos]+', only '+pool.length+' available</span>');return;}
-    var targets=calculateTargets(pool,slots);
-    var vals=pool.map(function(p){return targets[p.name];});
-    var minT=vals.reduce(function(a,b){return a<b?a:b;},Infinity);
-    var maxT=vals.reduce(function(a,b){return a>b?a:b;},-Infinity);
-    var rangeStr=Math.abs(maxT-minT)<0.05?maxT.toFixed(1)+'m':minT.toFixed(1)+'\u2013'+maxT.toFixed(1)+'m';
-    var flexCount=pool.filter(function(p){return p.flex===pos&&p.pos!==pos;}).length;
-    var fNote=flexCount>0?' <span style="color:var(--muted)">(+'+flexCount+' flex)</span>':'';
-    parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '
-      +pool.length+' players \u2192 <strong style="color:var(--gold)">'+rangeStr+'</strong>'+fNote);
+    var primary=avail.filter(function(p){return p.pos===pos;});
+    var flexIn=avail.filter(function(p){return p.flex===pos&&p.pos!==pos;});
+    var total=primary.length+flexIn.length;
+    if(total<FORM[pos]){parts.push('<span style="color:#ff7777">Need '+FORM[pos]+' '+LABEL[pos]+', only '+total+' available</span>');return;}
+
+    var rangeStr;
+    if(pos==='attack'){
+      /* Two-sub-pool: primary compete for (4-F)*40 min, flex for F*40 min */
+      var F=flexIn.length>0?1:0;
+      var primaryBudget=(FORM.attack-F)*TOTAL;
+      var flexBudget=F*TOTAL;
+      var mins=[];
+      if(primary.length>0){
+        var W_p=primary.reduce(function(s,p){return s+p.playTimeWeight;},0);
+        primary.forEach(function(p){mins.push(p.playTimeWeight/W_p*primaryBudget);});
+      }
+      if(flexIn.length>0&&F>0){
+        var W_f=flexIn.reduce(function(s,p){return s+p.playTimeWeight;},0);
+        flexIn.forEach(function(p){mins.push(p.playTimeWeight/W_f*flexBudget);});
+      }
+      if(!mins.length){rangeStr=TOTAL.toFixed(1)+'m';}
+      else{
+        var minT=mins.reduce(function(a,b){return a<b?a:b;},Infinity);
+        var maxT=mins.reduce(function(a,b){return a>b?a:b;},-Infinity);
+        rangeStr=Math.abs(maxT-minT)<0.05?maxT.toFixed(1)+'m':minT.toFixed(1)+'\u2013'+maxT.toFixed(1)+'m';
+      }
+      var fNote=flexIn.length>0?' <span style="color:var(--muted)">('+flexIn.length+' flex-in from MID)</span>':'';
+      parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '
+        +total+' players \u2192 <strong style="color:var(--gold)">'+rangeStr+'</strong>'+fNote);
+    }else{
+      var targets=calculateTargets(primary,FORM[pos]);
+      var vals=primary.map(function(p){return targets[p.name];});
+      var minT=vals.reduce(function(a,b){return a<b?a:b;},Infinity);
+      var maxT=vals.reduce(function(a,b){return a>b?a:b;},-Infinity);
+      rangeStr=Math.abs(maxT-minT)<0.05?maxT.toFixed(1)+'m':minT.toFixed(1)+'\u2013'+maxT.toFixed(1)+'m';
+      var fNote2=flexIn.length>0?' <span style="color:var(--muted)">(+'+flexIn.length+' flex)</span>':'';
+      parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '
+        +total+' players \u2192 <strong style="color:var(--gold)">'+rangeStr+'</strong>'+fNote2);
+    }
   });
   if(uncNames.length>0)parts.push('<br><span style="color:var(--gold)">\u26a0 '+uncNames.length+' unconfirmed ('
     +uncNames.join(', ')+') \u2014 two rotations will be built.</span>');
@@ -643,54 +671,54 @@ function updatePlanNote(){
 }
 
 /* ================================================================================
-   CORE ENGINE
+   CORE ENGINE — FINAL MODEL
    ================================================================================
 
-   buildPool(pos, avail)
-   ─────────────────────
-   Returns the players competing for slots at 'pos'.
-   Flex = exclusive transfer: a player flexed to 'pos' is IN this pool;
-   they are EXCLUDED from their primary pool (see exclusion in primary filter).
-
-   calculateTargets(pool, slots)
+   FLEX SEMANTICS (definitive):
    ─────────────────────────────
-   Proportional weight distribution with iterative cap normalization.
-   Any player whose share would exceed TOTAL is capped at TOTAL;
-   surplus redistributes among remaining players. Stable after ≤N iterations.
+   A flex player stays in their primary pool for their full primary rotation.
+   Flex means: when they are OFF their primary position (bench window), they
+   fill an open slot at the flex position instead of sitting.
 
-   buildWeightedIntervals(pool, slots, starterNames)
-   ─────────────────────────────────────────────────
-   Converts targets to contiguous on/off intervals.
-   bench_duration[i] = TOTAL - target[i]
-   Bench windows placed end-to-end in weight-descending order.
-   Player with bench=0 (target=TOTAL) is never benched.
-   Each produced interval has exactly 'slots' players on field.
-
-   buildMidIntervals(pool, starterNames)
+   ATK SCHEDULING — TWO SUB-POOL MODEL:
    ──────────────────────────────────────
-   Special case for N=2*K (two equal middie groups):
-   alternates groups every midShiftMinutes using group-color priority.
-   All other N delegates to buildWeightedIntervals.
+   ATK has 4 on-field slots, split into two sub-pools:
+
+     Primary sub-pool  — N primary ATK players competing for (4 - F) slots
+     Flex sub-pool     — M flex-eligible middies competing for F slots,
+                         available only during their MID bench windows
+
+   where F = min(1, number of flex-to-ATK players available per window).
+   With 6 middies (3 benched each window) and ≥1 flexing to ATK: F = 1.
+
+     primaryBudget = (4 - F) × TOTAL  → distributed by weight among primary ATK
+     flexBudget    =       F × TOTAL  → distributed by weight among flex middies
+
+   The scheduler is deficit-based greedy on the MID swap timeline:
+   at each window pick the 4 highest-deficit eligible players.
+   Primary ATK: always eligible.
+   Flex middie: eligible only when benched from MID.
+
+   WEIGHT SEMANTICS:
+   ──────────────────
+   Weight on a primary ATK/DEF player: their share of that position's budget.
+   Weight < 1.0 means proportionally less time. Maya at 0.8 with 4 others at
+   1.0 gets 0.8/4.8 × primaryBudget instead of 1.0/4.8 × primaryBudget.
+
+   Weight on a flex middie: their priority for filling flex slots at ATK.
+   Higher weight = more ATK bonus time. They ALWAYS get their full MID time
+   in addition to whatever ATK bonus time the scheduler assigns.
    ================================================================================ */
 
 function buildPool(pos,avail){
-  /* For validation and plan-note display: primary players only.
-     Flex fill-ins are handled inside computeRotation at snapshot time. */
   return avail.filter(function(p){return p.pos===pos;});
 }
 
 function calculateTargets(pool,slots){
-  /* Total field-minutes available for this position */
   var fieldMins=TOTAL*slots;
-  var weights={};
-  pool.forEach(function(p){weights[p.name]=p.playTimeWeight;});
-
-  /* Iterative cap: players exceeding TOTAL get capped; remainder redistributes */
-  var targets={};
-  pool.forEach(function(p){targets[p.name]=0;});
-  var uncapped=pool.slice();
-  var remaining=fieldMins;
-
+  var weights={};pool.forEach(function(p){weights[p.name]=p.playTimeWeight;});
+  var targets={};pool.forEach(function(p){targets[p.name]=0;});
+  var uncapped=pool.slice(),remaining=fieldMins;
   for(var iter=0;iter<pool.length+1;iter++){
     var W=uncapped.reduce(function(s,p){return s+weights[p.name];},0);
     if(W<=0)break;
@@ -701,9 +729,7 @@ function calculateTargets(pool,slots){
       else{targets[p.name]=t;}
     });
     if(newCapped.length===0)break;
-    /* Remove newly capped players from next iteration */
-    var cappedSum=newCapped.length*TOTAL;
-    remaining-=cappedSum;
+    remaining-=newCapped.length*TOTAL;
     uncapped=uncapped.filter(function(p){return newCapped.indexOf(p.name)===-1;});
   }
   return targets;
@@ -716,49 +742,32 @@ function ivAt(ivs,t){
 
 function buildWeightedIntervals(pool,slots,starterNames){
   var N=pool.length;
-  /* Degenerate: everyone on field the whole game */
   if(N<=slots)return[{tS:0,tE:TOTAL,on:pool.map(function(p){return p.name;}),newIns:[]}];
-
   var targets=calculateTargets(pool,slots);
-
-  /* Sort by target desc (most time → longest on field → shortest bench window).
-     Tie-break: green group first (honours starter order). */
   var O={green:0,gold:1,black:2};
   var sorted=pool.slice().sort(function(a,b){
     var td=targets[b.name]-targets[a.name];
     if(Math.abs(td)>0.001)return td;
     return(a.group?O[a.group]:3)-(b.group?O[b.group]:3);
   });
-
-  /* Build bench windows: player i benched during [cumBench, cumBench+bench[i]] */
   var events={};events[0]=true;events[TOTAL]=true;
-  var benchWindows=[];
-  var cumBench=0;
+  var benchWindows=[],cumBench=0;
   for(var i=0;i<N;i++){
     var b=Math.max(0,TOTAL-targets[sorted[i].name]);
     if(b>0.001){
-      var bS=Math.round(cumBench*1000)/1000;
-      var bE=Math.round(Math.min(cumBench+b,TOTAL)*1000)/1000;
-      if(bS<TOTAL-0.001){
-        benchWindows.push({name:sorted[i].name,bS:bS,bE:bE});
-        events[bS]=true;events[bE]=true;
-      }
+      var bS=Math.round(cumBench*1000)/1000,bE=Math.round(Math.min(cumBench+b,TOTAL)*1000)/1000;
+      if(bS<TOTAL-0.001){benchWindows.push({name:sorted[i].name,bS:bS,bE:bE});events[bS]=true;events[bE]=true;}
     }
     cumBench+=b;
   }
-
   var times=Object.keys(events).map(Number).sort(function(a,b){return a-b;});
   var ivs=[];
   for(var i=0;i<times.length-1;i++){
     var tS=times[i],tE=times[i+1],mid=(tS+tE)/2;
     var on=sorted.map(function(p){return p.name;}).filter(function(n){
-      for(var j=0;j<benchWindows.length;j++){
-        var bw=benchWindows[j];
-        if(bw.name===n&&mid>=bw.bS-0.001&&mid<bw.bE-0.001)return false;
-      }
+      for(var j=0;j<benchWindows.length;j++){var bw=benchWindows[j];if(bw.name===n&&mid>=bw.bS-0.001&&mid<bw.bE-0.001)return false;}
       return true;
     });
-    /* Safety hard-count (should be exactly slots by construction) */
     if(on.length>slots)on=on.slice(0,slots);
     var prevOn=ivs.length>0?ivs[ivs.length-1].on:[];
     ivs.push({tS:tS,tE:tE,on:on,newIns:on.filter(function(n){return prevOn.indexOf(n)===-1;})});
@@ -769,12 +778,7 @@ function buildWeightedIntervals(pool,slots,starterNames){
 function buildMidIntervals(pool,starterNames){
   var N=pool.length,K=FORM.middie;
   if(N<=K)return[{tS:0,tE:TOTAL,on:pool.map(function(p){return p.name;}),newIns:[]}];
-
-  /* Swap time grid */
-  var swapTimes=[];
-  for(var t=midShiftMinutes;t<TOTAL;t+=midShiftMinutes)swapTimes.push(Math.round(t*1000)/1000);
-
-  /* N=2K: two alternating groups */
+  var swapTimes=[];for(var t=midShiftMinutes;t<TOTAL;t+=midShiftMinutes)swapTimes.push(Math.round(t*1000)/1000);
   if(N===2*K){
     var grpMap={};
     pool.forEach(function(p){var g=p.group||('_u_'+p.name);if(!grpMap[g])grpMap[g]=[];grpMap[g].push(p.name);});
@@ -791,98 +795,152 @@ function buildMidIntervals(pool,starterNames){
       gB=pool.map(function(p){return p.name;}).filter(function(n){return gA.indexOf(n)===-1;});
     }
     var all=[],cur=gA,other=gB,prev=0;
-    swapTimes.forEach(function(st){
-      all.push({tS:prev,tE:st,on:cur.slice(),newIns:prev===0?[]:cur.slice()});
-      var tmp=cur;cur=other;other=tmp;prev=st;
-    });
+    swapTimes.forEach(function(st){all.push({tS:prev,tE:st,on:cur.slice(),newIns:prev===0?[]:cur.slice()});var tmp=cur;cur=other;other=tmp;prev=st;});
     all.push({tS:prev,tE:TOTAL,on:cur.slice(),newIns:prev===0?[]:cur.slice()});
     all[0].newIns=[];
     return all;
   }
-
-  /* General case: use weighted scheduler */
   return buildWeightedIntervals(pool,K,starterNames);
 }
 
+/* ── buildAtkIntervals: two-sub-pool deficit scheduler ── */
+function buildAtkIntervals(primaryAtk,flexToAtk,midIvs){
+  var K=FORM.attack;
+
+  /* How many flex slots to reserve.
+     F = 1 if any flex middies are present and at any window 3+ will be benched from MID.
+     (With N_mid >= 2*K_mid the 2-group schedule always benches K_mid each window.)
+     F = 0 if no flex. */
+  var F=(flexToAtk.length>0)?1:0;
+  var primaryBudget=(K-F)*TOTAL;  /* e.g. 3*40 = 120 if F=1 */
+  var flexBudget=F*TOTAL;          /* e.g. 1*40 = 40  if F=1 */
+
+  /* Targets */
+  var allTargets={};
+  if(primaryAtk.length>0){
+    var W_p=primaryAtk.reduce(function(s,p){return s+p.playTimeWeight;},0);
+    /* Iterative cap for primary */
+    var uncapped=primaryAtk.slice(),remaining=primaryBudget;
+    var ptTargets={};primaryAtk.forEach(function(p){ptTargets[p.name]=0;});
+    for(var iter=0;iter<primaryAtk.length+1;iter++){
+      var Wp=uncapped.reduce(function(s,p){return s+p.playTimeWeight;},0);if(Wp<=0)break;
+      var nc=[];
+      uncapped.forEach(function(p){var t=p.playTimeWeight/Wp*remaining;if(t>=TOTAL-0.001){ptTargets[p.name]=TOTAL;nc.push(p.name);}else{ptTargets[p.name]=t;}});
+      if(!nc.length)break;remaining-=nc.length*TOTAL;
+      uncapped=uncapped.filter(function(p){return nc.indexOf(p.name)===-1;});
+    }
+    primaryAtk.forEach(function(p){allTargets[p.name]=ptTargets[p.name];});
+  }
+  if(flexToAtk.length>0&&F>0){
+    var W_f=flexToAtk.reduce(function(s,p){return s+p.playTimeWeight;},0);
+    var uncapF=flexToAtk.slice(),remainF=flexBudget;
+    var ftTargets={};flexToAtk.forEach(function(p){ftTargets[p.name]=0;});
+    for(var iter=0;iter<flexToAtk.length+1;iter++){
+      var Wf=uncapF.reduce(function(s,p){return s+p.playTimeWeight;},0);if(Wf<=0)break;
+      var ncF=[];
+      uncapF.forEach(function(p){var t=p.playTimeWeight/Wf*remainF;if(t>=TOTAL-0.001){ftTargets[p.name]=TOTAL;ncF.push(p.name);}else{ftTargets[p.name]=t;}});
+      if(!ncF.length)break;remainF-=ncF.length*TOTAL;
+      uncapF=uncapF.filter(function(p){return ncF.indexOf(p.name)===-1;});
+    }
+    flexToAtk.forEach(function(p){allTargets[p.name]=ftTargets[p.name];});
+  }
+
+  /* Build timeline from MID swap boundaries only */
+  var tSet={0:true};tSet[TOTAL]=true;
+  midIvs.forEach(function(iv){tSet[iv.tS]=true;tSet[iv.tE]=true;});
+  var times=Object.keys(tSet).map(Number).sort(function(a,b){return a-b;});
+
+  /* Deficit-based greedy scheduler */
+  var acc={};
+  primaryAtk.forEach(function(p){acc[p.name]=0;});
+  flexToAtk.forEach(function(p){acc[p.name]=0;});
+  var flexNames={};flexToAtk.forEach(function(p){flexNames[p.name]=true;});
+
+  var ivs=[];
+  for(var i=0;i<times.length-1;i++){
+    var tS=times[i],tE=times[i+1],dur=tE-tS;
+    var midOnNow=ivAt(midIvs,tS).on;
+
+    /* Eligible: primary always; flex only when benched from MID */
+    var eligible=[];
+    primaryAtk.forEach(function(p){eligible.push(p.name);});
+    flexToAtk.forEach(function(p){if(midOnNow.indexOf(p.name)===-1)eligible.push(p.name);});
+
+    /* Sort by deficit desc */
+    eligible.sort(function(a,b){
+      var da=(allTargets[a]||0)-acc[a];
+      var db=(allTargets[b]||0)-acc[b];
+      return db-da;
+    });
+
+    var on=eligible.slice(0,K);
+    on.forEach(function(n){acc[n]+=dur;});
+    var prevOn=ivs.length>0?ivs[ivs.length-1].on:[];
+    ivs.push({tS:tS,tE:tE,on:on,newIns:on.filter(function(n){return prevOn.indexOf(n)===-1;})});
+  }
+
+  /* Store targets on the result for the Time tab */
+  ivs._targets=allTargets;
+  ivs._primaryAtk=primaryAtk;
+  ivs._flexToAtk=flexToAtk;
+  return ivs;
+}
+
 /* ================================================================================
-   computeRotation — assembles a full plan
-   ================================================================================
-   Flex model (correct):
-   1. Each position's PRIMARY pool = only that position's players (no flex in/out).
-      Primary intervals are built for exact FORM[pos] counts.
-   2. For each time window, after primary assignments are made, look for open
-      flex slots: if a position is under FORM[pos] because a primary player is
-      benched, a flex player who is ALSO benched from their primary position
-      can fill the gap.
-   3. This is zero-sum: flex players only appear at their flex position during
-      windows when they are benched from their primary position.
-   4. Result: 4/3/4 is always satisfied; flex players get meaningful extra time.
+   computeRotation
    ================================================================================ */
 function computeRotation(effectiveAbsent){
   var avail=ROSTER.filter(function(p){return!effectiveAbsent[p.name];});
 
-  /* Primary pools: only that position's own players */
   var defPrimary=avail.filter(function(p){return p.pos==='defense';});
   var midPrimary=avail.filter(function(p){return p.pos==='middie';});
   var atkPrimary=avail.filter(function(p){return p.pos==='attack';});
+  var flexToAtk=avail.filter(function(p){return p.flex==='attack'&&p.pos!=='attack';});
+  var flexToDef=avail.filter(function(p){return p.flex==='defense'&&p.pos!=='defense';});
+  var flexToMid=avail.filter(function(p){return p.flex==='middie'&&p.pos!=='middie';});
 
-  if(defPrimary.length<FORM.defense){
-    /* Check if flex players can cover the gap */
-    var defFlexIn=avail.filter(function(p){return p.flex==='defense'&&p.pos!=='defense';});
-    if(defPrimary.length+defFlexIn.length<FORM.defense)return null;
-  }
-  if(midPrimary.length<FORM.middie){
-    var midFlexIn=avail.filter(function(p){return p.flex==='middie'&&p.pos!=='middie';});
-    if(midPrimary.length+midFlexIn.length<FORM.middie)return null;
-  }
-  if(atkPrimary.length<FORM.attack){
-    var atkFlexIn=avail.filter(function(p){return p.flex==='attack'&&p.pos!=='attack';});
-    if(atkPrimary.length+atkFlexIn.length<FORM.attack)return null;
-  }
+  /* Validate minimums */
+  if(defPrimary.length+flexToDef.length<FORM.defense)return null;
+  if(midPrimary.length+flexToMid.length<FORM.middie) return null;
+  if(atkPrimary.length+flexToAtk.length<FORM.attack) return null;
 
-  /* Build primary intervals */
+  /* Build DEF and MID independently */
   var defS=sortByGroup(defPrimary);
   var midS=sortByGroup(midPrimary);
-  var atkS=sortByGroup(atkPrimary);
-
   var defIvs=buildWeightedIntervals(defS,FORM.defense,getStarterNamesFromGroup('defense',defS));
   var midIvs=buildMidIntervals(midS,getStarterNamesFromGroup('middie',midS));
-  var atkIvs=buildWeightedIntervals(atkS,FORM.attack, getStarterNamesFromGroup('attack', atkS));
 
-  /* Flex players: players with a flex assignment */
-  var flexPlayers=avail.filter(function(p){return p.flex!==null;});
+  /* Build ATK with two-sub-pool deficit scheduler */
+  var atkS=sortByGroup(atkPrimary);
+  var atkIvs=buildAtkIntervals(atkS,sortByGroup(flexToAtk),midIvs);
 
-  /* Merge all timeline boundaries */
+  /* Merge timeline */
   var tSet={0:true};tSet[TOTAL]=true;
   [defIvs,midIvs,atkIvs].forEach(function(ivs){ivs.forEach(function(iv){tSet[iv.tS]=true;tSet[iv.tE]=true;});});
   var times=Object.keys(tSet).map(Number).sort(function(a,b){return a-b;});
 
-  /* Build snapshots: primary assignments + flex fill-ins */
+  /* Snapshots */
   var snapshots=[];
   for(var i=0;i<times.length-1;i++){
-    var tS=times[i],tE=times[i+1],mid=(tS+tE)/2;
+    var tS=times[i],tE=times[i+1];
     var dIv=ivAt(defIvs,tS),mIv=ivAt(midIvs,tS),aIv=ivAt(atkIvs,tS);
 
-    /* Start from primary assignments (always exactly FORM[pos]) */
+    /* Flex fills for DEF/MID if needed (handles non-ATK flex cases) */
     var snapDef=dIv.on.slice(),snapMid=mIv.on.slice(),snapAtk=aIv.on.slice();
-
-    /* For each flex player: are they benched from their primary position?
-       If yes, and their flex position has an open slot, fill it.
-       Sort flex candidates by weight desc so highest-weight players fill first. */
-    var flexCandidates=flexPlayers.slice().sort(function(a,b){return b.playTimeWeight-a.playTimeWeight;});
-    flexCandidates.forEach(function(fp){
-      /* Is this player benched from their primary position right now? */
-      var primaryOn;
-      if(fp.pos==='defense')primaryOn=snapDef.indexOf(fp.name)!==-1;
-      else if(fp.pos==='middie')primaryOn=snapMid.indexOf(fp.name)!==-1;
-      else primaryOn=snapAtk.indexOf(fp.name)!==-1;
-      if(primaryOn)return; /* On field at primary — can't flex */
-
-      /* Is there an open slot at the flex position? */
-      if(fp.flex==='attack'  &&snapAtk.length<FORM.attack) {snapAtk.push(fp.name);return;}
-      if(fp.flex==='middie'  &&snapMid.length<FORM.middie) {snapMid.push(fp.name);return;}
-      if(fp.flex==='defense' &&snapDef.length<FORM.defense){snapDef.push(fp.name);return;}
-    });
+    if(flexToDef.length>0){
+      var fdCands=flexToDef.slice().sort(function(a,b){return b.playTimeWeight-a.playTimeWeight;});
+      fdCands.forEach(function(fp){
+        var on=fp.pos==='middie'?snapMid.indexOf(fp.name)!==-1:snapAtk.indexOf(fp.name)!==-1;
+        if(!on&&snapDef.length<FORM.defense)snapDef.push(fp.name);
+      });
+    }
+    if(flexToMid.length>0){
+      var fmCands=flexToMid.slice().sort(function(a,b){return b.playTimeWeight-a.playTimeWeight;});
+      fmCands.forEach(function(fp){
+        var on=fp.pos==='defense'?snapDef.indexOf(fp.name)!==-1:snapAtk.indexOf(fp.name)!==-1;
+        if(!on&&snapMid.length<FORM.middie)snapMid.push(fp.name);
+      });
+    }
 
     var newIns={};
     if(tS>0){
@@ -901,13 +959,22 @@ function computeRotation(effectiveAbsent){
     s.def.concat(s.mid,s.atk).forEach(function(n){if(mins[n]!==undefined)mins[n]+=dur;});
   });
 
-  /* Groups for Time tab display */
+  /* ATK targets for Time tab: combine primary + flex targets */
+  var atkTargets=atkIvs._targets||{};
+
+  /* MID targets */
+  var midTargets=calculateTargets(midS,FORM.middie);
+
+  /* DEF targets */
+  var defTargets=calculateTargets(defS,FORM.defense);
+
   var groups={
-    defense:defPrimary.concat(avail.filter(function(p){return p.flex==='defense'&&p.pos!=='defense';})),
-    middie: midPrimary.concat(avail.filter(function(p){return p.flex==='middie' &&p.pos!=='middie';})),
-    attack: atkPrimary.concat(avail.filter(function(p){return p.flex==='attack' &&p.pos!=='attack';}))
+    defense:defPrimary.concat(flexToDef),
+    middie: midPrimary.concat(flexToMid),
+    attack: atkPrimary.concat(flexToAtk)
   };
-  return{snapshots:snapshots,groups:groups,mins:mins,avail:avail};
+  return{snapshots:snapshots,groups:groups,mins:mins,avail:avail,
+         atkTargets:atkTargets,midTargets:midTargets,defTargets:defTargets};
 }
 
 /* ================================================================================
@@ -1013,10 +1080,11 @@ function calcMins(snapshots,avail){
   return mins;
 }
 
-function poolAvgTarget(groups,pos){
+function poolAvgTarget(plan,pos){
+  /* Average actual minutes for this position's players */
+  var groups=plan.groups,mins=plan.mins;
   var pool=groups[pos];if(!pool||!pool.length)return TOTAL.toFixed(1);
-  var t=calculateTargets(pool,FORM[pos]);
-  var s=pool.reduce(function(a,p){return a+t[p.name];},0);
+  var s=pool.reduce(function(a,p){return a+(mins[p.name]||0);},0);
   return(s/pool.length).toFixed(1);
 }
 
@@ -1028,9 +1096,9 @@ function renderShiftsForPlan(plan,pk){
 
   var hasEdits=!!planEdits[pk];
   var html='<div class="stats-strip">'
-    +'<div class="stat-box"><span class="sv" style="color:var(--def)">'+poolAvgTarget(groups,'defense')+'m</span><span class="sl">Avg DEF</span></div>'
-    +'<div class="stat-box"><span class="sv" style="color:var(--mid)">'+poolAvgTarget(groups,'middie')+'m</span><span class="sl">Avg MID</span></div>'
-    +'<div class="stat-box"><span class="sv" style="color:var(--atk)">'+poolAvgTarget(groups,'attack')+'m</span><span class="sl">Avg ATK</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--def)">'+poolAvgTarget(plan,'defense')+'m</span><span class="sl">Avg DEF</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--mid)">'+poolAvgTarget(plan,'middie')+'m</span><span class="sl">Avg MID</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--atk)">'+poolAvgTarget(plan,'attack')+'m</span><span class="sl">Avg ATK</span></div>'
     +'<div class="stat-box"><span class="sv">'+avg.toFixed(1)+'m</span><span class="sl">Overall</span></div>'
     +'</div>';
   html+='<div class="edit-banner">&#9998; Tap two chips in the <em>same shift</em> to swap positions.'
@@ -1127,25 +1195,38 @@ function renderTimeForPlan(plan,pk){
   var maxM=0;Object.keys(mins).forEach(function(k){if(mins[k]>maxM)maxM=mins[k];});if(!maxM)maxM=1;
   var avg=0;Object.keys(mins).forEach(function(k){avg+=mins[k];});avg/=(avail.length||1);
 
+  /* Use the targets stored on the plan (accurate for the two-sub-pool model) */
+  var atkTargets=plan.atkTargets||{};
+  var midTargets=plan.midTargets||{};
+  var defTargets=plan.defTargets||{};
+
   var html='<div class="note">Avg: <strong>'+avg.toFixed(1)+' min</strong></div><div class="pt-list">';
   ['attack','middie','defense'].forEach(function(pos){
     var pool=groups[pos];if(!pool||!pool.length)return;
     var colMap={attack:'var(--atk)',middie:'var(--mid)',defense:'var(--def)'};
     var lblMap={attack:'ATTACK',middie:'MIDFIELD',defense:'DEFENSE'};
     var col=colMap[pos],lbl=lblMap[pos];
-    var targets=calculateTargets(pool,FORM[pos]);
+    var targetsForPos=pos==='attack'?atkTargets:pos==='middie'?midTargets:defTargets;
+
     html+='<div style="font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;color:'+col+
       ';padding:8px 0 4px;border-bottom:1px solid var(--border2);margin-top:10px">'+lbl+'</div>';
     pool.slice().sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(function(p){
       var m=mins[p.name]||0;
       var rp=getRosterPlayer(p.name);
+      /* Show [FLEX] tag if this player's primary is not this position */
       var flexTag=(rp&&rp.flex===pos&&rp.pos!==pos)?' <span style="font-size:10px;color:var(--atk)">[FLEX]</span>':'';
+      /* For flex middies in ATK group: also show their MID time */
+      var midBonusTag='';
+      if(rp&&rp.flex==='attack'&&rp.pos==='middie'){
+        var midM=midTargets[p.name];
+        if(midM)midBonusTag=' <span style="font-size:10px;color:var(--mid)">(+'+midM.toFixed(1)+'m MID)</span>';
+      }
       var spTag=rp&&rp.subpos?' <span style="font-size:10px;color:var(--gold)">'+rp.subpos+'</span>':'';
       var wtStr=p.playTimeWeight!==1.0?' <span style="font-size:10px;color:'+(p.playTimeWeight>1?'var(--atk)':'var(--muted)')+'">\xd7'+p.playTimeWeight.toFixed(1)+'</span>':'';
-      var tgt=targets[p.name];
-      var tgtStr=' <span style="font-size:10px;color:var(--muted)">(tgt '+tgt.toFixed(1)+')</span>';
+      var tgt=targetsForPos[p.name];
+      var tgtStr=tgt!==undefined?' <span style="font-size:10px;color:var(--muted)">(tgt '+tgt.toFixed(1)+')</span>':'';
       html+='<div class="pt-row"><div class="pt-top">'
-        +'<span class="pt-name" style="color:'+col+'">'+p.name+spTag+flexTag+wtStr+tgtStr+'</span>'
+        +'<span class="pt-name" style="color:'+col+'">'+p.name+spTag+flexTag+wtStr+tgtStr+midBonusTag+'</span>'
         +'<span class="pt-mins">'+m.toFixed(1)+' min</span>'
         +'</div><div class="pt-bar-bg"><div class="pt-bar-fill" style="width:'
         +(m/maxM*100).toFixed(1)+'%;background:'+col+';opacity:.82"></div></div></div>';
