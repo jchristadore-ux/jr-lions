@@ -135,6 +135,16 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .add-btn{padding:7px 14px;border-radius:6px;background:var(--green);color:#000;font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;border:none;cursor:pointer;letter-spacing:1px;white-space:nowrap}
 .add-btn:active{opacity:.7}
 .bench-label{font-size:11px;color:var(--muted);margin-top:6px;width:100%}
+/* ── save config ── */
+.save-bar{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--card);border:1px solid var(--border2);border-radius:12px;margin-bottom:12px;flex-wrap:wrap}
+.save-bar-lbl{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:2px;color:var(--green);text-transform:uppercase;flex:1;min-width:100px}
+.save-bar-status{font-size:12px;color:var(--muted);flex:1;text-align:right;min-width:80px}
+.save-bar-status.saved{color:var(--green)}
+.sv-btn{padding:8px 16px;border-radius:8px;font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;border:none;white-space:nowrap}
+.sv-btn-save{background:var(--green);color:#000}
+.sv-btn-save:active{opacity:.75}
+.sv-btn-clear{background:transparent;border:1px solid var(--border2);color:var(--muted);font-size:12px;padding:6px 12px}
+.sv-btn-clear:active{opacity:.75}
 /* ── print overlay ── */
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow-y:auto;display:none}
 .overlay.show{display:block}
@@ -226,6 +236,12 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-def">DEFENSE</span></div><div id="list-defense"></div></div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-mid">MIDFIELD</span></div><div id="list-middie"></div></div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-atk">ATTACK</span></div><div id="list-attack"></div></div>
+  <div class="save-bar">
+    <span class="save-bar-lbl">&#128190; Roster Config</span>
+    <span class="save-bar-status" id="saveStatus">Not saved</span>
+    <button class="sv-btn sv-btn-save" onclick="saveConfig()">Save Configuration</button>
+    <button class="sv-btn sv-btn-clear" onclick="clearConfig()">Clear</button>
+  </div>
 </div>
 
 <!-- SETTINGS PAGE -->
@@ -1264,6 +1280,49 @@ function copyText(){
 }
 
 /* ── init ── */
+/* Load saved roster config before first render */
+(function loadConfig(){
+  var STORAGE_KEY='jrlions_roster_config';
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return;
+    var cfg=JSON.parse(raw);
+    if(!cfg||!cfg.players)return;
+    cfg.players.forEach(function(saved){
+      var p=getRosterPlayer(saved.name);
+      if(!p)return;
+      if(saved.group!==undefined)p.group=saved.group;
+      if(saved.flex!==undefined)p.flex=saved.flex;
+      if(saved.subpos!==undefined)p.subpos=saved.subpos;
+      if(saved.playTimeWeight!==undefined)p.playTimeWeight=saved.playTimeWeight;
+    });
+    var el=document.getElementById('saveStatus');
+    if(el){el.textContent='Saved '+cfg.savedAt;el.className='save-bar-status saved';}
+  }catch(e){}
+})();
+
+function saveConfig(){
+  var STORAGE_KEY='jrlions_roster_config';
+  try{
+    var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    var cfg={
+      savedAt:now,
+      players:ROSTER.map(function(p){return{name:p.name,group:p.group,flex:p.flex,subpos:p.subpos,playTimeWeight:p.playTimeWeight};})
+    };
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(cfg));
+    var el=document.getElementById('saveStatus');
+    if(el){el.textContent='Saved '+now;el.className='save-bar-status saved';}
+  }catch(e){alert('Could not save: '+e.message);}
+}
+
+function clearConfig(){
+  var STORAGE_KEY='jrlions_roster_config';
+  if(!confirm('Clear saved configuration? Roster badges and weights will reset to defaults on next load.'))return;
+  try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+  var el=document.getElementById('saveStatus');
+  if(el){el.textContent='Not saved';el.className='save-bar-status';}
+}
+
 renderRoster();
 updatePlanNote();
 
