@@ -797,11 +797,50 @@ function computeRotation(effectiveAbsent){
   for(var i=0;i<times.length-1;i++){
     var tS=times[i],tE=times[i+1];
     var dIv=ivAt(defIvF,tS),mIv=ivAt(midIvF,tS),aIv=ivAt(atkIvF,tS);
+
+    // ── DEDUPLICATION (flex fix) ──────────────────────────────────────────────
+    // applyFlexOverlay appends a flex player to their flex-position array but
+    // does NOT remove them from their primary-position array (which is a
+    // separate data structure). When the three arrays are combined into a
+    // snapshot a player can appear in two arrays simultaneously.
+    //
+    // Rule: a player may occupy exactly ONE positional array per shift.
+    // Priority: flex position wins (they were explicitly moved there for this
+    // window). Remove them from their primary-position array.
+    //
+    // We process: atk → mid → def as the "override wins" order, then cross-
+    // remove any name that appears in more than one array.
+    var snapDef=dIv.on.slice(),snapMid=mIv.on.slice(),snapAtk=aIv.on.slice();
+
+    // Build a seen-set walking atk first, then mid, then def.
+    // First occurrence wins removal from lower-priority arrays.
+    var seen={};
+    snapAtk.forEach(function(n){seen[n]='atk';});
+    snapMid=snapMid.filter(function(n){
+      if(seen[n])return false;   // already claimed by atk
+      seen[n]='mid';return true;
+    });
+    snapDef=snapDef.filter(function(n){
+      if(seen[n])return false;   // already claimed by atk or mid
+      seen[n]='def';return true;
+    });
+    // Also remove from atk anything that snuck in from def/mid side
+    // (shouldn't happen with the above order, but belt-and-suspenders)
+    snapAtk=snapAtk.filter(function(n){return seen[n]==='atk';});
+
+    // ── HARD COUNT VALIDATION ─────────────────────────────────────────────────
+    // Each array must be exactly FORM[pos] long. If applyFlexOverlay added a
+    // bonus player beyond the required count, trim the excess (last entries,
+    // which are the appended flex extras). This is the strict 4/3/4 guarantee.
+    if(snapAtk.length>FORM.attack) snapAtk=snapAtk.slice(0,FORM.attack);
+    if(snapMid.length>FORM.middie)  snapMid=snapMid.slice(0,FORM.middie);
+    if(snapDef.length>FORM.defense) snapDef=snapDef.slice(0,FORM.defense);
+
     var newIns={};
     if(tS>0){
       [defIvF,midIvF,atkIvF].forEach(function(ivs){var iv=ivAt(ivs,tS);if(Math.abs(iv.tS-tS)<0.01)iv.newIns.forEach(function(n){newIns[n]=true;});});
     }
-    snapshots.push({tS:tS,tE:tE,def:dIv.on.slice(),mid:mIv.on.slice(),atk:aIv.on.slice(),newIns:Object.keys(newIns),isKO:tS===0});
+    snapshots.push({tS:tS,tE:tE,def:snapDef,mid:snapMid,atk:snapAtk,newIns:Object.keys(newIns),isKO:tS===0});
   }
 
   var mins={};avail.forEach(function(p){mins[p.name]=0;});
