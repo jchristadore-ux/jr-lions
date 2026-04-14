@@ -658,12 +658,9 @@ function updatePlanNote(){
    ================================================================================ */
 
 function buildPool(pos,avail){
-  /* Primary players at this pos who have NOT flexed away to somewhere else.
-     (A player with flex=X has left their primary pool and joined pool X.) */
-  var primary=avail.filter(function(p){return p.pos===pos&&p.flex===null;});
-  /* Players from other positions who have explicitly flexed into this pos */
-  var flexIn=avail.filter(function(p){return p.flex===pos&&p.pos!==pos;});
-  return primary.concat(flexIn);
+  /* For validation and plan-note display: primary players only.
+     Flex fill-ins are handled inside computeRotation at snapshot time. */
+  return avail.filter(function(p){return p.pos===pos;});
 }
 
 function calculateTargets(pool,slots){
@@ -793,35 +790,84 @@ function buildMidIntervals(pool,starterNames){
 
 /* ================================================================================
    computeRotation — assembles a full plan
+   ================================================================================
+   Flex model (correct):
+   1. Each position's PRIMARY pool = only that position's players (no flex in/out).
+      Primary intervals are built for exact FORM[pos] counts.
+   2. For each time window, after primary assignments are made, look for open
+      flex slots: if a position is under FORM[pos] because a primary player is
+      benched, a flex player who is ALSO benched from their primary position
+      can fill the gap.
+   3. This is zero-sum: flex players only appear at their flex position during
+      windows when they are benched from their primary position.
+   4. Result: 4/3/4 is always satisfied; flex players get meaningful extra time.
    ================================================================================ */
 function computeRotation(effectiveAbsent){
   var avail=ROSTER.filter(function(p){return!effectiveAbsent[p.name];});
 
-  /* Build pools (flex = exclusive transfer) */
-  var defPool=buildPool('defense',avail);
-  var midPool=buildPool('middie', avail);
-  var atkPool=buildPool('attack',  avail);
+  /* Primary pools: only that position's own players */
+  var defPrimary=avail.filter(function(p){return p.pos==='defense';});
+  var midPrimary=avail.filter(function(p){return p.pos==='middie';});
+  var atkPrimary=avail.filter(function(p){return p.pos==='attack';});
 
-  if(defPool.length<FORM.defense||midPool.length<FORM.middie||atkPool.length<FORM.attack)return null;
+  if(defPrimary.length<FORM.defense){
+    /* Check if flex players can cover the gap */
+    var defFlexIn=avail.filter(function(p){return p.flex==='defense'&&p.pos!=='defense';});
+    if(defPrimary.length+defFlexIn.length<FORM.defense)return null;
+  }
+  if(midPrimary.length<FORM.middie){
+    var midFlexIn=avail.filter(function(p){return p.flex==='middie'&&p.pos!=='middie';});
+    if(midPrimary.length+midFlexIn.length<FORM.middie)return null;
+  }
+  if(atkPrimary.length<FORM.attack){
+    var atkFlexIn=avail.filter(function(p){return p.flex==='attack'&&p.pos!=='attack';});
+    if(atkPrimary.length+atkFlexIn.length<FORM.attack)return null;
+  }
 
-  var defS=sortByGroup(defPool);
-  var midS=sortByGroup(midPool);
-  var atkS=sortByGroup(atkPool);
+  /* Build primary intervals */
+  var defS=sortByGroup(defPrimary);
+  var midS=sortByGroup(midPrimary);
+  var atkS=sortByGroup(atkPrimary);
 
   var defIvs=buildWeightedIntervals(defS,FORM.defense,getStarterNamesFromGroup('defense',defS));
   var midIvs=buildMidIntervals(midS,getStarterNamesFromGroup('middie',midS));
   var atkIvs=buildWeightedIntervals(atkS,FORM.attack, getStarterNamesFromGroup('attack', atkS));
 
-  /* Merge timeline */
+  /* Flex players: players with a flex assignment */
+  var flexPlayers=avail.filter(function(p){return p.flex!==null;});
+
+  /* Merge all timeline boundaries */
   var tSet={0:true};tSet[TOTAL]=true;
   [defIvs,midIvs,atkIvs].forEach(function(ivs){ivs.forEach(function(iv){tSet[iv.tS]=true;tSet[iv.tE]=true;});});
   var times=Object.keys(tSet).map(Number).sort(function(a,b){return a-b;});
 
-  /* Snapshots — exactly FORM[pos] per array by construction (single-pool system) */
+  /* Build snapshots: primary assignments + flex fill-ins */
   var snapshots=[];
   for(var i=0;i<times.length-1;i++){
-    var tS=times[i],tE=times[i+1];
+    var tS=times[i],tE=times[i+1],mid=(tS+tE)/2;
     var dIv=ivAt(defIvs,tS),mIv=ivAt(midIvs,tS),aIv=ivAt(atkIvs,tS);
+
+    /* Start from primary assignments (always exactly FORM[pos]) */
+    var snapDef=dIv.on.slice(),snapMid=mIv.on.slice(),snapAtk=aIv.on.slice();
+
+    /* For each flex player: are they benched from their primary position?
+       If yes, and their flex position has an open slot, fill it.
+       Sort flex candidates by weight desc so highest-weight players fill first. */
+    var flexCandidates=flexPlayers.slice().sort(function(a,b){return b.playTimeWeight-a.playTimeWeight;});
+    flexCandidates.forEach(function(fp){
+      /* Is this player benched from their primary position right now? */
+      var primaryOn;
+      if(fp.pos==='defense')primaryOn=snapDef.indexOf(fp.name)!==-1;
+      else if(fp.pos==='middie')primaryOn=snapMid.indexOf(fp.name)!==-1;
+      else primaryOn=snapAtk.indexOf(fp.name)!==-1;
+      if(primaryOn)return; /* On field at primary — can't flex */
+
+      /* Is there an open slot at the flex position? */
+      if(fp.flex==='attack'  &&snapAtk.length<FORM.attack) {snapAtk.push(fp.name);return;}
+      if(fp.flex==='middie'  &&snapMid.length<FORM.middie) {snapMid.push(fp.name);return;}
+      if(fp.flex==='defense' &&snapDef.length<FORM.defense){snapDef.push(fp.name);return;}
+    });
+
     var newIns={};
     if(tS>0){
       [defIvs,midIvs,atkIvs].forEach(function(ivs){
@@ -829,7 +875,7 @@ function computeRotation(effectiveAbsent){
         if(Math.abs(iv.tS-tS)<0.01)iv.newIns.forEach(function(n){newIns[n]=true;});
       });
     }
-    snapshots.push({tS:tS,tE:tE,def:dIv.on.slice(),mid:mIv.on.slice(),atk:aIv.on.slice(),newIns:Object.keys(newIns),isKO:tS===0});
+    snapshots.push({tS:tS,tE:tE,def:snapDef,mid:snapMid,atk:snapAtk,newIns:Object.keys(newIns),isKO:tS===0});
   }
 
   /* Actual minutes */
@@ -839,7 +885,13 @@ function computeRotation(effectiveAbsent){
     s.def.concat(s.mid,s.atk).forEach(function(n){if(mins[n]!==undefined)mins[n]+=dur;});
   });
 
-  return{snapshots:snapshots,groups:{defense:defPool,middie:midPool,attack:atkPool},mins:mins,avail:avail};
+  /* Groups for Time tab display */
+  var groups={
+    defense:defPrimary.concat(avail.filter(function(p){return p.flex==='defense'&&p.pos!=='defense';})),
+    middie: midPrimary.concat(avail.filter(function(p){return p.flex==='middie' &&p.pos!=='middie';})),
+    attack: atkPrimary.concat(avail.filter(function(p){return p.flex==='attack' &&p.pos!=='attack';}))
+  };
+  return{snapshots:snapshots,groups:groups,mins:mins,avail:avail};
 }
 
 /* ================================================================================
@@ -854,8 +906,9 @@ function generate(){
   var avail=ROSTER.filter(function(p){return!confirmedAbsent[p.name];});
   var w2=[];
   ['defense','middie','attack'].forEach(function(pos){
-    var pool=buildPool(pos,avail);
-    if(pool.length<FORM[pos])w2.push('Not enough '+pos+' players ('+pool.length+' in pool, need '+FORM[pos]+').');
+    var primary=avail.filter(function(p){return p.pos===pos;}).length;
+    var flexIn=avail.filter(function(p){return p.flex===pos&&p.pos!==pos;}).length;
+    if(primary+flexIn<FORM[pos])w2.push('Not enough '+pos+' players ('+(primary+flexIn)+' available, need '+FORM[pos]+').');
   });
   if(w2.length){
     document.getElementById('warnArea').innerHTML=w2.map(function(s){return'<div class="warn">'+s+'</div>';}).join('');
