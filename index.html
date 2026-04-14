@@ -27,7 +27,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .b-atk{background:rgba(255,140,66,.15);color:var(--atk);border:1px solid rgba(255,140,66,.5)}
 .b-mid{background:rgba(91,200,245,.12);color:var(--mid);border:1px solid rgba(91,200,245,.5)}
 .b-def{background:rgba(192,132,252,.12);color:var(--def);border:1px solid rgba(192,132,252,.5)}
-.player-row{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--card);border:1px solid var(--border2);border-radius:10px;margin-bottom:7px;cursor:pointer;user-select:none;min-height:58px;transition:background .12s}
+.player-row{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card);border:1px solid var(--border2);border-radius:10px;margin-bottom:7px;cursor:pointer;user-select:none;min-height:50px;transition:background .12s;flex-wrap:wrap}
 .player-row:active{background:var(--card2)}
 .player-row.absent{background:transparent;border-color:#1a1a1a;opacity:.4}
 .player-row.unconfirmed{background:rgba(240,192,32,.06);border-color:rgba(240,192,32,.35)}
@@ -35,7 +35,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .chk{width:26px;height:26px;border-radius:6px;border:2px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:#000}
 .player-row:not(.absent):not(.unconfirmed) .chk{background:var(--gold);border-color:var(--gold)}
 .player-row.unconfirmed .chk{background:none;border-color:var(--gold);color:var(--gold);font-size:16px;font-weight:700}
-.pname{font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;color:var(--white);flex:1}
+.pname{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;color:var(--white);flex:1;min-width:70px}
 .player-row.absent .pname{color:var(--muted);text-decoration:line-through}
 .ctrl-card{background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:12px}
 .ctrl-lbl{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
@@ -49,7 +49,6 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .stat-box .sv{font-family:'Oswald',sans-serif;font-size:20px;display:block;line-height:1;margin-bottom:1px}
 .stat-box .sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .sched-list{display:flex;flex-direction:column;gap:8px}
-/* ── SHIFT CARDS ── */
 .shift-card{background:var(--card);border:1px solid var(--border2);border-radius:12px;overflow:hidden}
 .shift-card.special{border-color:var(--gold2)}
 .shift-hdr{background:#000;padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border2)}
@@ -77,7 +76,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .pt-list{display:flex;flex-direction:column;gap:9px}
 .pt-row{display:flex;flex-direction:column;gap:5px}
 .pt-top{display:flex;align-items:center;gap:8px}
-.pt-name{font-family:'Oswald',sans-serif;font-size:19px;color:var(--white);flex:1}
+.pt-name{font-family:'Oswald',sans-serif;font-size:18px;color:var(--white);flex:1}
 .pt-mins{font-family:'Oswald',sans-serif;font-size:17px;color:var(--gold);min-width:62px;text-align:right}
 .pt-bar-bg{height:10px;background:#1a1a1a;border-radius:5px;overflow:hidden}
 .pt-bar-fill{height:100%;border-radius:5px}
@@ -90,38 +89,44 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .btn-gold:active{background:var(--gold3)}
 .btn-outline{background:var(--card2);border:1.5px solid var(--gold2);color:var(--gold)}
 .btn-outline:active{background:#222}
-.flex-badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:8px;user-select:none;transition:all .15s}
+/* ── roster badges ── */
+.flex-badge{display:inline-block;padding:3px 7px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:3px;user-select:none;transition:all .15s}
 .flex-badge:active{opacity:.7}
 .flex-active{border-color:var(--gold);color:var(--gold);background:rgba(240,192,0,.1)}
 .flex-active.flex-defense{border-color:var(--def);color:var(--def);background:rgba(192,132,252,.15)}
 .flex-active.flex-attack{border-color:var(--atk);color:var(--atk);background:rgba(255,140,66,.15)}
 .flex-active.flex-middie{border-color:var(--mid);color:var(--mid);background:rgba(91,200,245,.15)}
-.grp-badge{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:6px;user-select:none;transition:all .15s}
+.grp-badge{display:inline-block;padding:3px 7px;border-radius:5px;font-size:10px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:3px;user-select:none;transition:all .15s}
 .grp-badge:active{opacity:.7}
 .grp-green{border-color:#2aaa2a;color:#2aaa2a;background:rgba(42,170,42,.12)}
 .grp-gold{border-color:var(--gold);color:var(--gold);background:rgba(240,192,32,.12)}
 .grp-black{border-color:#aaa;color:#ccc;background:rgba(255,255,255,.06)}
-.subpos-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:.5px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:6px;user-select:none;transition:all .15s;min-width:26px;text-align:center}
+.subpos-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:.5px;cursor:pointer;border:1px solid var(--border2);color:var(--muted);background:transparent;margin-left:3px;user-select:none;transition:all .15s;min-width:26px;text-align:center}
 .subpos-badge:active{opacity:.7}
 .subpos-badge.subpos-set{border-color:var(--gold2);color:var(--gold);background:rgba(240,192,0,.1)}
 .subpos-tag{font-size:10px;font-weight:700;opacity:.7;margin-left:2px}
+/* ── weight stepper ── */
+.wt-ctrl{display:inline-flex;align-items:center;gap:0;margin-left:3px;border:1px solid var(--border2);border-radius:6px;overflow:hidden;flex-shrink:0;vertical-align:middle}
+.wt-btn{background:var(--card2);border:none;color:var(--gold);font-size:15px;font-weight:900;width:26px;height:26px;cursor:pointer;line-height:1;padding:0;text-align:center;flex-shrink:0}
+.wt-btn:active{background:#333}
+.wt-val{background:#000;color:var(--gold);font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;width:32px;text-align:center;line-height:26px;border-left:1px solid var(--border2);border-right:1px solid var(--border2)}
+.wt-val.wt-hi{color:var(--atk)}
+.wt-val.wt-lo{color:var(--muted)}
+/* ── plan dividers ── */
 .plan-divider{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 16px;margin:16px 0 10px;border-radius:10px;line-height:1.4}
 .plan-divider-a{background:rgba(255,60,60,.08);border:1.5px solid rgba(255,60,60,.35);color:#ff7777}
 .plan-divider-b{background:rgba(42,170,42,.08);border:1.5px solid rgba(42,170,42,.35);color:var(--green)}
 .plan-divider .plan-divider-names{font-family:'Source Sans 3',sans-serif;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;opacity:.8;margin-top:3px}
-/* ── SETTINGS ── */
+/* ── settings ── */
 .opt-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .opt-lbl{font-size:13px;color:var(--muted);flex:1;min-width:120px}
-.toggle-group{display:flex;gap:6px}
+.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
 .tog-btn{padding:7px 14px;border-radius:8px;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);font-family:'Oswald',sans-serif;font-size:13px;cursor:pointer;letter-spacing:1px;transition:all .15s}
 .tog-btn.active{background:var(--gold);color:#000;border-color:var(--gold)}
 .tog-btn:active{opacity:.7}
-.pt-adj-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
-.pt-adj-lbl{font-size:12px;color:var(--muted);min-width:60px}
-.pt-adj-sel{background:var(--card2);border:1px solid var(--border2);color:var(--gold);font-family:'Oswald',sans-serif;font-size:14px;border-radius:6px;padding:6px 10px;cursor:pointer;flex:1;min-width:100px}
-/* ── EDIT BANNER ── */
+/* ── edit banner ── */
 .edit-banner{background:rgba(240,192,32,.08);border:1.5px solid var(--gold2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--gold);margin-bottom:10px;line-height:1.6;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-/* ── ADD PLAYER PANEL ── */
+/* ── add player panel ── */
 .add-panel{background:rgba(42,170,42,.07);border-top:1px dashed rgba(42,170,42,.4);padding:10px 14px}
 .add-panel-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:8px}
 .add-panel-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -130,7 +135,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .add-btn{padding:7px 14px;border-radius:6px;background:var(--green);color:#000;font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;border:none;cursor:pointer;letter-spacing:1px;white-space:nowrap}
 .add-btn:active{opacity:.7}
 .bench-label{font-size:11px;color:var(--muted);margin-top:6px;width:100%}
-/* ── PRINT OVERLAY ── */
+/* ── print overlay ── */
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9999;overflow-y:auto;display:none}
 .overlay.show{display:block}
 .ov-bar{background:#1a5c1a;color:#f0c020;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1;gap:8px;flex-wrap:wrap}
@@ -141,11 +146,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 .ov-btn-close{background:rgba(255,255,255,.2);color:#f0c020;border:1px solid rgba(240,192,32,.4)}
 .ov-hint{background:#e8f5e8;border-bottom:2px solid #1a5c1a;padding:10px 14px;font-size:13px;color:#1a3a1a;line-height:1.5}
 .ov-body{padding:14px;font-family:Arial,sans-serif;font-size:10pt;color:#000}
-
-/* ── PRINT CARD ── */
 #printCard{display:none}
-
-/* ═══ PRINT MEDIA ═══ */
 @page{size:landscape;margin:0.3in 0.3in}
 @media print{
   html,body{background:#fff!important;color:#000!important}
@@ -195,7 +196,7 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
   <ellipse cx="12" cy="9" rx="7" ry="5" fill="none" stroke="#f0c020" stroke-width="1.5"/>
   <ellipse cx="48" cy="9" rx="7" ry="5" fill="none" stroke="#f0c020" stroke-width="1.5"/>
   <text x="30" y="34" font-family="Arial Black,sans-serif" font-size="14" font-weight="900" fill="#f0c020" text-anchor="middle">JL</text>
-</svg>
+  </svg>
   <div class="hdr-text">
     <div class="hdr-title">Jr. Lions Lacrosse</div>
     <div class="hdr-sub">Game Day Manager</div>
@@ -212,28 +213,35 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
   <button class="nav-tab" onclick="showPage('time',this)">TIME</button>
 </div>
 
+<!-- ROSTER PAGE -->
 <div class="page active" id="page-roster">
-  <div class="note">Tap a name to cycle: <strong>Present</strong> &#10132; <strong style="color:var(--gold)">Unconfirmed?</strong> &#10132; <strong style="color:var(--muted)">Absent</strong>.<br>
-  <strong style="color:#2aaa2a">GRN</strong> = 1st shift &nbsp;|&nbsp; <strong style="color:var(--gold)">GLD</strong> = 2nd shift &nbsp;|&nbsp; <strong style="color:#aaa">BLK</strong> = 3rd shift</div>
+  <div class="note">
+    Tap name to cycle: <strong>Present</strong> &#10132; <strong style="color:var(--gold)">Unconfirmed?</strong> &#10132; <strong style="color:var(--muted)">Absent</strong><br>
+    <strong style="color:#2aaa2a">GRN</strong>=1st shift &nbsp;
+    <strong style="color:var(--gold)">GLD</strong>=2nd &nbsp;
+    <strong style="color:#aaa">BLK</strong>=3rd &nbsp;&nbsp;
+    <strong style="color:var(--atk)">FLEX</strong>=plays other position &nbsp;&nbsp;
+    <strong style="color:var(--gold)">&#177;</strong>=time weight (default 1.0)
+  </div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-def">DEFENSE</span></div><div id="list-defense"></div></div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-mid">MIDFIELD</span></div><div id="list-middie"></div></div>
   <div class="pos-group"><div class="sec-lbl"><span class="pos-badge b-atk">ATTACK</span></div><div id="list-attack"></div></div>
 </div>
 
+<!-- SETTINGS PAGE -->
 <div class="page" id="page-settings">
   <div class="ctrl-card">
-    <div class="ctrl-lbl">Playing Time Targets</div>
-    <div id="planNote" style="font-size:13px;color:var(--muted);line-height:1.9"></div>
+    <div class="ctrl-lbl">Playing Time Summary</div>
+    <div id="planNote" style="font-size:13px;color:var(--muted);line-height:2.1"></div>
   </div>
   <div class="ctrl-card">
     <div class="ctrl-lbl">Game Format</div>
     <div class="opt-row">
       <span class="opt-lbl">Period structure:</span>
-      <!-- CHANGE 1: Added "4 × 12 MIN" button alongside existing options -->
       <div class="toggle-group">
-        <button class="tog-btn active" id="fmtQbtn"  onclick="setGameFormat('quarters')">4 &times; 10 MIN</button>
+        <button class="tog-btn active" id="fmtQbtn"   onclick="setGameFormat('quarters')">4 &times; 10 MIN</button>
         <button class="tog-btn"        id="fmtQ12btn" onclick="setGameFormat('quarters12')">4 &times; 12 MIN</button>
-        <button class="tog-btn"        id="fmtHbtn"  onclick="setGameFormat('halves')">2 &times; 20 MIN</button>
+        <button class="tog-btn"        id="fmtHbtn"   onclick="setGameFormat('halves')">2 &times; 20 MIN</button>
       </div>
     </div>
   </div>
@@ -241,7 +249,6 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
     <div class="ctrl-lbl">Middie Shift Length</div>
     <div class="opt-row">
       <span class="opt-lbl">Swap midfielders every:</span>
-      <!-- CHANGE 2: Added "6 MIN" button alongside existing options -->
       <div class="toggle-group">
         <button class="tog-btn active" id="mid5btn"  onclick="setMidShift(5)">5 MIN</button>
         <button class="tog-btn"        id="mid6btn"  onclick="setMidShift(6)">6 MIN</button>
@@ -249,31 +256,10 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
       </div>
     </div>
   </div>
-  <div class="ctrl-card">
-    <div class="ctrl-lbl">Playing Time Distribution</div>
-    <div class="opt-row">
-      <span class="opt-lbl">Distribution:</span>
-      <div class="toggle-group">
-        <button class="tog-btn active" id="ptEqualBtn" onclick="setPTMode('equal')">EQUAL</button>
-        <button class="tog-btn" id="ptCustomBtn" onclick="setPTMode('custom')">CUSTOM</button>
-      </div>
-    </div>
-    <div id="ptCustomArea" style="display:none">
-      <div class="note" style="margin-bottom:10px">Select one player to receive <strong>more</strong> time and one to receive <strong>less</strong>.</div>
-      <div class="pt-adj-row">
-        <span class="pt-adj-lbl" style="color:var(--green)">&#9650; MORE:</span>
-        <select class="pt-adj-sel" id="ptMoreSel"><option value="">— none —</option></select>
-      </div>
-      <div class="pt-adj-row">
-        <span class="pt-adj-lbl" style="color:#ff7777">&#9660; LESS:</span>
-        <select class="pt-adj-sel" id="ptLessSel"><option value="">— none —</option></select>
-      </div>
-    </div>
-  </div>
-  <!-- CHANGE 3: Starting Lineup section REMOVED. Group color on Roster tab is now sole source of truth. -->
   <div class="note">
-    <strong>Shift order is set by group color on the Roster tab.</strong><br>
-    Green = 1st shift &nbsp;|&nbsp; Gold = 2nd shift &nbsp;|&nbsp; Black = 3rd shift
+    <strong>Shift order:</strong> Group color on Roster tab — Green=1st, Gold=2nd, Black=3rd<br>
+    <strong>Time weight &#177;:</strong> 1.0=equal share. Higher weight = more minutes. A flex player
+    joins the flex position pool exclusively — they leave their primary pool.
   </div>
   <div id="warnArea"></div>
   <button class="gen-btn" onclick="generate()">BUILD ROTATION</button>
@@ -282,7 +268,6 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
 <div class="page" id="page-shifts">
   <div id="shifts-content"><div class="empty"><div class="ico">&#129409;</div>Go to Settings &rarr; Build Rotation</div></div>
 </div>
-
 <div class="page" id="page-time">
   <div id="time-content"><div class="empty"><div class="ico">&#128202;</div>Build your rotation first</div></div>
 </div>
@@ -296,59 +281,105 @@ html,body{background:var(--bg);color:var(--gold);font-family:'Source Sans 3',san
       <button class="ov-btn ov-btn-close" onclick="closeOverlay()">&#10005; Close</button>
     </div>
   </div>
-  <div class="ov-hint">
-    <strong>iPhone:</strong> tap <strong>&#128424; Print</strong> above &mdash; or tap the Share button (&#9633;&#8593;) at the bottom of Safari &rarr; <strong>Print</strong>
-  </div>
+  <div class="ov-hint"><strong>iPhone:</strong> tap <strong>&#128424; Print</strong> above &mdash; or Share (&#9633;&#8593;) &rarr; Print</div>
   <div class="ov-body" id="overlayBody"></div>
 </div>
-
-<!-- PRINT CARD: hidden on screen, only element visible at @media print -->
 <div id="printCard"></div>
 
 <script>
-// ─────────────────────────────────────────────────────────────────────────────
-// GAME TIMING GLOBALS
-// CHANGE 1: TOTAL/QUARTER are now set dynamically by setGameFormat().
-// quarters  = 4×10 → TOTAL=40, QUARTER=10
-// quarters12= 4×12 → TOTAL=48, QUARTER=12  (NEW)
-// halves    = 2×20 → TOTAL=40, QUARTER=20
-// ─────────────────────────────────────────────────────────────────────────────
-var TOTAL=40, HALF=20, QUARTER=10, MIN_REST=5;
-var FORM={defense:4,middie:3,attack:4};
+/*
+================================================================================
+  ARCHITECTURE: WEIGHTED PLAYING TIME SYSTEM
+================================================================================
 
-// CHANGE 2: midShiftMinutes can now be 5, 6, or 10.
+  WHY THE OLD MODEL WAS BROKEN
+  ─────────────────────────────
+  The previous engine had two separate problems that compounded each other:
+
+  1. EQUAL-TIME-FIRST ASSUMPTION
+     buildRRIntervals divided TOTAL by N to give every player identical
+     bench windows. There was no concept of playing-time priority. When a
+     middie with higher skill was "flexed" to attack, the engine had no way
+     to give them more time — it just added them to a pool and divided evenly.
+
+  2. ADDITIVE FLEX OVERLAY (the immediate crash)
+     applyFlexOverlay *appended* flex players to the position's interval
+     array as bonus extras (never displacing anyone). Then the snapshot
+     assembly trimmed each array to FORM[pos] with slice(0, N). The flex
+     player was always last, so they were always cut. Net result: the flex
+     player was removed from their primary position by the dedup step but
+     also cut from the flex position by the trim step. They ended up in NO
+     pool, causing double-counted or zero minutes and impossible totals like
+     38.4 min for attackers.
+
+  THE CORRECT MODEL
+  ──────────────────
+  1. FLEX = EXCLUSIVE POOL TRANSFER
+     When a player is marked FLEX to attack, they LEAVE the middie pool and
+     JOIN the attack pool. buildPool() enforces this. No overlay, no additive,
+     no dedup needed. Each player is in exactly one pool. Snapshots are
+     exactly FORM[pos] per position by construction.
+
+  2. WEIGHTED TARGET MINUTES
+     Each player has playTimeWeight (default 1.0).
+     calculateTargets(pool, slots) computes each player's target field time:
+       target[i] = weight[i] / sumWeights * slots * TOTAL
+     with iterative cap normalization (handles weight > 1 saturating at TOTAL).
+     Equal weights → same equal-time result as before.
+
+  3. BENCH WINDOW SCHEDULING
+     buildWeightedIntervals() translates targets into contiguous intervals:
+     - bench_duration[i] = TOTAL - target[i]  (heavier player = shorter bench)
+     - bench windows are placed end-to-end in weight-descending order
+     - at each timeline event the correct set of K players is on field
+     This produces mathematically correct field times matching targets.
+
+  FLEX + WEIGHT INTERACTION
+  ──────────────────────────
+  If Lia (middie, weight 1.4) is flexed to attack:
+  - She leaves the 6-middie pool → 5 middies remain, each getting 24 min
+  - She enters the attack pool with weight 1.4
+  - calculateTargets gives her more than equal attack time
+  - She plays meaningful attack minutes, not zero
+  This is exactly what a coach wants.
+
+================================================================================
+*/
+
+/* ── timing globals (set by setGameFormat) ── */
+var TOTAL=40, HALF=20, QUARTER=10;
+var FORM={defense:4,middie:3,attack:4};
 var midShiftMinutes=5;
 var gameFormat='quarters';
-var ptMode='equal', ptMorePlayer='', ptLessPlayer='';
 
-// Per-plan edit state
+/* ── edit state ── */
 var planEdits={};
+var PLAN=null, PLAN_A=null, PLAN_B=null;
 
+/* ── roster — playTimeWeight added to every player ── */
 var ROSTER=[
-  {name:'Anya',     pos:'defense',flex:null,subpos:null,group:null},
-  {name:'Rachael',  pos:'defense',flex:null,subpos:null,group:null},
-  {name:'Elowyn',   pos:'defense',flex:null,subpos:null,group:null},
-  {name:'Raegan',   pos:'defense',flex:null,subpos:null,group:null},
-  {name:'Addie',    pos:'defense',flex:null,subpos:null,group:null},
-  {name:'Zadlock',  pos:'defense',flex:null,subpos:null,group:null},
-  {name:'Colby',    pos:'middie', flex:null,subpos:null,group:null},
-  {name:'Emerson',  pos:'middie', flex:null,subpos:null,group:null},
-  {name:'Lia',      pos:'middie', flex:null,subpos:null,group:null},
-  {name:'Jolene',   pos:'middie', flex:null,subpos:null,group:null},
-  {name:'Anna',     pos:'middie', flex:null,subpos:null,group:null},
-  {name:'Meredith', pos:'middie', flex:null,subpos:null,group:null},
-  {name:'Emma',     pos:'attack', flex:null,subpos:null,group:null},
-  {name:'Juliette', pos:'attack', flex:null,subpos:null,group:null},
-  {name:'Maya',     pos:'attack', flex:null,subpos:null,group:null},
-  {name:'Gia',      pos:'attack', flex:null,subpos:null,group:null},
-  {name:'Cam',      pos:'attack', flex:null,subpos:null,group:null}
+  {name:'Anya',     pos:'defense',flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Rachael',  pos:'defense',flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Elowyn',   pos:'defense',flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Raegan',   pos:'defense',flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Addie',    pos:'defense',flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Zadlock',  pos:'defense',flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Colby',    pos:'middie', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Emerson',  pos:'middie', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Lia',      pos:'middie', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Jolene',   pos:'middie', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Anna',     pos:'middie', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Meredith', pos:'middie', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Emma',     pos:'attack', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Juliette', pos:'attack', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Maya',     pos:'attack', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Gia',      pos:'attack', flex:null,subpos:null,group:null,playTimeWeight:1.0},
+  {name:'Cam',      pos:'attack', flex:null,subpos:null,group:null,playTimeWeight:1.0}
 ];
 
 var absent={}, unconfirmed={};
-// CHANGE 3: 'starters' object removed — group color is the sole source of truth.
-var PLAN=null, PLAN_A=null, PLAN_B=null;
 
-/* ─── helpers ─── */
+/* ── basic helpers ── */
 function isAbsent(n){return absent[n]===true;}
 function isUnconfirmed(n){return unconfirmed[n]===true;}
 function getRosterPlayer(n){for(var i=0;i<ROSTER.length;i++)if(ROSTER[i].name===n)return ROSTER[i];return null;}
@@ -356,13 +387,14 @@ function getUnconfirmedNames(){var a=[];for(var i=0;i<ROSTER.length;i++)if(uncon
 function getPlan(pk){return pk==='PLAN_A'?PLAN_A:pk==='PLAN_B'?PLAN_B:PLAN;}
 function fmt(t){var m=Math.floor(t+0.0001),s=Math.round((t+0.0001-m)*60);return m+':'+(s<10?'0':'')+s;}
 
-/* ─── per-plan edit helpers ─── */
+/* ── per-plan edit helpers ── */
 function getEdits(pk){
   if(!planEdits[pk]){
-    var plan=getPlan(pk);
-    if(!plan)return null;
+    var plan=getPlan(pk);if(!plan)return null;
     planEdits[pk]={
-      snapshots:plan.snapshots.map(function(s){return {tS:s.tS,tE:s.tE,def:s.def.slice(),mid:s.mid.slice(),atk:s.atk.slice(),newIns:s.newIns.slice(),isKO:s.isKO};}),
+      snapshots:plan.snapshots.map(function(s){
+        return{tS:s.tS,tE:s.tE,def:s.def.slice(),mid:s.mid.slice(),atk:s.atk.slice(),newIns:s.newIns.slice(),isKO:s.isKO};
+      }),
       manualAdds:{}
     };
   }
@@ -370,12 +402,7 @@ function getEdits(pk){
 }
 function getSnapshots(pk){
   if(planEdits[pk])return planEdits[pk].snapshots;
-  var plan=getPlan(pk);
-  return plan?plan.snapshots:[];
-}
-function getManualAdds(pk,si){
-  if(!planEdits[pk]||!planEdits[pk].manualAdds[si])return[];
-  return planEdits[pk].manualAdds[si];
+  var plan=getPlan(pk);return plan?plan.snapshots:[];
 }
 function recomputeNewIns(snaps,si){
   if(si===0)return;
@@ -385,7 +412,7 @@ function recomputeNewIns(snaps,si){
   cur.newIns=curAll.filter(function(n){return prevAll.indexOf(n)===-1;});
 }
 
-/* ─── clock label ─── */
+/* ── clock helpers ── */
 function periodLabel(n){return gameFormat==='halves'?'H'+n:'Q'+n;}
 function periodsCount(){return gameFormat==='halves'?2:4;}
 function _clockPoint(t,isEnd){
@@ -394,44 +421,32 @@ function _clockPoint(t,isEnd){
   if(isBnd){
     var q=Math.round(snap/QUARTER);
     if(isEnd)return{q:q,str:'0:00'};
-    q++;if(q>periodsCount())q=periodsCount();return{q:q,str:QUARTER+':00'};
+    q++;if(q>periodsCount())q=periodsCount();
+    return{q:q,str:QUARTER+':00'};
   }
   if(snap>=TOTAL-0.01)return{q:periodsCount(),str:'0:00'};
-  var qN,qE;
-  var p=Math.floor(t/QUARTER);
-  qN=p+1; qE=t-p*QUARTER;
-  var rem=QUARTER-qE;if(rem<0)rem=0;
+  var p=Math.floor(t/QUARTER),qN=p+1,rem=QUARTER-(t-p*QUARTER);
+  if(rem<0)rem=0;
   var m=Math.floor(rem+0.0001),s=Math.round((rem+0.0001-m)*60);
   return{q:qN,str:m+':'+(s<10?'0':'')+s};
 }
 function shiftLabel(tS,tE){
-  var ptS=_clockPoint(tS,false),ptE=_clockPoint(tE,true);
-  var pl=periodLabel;
-  if(ptS.q===ptE.q)return pl(ptS.q)+' '+ptS.str+' \u2192 '+ptE.str;
-  return pl(ptS.q)+' '+ptS.str+' \u2192 '+pl(ptE.q)+' '+ptE.str;
+  var a=_clockPoint(tS,false),b=_clockPoint(tE,true),pl=periodLabel;
+  if(a.q===b.q)return pl(a.q)+' '+a.str+' \u2192 '+b.str;
+  return pl(a.q)+' '+a.str+' \u2192 '+pl(b.q)+' '+b.str;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   CHANGE 1: setGameFormat now handles 'quarters12' (4×12).
-   All downstream math uses TOTAL and QUARTER — no hardcoding elsewhere needed.
-   ───────────────────────────────────────────────────────────────────────────── */
-function setGameFormat(fmt){
-  gameFormat=fmt;
-  if(fmt==='quarters12'){
-    TOTAL=48; QUARTER=12; HALF=24;
-  } else if(fmt==='halves'){
-    TOTAL=40; QUARTER=20; HALF=20;
-  } else {
-    // quarters (4×10, default)
-    TOTAL=40; QUARTER=10; HALF=20;
-  }
-  document.getElementById('fmtQbtn').classList.toggle('active',  fmt==='quarters');
-  document.getElementById('fmtQ12btn').classList.toggle('active', fmt==='quarters12');
-  document.getElementById('fmtHbtn').classList.toggle('active',  fmt==='halves');
+/* ── settings ── */
+function setGameFormat(f){
+  gameFormat=f;
+  if(f==='quarters12'){TOTAL=48;QUARTER=12;HALF=24;}
+  else if(f==='halves'){TOTAL=40;QUARTER=20;HALF=20;}
+  else{TOTAL=40;QUARTER=10;HALF=20;}
+  document.getElementById('fmtQbtn').classList.toggle('active',  f==='quarters');
+  document.getElementById('fmtQ12btn').classList.toggle('active',f==='quarters12');
+  document.getElementById('fmtHbtn').classList.toggle('active',  f==='halves');
   updatePlanNote();
 }
-
-/* CHANGE 2: setMidShift now accepts 5, 6, or 10 — no other logic changes needed. */
 function setMidShift(m){
   midShiftMinutes=m;
   document.getElementById('mid5btn').classList.toggle('active',  m===5);
@@ -439,39 +454,18 @@ function setMidShift(m){
   document.getElementById('mid10btn').classList.toggle('active', m===10);
 }
 
-function setPTMode(mode){
-  ptMode=mode;
-  document.getElementById('ptEqualBtn').classList.toggle('active',mode==='equal');
-  document.getElementById('ptCustomBtn').classList.toggle('active',mode==='custom');
-  document.getElementById('ptCustomArea').style.display=mode==='custom'?'block':'none';
-  if(mode==='custom')populatePTSelects();
-}
-function populatePTSelects(){
-  var avail=ROSTER.filter(function(p){return!isAbsent(p.name)&&!isUnconfirmed(p.name);});
-  var mE=document.getElementById('ptMoreSel'),lE=document.getElementById('ptLessSel');
-  var cm=mE.value||ptMorePlayer,cl=lE.value||ptLessPlayer;
-  mE.innerHTML='<option value="">— none —</option>';
-  lE.innerHTML='<option value="">— none —</option>';
-  for(var i=0;i<avail.length;i++){
-    var n=avail[i].name;
-    mE.innerHTML+='<option value="'+n+'"'+(cm===n?' selected':'')+'>'+n+'</option>';
-    lE.innerHTML+='<option value="'+n+'"'+(cl===n?' selected':'')+'>'+n+'</option>';
-  }
-  mE.onchange=function(){ptMorePlayer=this.value;};
-  lE.onchange=function(){ptLessPlayer=this.value;};
-  ptMorePlayer=cm;ptLessPlayer=cl;
-}
-
-/* ─── nav ─── */
+/* ── nav ── */
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
-  if(id==='settings'){updatePlanNote();if(ptMode==='custom')populatePTSelects();}
+  if(id==='settings')updatePlanNote();
 }
 
-/* ─── roster render ─── */
+/* ================================================================================
+   ROSTER RENDERING
+   ================================================================================ */
 function renderRoster(){
   ['defense','middie','attack'].forEach(function(pos){
     var cont=document.getElementById('list-'+pos);
@@ -482,22 +476,64 @@ function renderRoster(){
   var unc=getUnconfirmedNames().length;
   document.getElementById('activeCount').textContent=unc>0?conf+'+'+unc+'?':conf;
 }
+
 function makePlayerRow(p){
   var ab=isAbsent(p.name),unc=isUnconfirmed(p.name);
   var row=document.createElement('div');
   row.className='player-row'+(ab?' absent':'')+(unc?' unconfirmed':'');
+
   var chk=document.createElement('div');chk.className='chk';
   chk.textContent=unc?'?':(ab?'':'\u2713');
   var nm=document.createElement('span');nm.className='pname';nm.textContent=p.name;
-  row.appendChild(chk);row.appendChild(nm);
-  if(!ab&&!unc){row.appendChild(makeFlexBadge(p));row.appendChild(makeGroupBadge(p));var sp=makeSubPosBadge(p);if(sp)row.appendChild(sp);}
+  row.appendChild(chk);
+  row.appendChild(nm);
+
+  if(!ab&&!unc){
+    row.appendChild(makeFlexBadge(p));
+    row.appendChild(makeGroupBadge(p));
+    var sp=makeSubPosBadge(p);if(sp)row.appendChild(sp);
+    row.appendChild(makeWeightCtrl(p));
+  }
+
   row.addEventListener('click',function(e){
-    var t=e.target;
-    if(t.className&&typeof t.className==='string'&&(t.className.indexOf('flex-badge')!==-1||t.className.indexOf('grp-badge')!==-1||t.className.indexOf('subpos-badge')!==-1))return;
+    var t=e.target,c=t.className&&typeof t.className==='string'?t.className:'';
+    if(c.indexOf('flex-badge')!==-1||c.indexOf('grp-badge')!==-1||
+       c.indexOf('subpos-badge')!==-1||c.indexOf('wt-btn')!==-1||c.indexOf('wt-val')!==-1)return;
     togglePlayerState(p.name);
   });
   return row;
 }
+
+/* Weight stepper: ±0.1 steps, range 0.5–2.0 */
+function makeWeightCtrl(p){
+  var wrap=document.createElement('span');wrap.className='wt-ctrl';
+  var minus=document.createElement('button');minus.className='wt-btn';minus.textContent='\u2212';
+  var val=document.createElement('span');
+  val.textContent=p.playTimeWeight.toFixed(1);
+  val.className='wt-val'+(p.playTimeWeight>1.05?' wt-hi':p.playTimeWeight<0.95?' wt-lo':'');
+  var plus=document.createElement('button');plus.className='wt-btn';plus.textContent='+';
+
+  (function(player,valEl){
+    minus.addEventListener('click',function(e){
+      e.stopPropagation();
+      player.playTimeWeight=Math.max(0.5,Math.round((player.playTimeWeight-0.1)*10)/10);
+      valEl.textContent=player.playTimeWeight.toFixed(1);
+      valEl.className='wt-val'+(player.playTimeWeight>1.05?' wt-hi':player.playTimeWeight<0.95?' wt-lo':'');
+      updatePlanNote();
+    });
+    plus.addEventListener('click',function(e){
+      e.stopPropagation();
+      player.playTimeWeight=Math.min(2.0,Math.round((player.playTimeWeight+0.1)*10)/10);
+      valEl.textContent=player.playTimeWeight.toFixed(1);
+      valEl.className='wt-val'+(player.playTimeWeight>1.05?' wt-hi':player.playTimeWeight<0.95?' wt-lo':'');
+      updatePlanNote();
+    });
+  })(p,val);
+
+  wrap.appendChild(minus);wrap.appendChild(val);wrap.appendChild(plus);
+  return wrap;
+}
+
 function makeGroupBadge(p){
   var L={green:'GRN',gold:'GLD',black:'BLK'};
   var b=document.createElement('button');
@@ -510,10 +546,11 @@ function makeFlexBadge(p){
   var L={defense:'DEF',middie:'MID',attack:'ATK'};
   var b=document.createElement('button');
   b.className='flex-badge'+(p.flex?' flex-active flex-'+p.flex:'');
-  b.textContent=p.flex?('FLEX: '+L[p.flex]):'+ FLEX';
+  b.textContent=p.flex?('FLEX:'+L[p.flex]):'+ FLEX';
   b.addEventListener('click',function(e){e.stopPropagation();toggleFlex(p.name);});
   return b;
 }
+
 function togglePlayerState(name){
   if(isAbsent(name)){delete absent[name];}
   else if(isUnconfirmed(name)){delete unconfirmed[name];absent[name]=true;}
@@ -525,32 +562,13 @@ function toggleFlex(name){
   var others=['defense','middie','attack'].filter(function(x){return x!==p.pos;});
   others.push(null);
   p.flex=others[(others.indexOf(p.flex)+1)%others.length];
-  renderRoster();
+  renderRoster();updatePlanNote();
 }
 function toggleGroup(name){
   var p=getRosterPlayer(name);if(!p)return;
   var G=['green','gold','black',null];
   p.group=G[(G.indexOf(p.group||null)+1)%G.length];
   renderRoster();
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   CHANGE 3: sortByGroup now uses group color as the authoritative shift-order
-   source: green=0 (starters), gold=1, black=2, unassigned=3.
-   This replaces the old 'starters' object everywhere it was used.
-   ───────────────────────────────────────────────────────────────────────────── */
-function sortByGroup(players){
-  var O={green:0,gold:1,black:2};
-  return players.slice().sort(function(a,b){return(a.group?O[a.group]:3)-(b.group?O[b.group]:3);});
-}
-
-/* Return the names of the first-shift (green group) players for a position,
-   falling back to the first FORM[pos] players if none are green-tagged. */
-function getStarterNamesFromGroup(pos, playerList){
-  var green=playerList.filter(function(p){return p.group==='green';}).map(function(p){return p.name;});
-  if(green.length===FORM[pos])return green;
-  // fallback: return first N in sort order
-  return sortByGroup(playerList).slice(0,FORM[pos]).map(function(p){return p.name;});
 }
 
 var SUBPOS_OPTIONS={defense:['LD','HD'],attack:['LA','HA'],middie:[]};
@@ -571,62 +589,182 @@ function makeSubPosBadge(p){
   return b;
 }
 
+/* ── group sort: green=0, gold=1, black=2, none=3 ── */
+function sortByGroup(players){
+  var O={green:0,gold:1,black:2};
+  return players.slice().sort(function(a,b){return(a.group?O[a.group]:3)-(b.group?O[b.group]:3);});
+}
+function getStarterNamesFromGroup(pos,playerList){
+  var green=playerList.filter(function(p){return p.group==='green';}).map(function(p){return p.name;});
+  if(green.length===FORM[pos])return green;
+  return sortByGroup(playerList).slice(0,FORM[pos]).map(function(p){return p.name;});
+}
+
+/* ── plan note ── */
 function updatePlanNote(){
   var avail=ROSTER.filter(function(p){return!isAbsent(p.name)&&!isUnconfirmed(p.name);});
   var uncNames=getUnconfirmedNames();
-  var parts=[],COL={defense:'var(--def)',middie:'var(--mid)',attack:'var(--atk)'},LABEL={defense:'Defense',middie:'Midfield',attack:'Attack'};
+  var parts=[];
+  var COL={defense:'var(--def)',middie:'var(--mid)',attack:'var(--atk)'};
+  var LABEL={defense:'Defense',middie:'Midfield',attack:'Attack'};
   ['defense','middie','attack'].forEach(function(pos){
-    var slots=FORM[pos],n=avail.filter(function(p){return p.pos===pos;}).length;
-    var nFlex=avail.filter(function(p){return p.flex===pos&&p.pos!==pos;}).length;
-    if(n<slots&&n+nFlex<slots){parts.push('<span style="color:#ff7777">Need '+slots+' '+LABEL[pos]+', only '+(n+nFlex)+' avail</span>');return;}
-    var mStr=n>=slots?(n===slots?TOTAL.toFixed(1):(TOTAL*slots/n).toFixed(1)):'flex needed';
-    var sch=(pos==='middie'&&n===2*slots)?'group swap/'+midShiftMinutes+'min':n<=slots?'full game':'sub every '+fmt(TOTAL/n);
-    var fNote=nFlex>0?' <span style="color:var(--muted)">(+'+nFlex+' flex)</span>':'';
-    parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '+n+' → <strong style="color:var(--gold)">'+mStr+' min</strong>'+fNote+' <span style="color:var(--muted)">('+sch+')</span>');
+    var pool=buildPool(pos,avail);
+    var slots=FORM[pos];
+    if(pool.length<slots){parts.push('<span style="color:#ff7777">Need '+slots+' '+LABEL[pos]+', only '+pool.length+' available</span>');return;}
+    var targets=calculateTargets(pool,slots);
+    var vals=pool.map(function(p){return targets[p.name];});
+    var minT=vals.reduce(function(a,b){return a<b?a:b;},Infinity);
+    var maxT=vals.reduce(function(a,b){return a>b?a:b;},-Infinity);
+    var rangeStr=Math.abs(maxT-minT)<0.05?maxT.toFixed(1)+'m':minT.toFixed(1)+'\u2013'+maxT.toFixed(1)+'m';
+    var flexCount=pool.filter(function(p){return p.flex===pos&&p.pos!==pos;}).length;
+    var fNote=flexCount>0?' <span style="color:var(--muted)">(+'+flexCount+' flex)</span>':'';
+    parts.push('<span style="color:'+COL[pos]+';font-weight:700">'+LABEL[pos].toUpperCase()+'</span> '
+      +pool.length+' players \u2192 <strong style="color:var(--gold)">'+rangeStr+'</strong>'+fNote);
   });
-  if(uncNames.length>0)parts.push('<br><span style="color:var(--gold)">\u26a0 '+uncNames.length+' unconfirmed ('+uncNames.join(', ')+') — two rotations will be built.</span>');
+  if(uncNames.length>0)parts.push('<br><span style="color:var(--gold)">\u26a0 '+uncNames.length+' unconfirmed ('
+    +uncNames.join(', ')+') \u2014 two rotations will be built.</span>');
   document.getElementById('planNote').innerHTML=parts.join('<br>');
 }
 
-/* ─── interval builders ─── */
-function ivAt(ivs,t){for(var i=ivs.length-1;i>=0;i--)if(t>=ivs[i].tS-0.001)return ivs[i];return ivs[0];}
+/* ================================================================================
+   CORE ENGINE
+   ================================================================================
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   buildRRIntervals — round-robin rotation for a position group.
-   CHANGE 3: starterNames now comes from group color via getStarterNamesFromGroup().
-   ptp (playing-time preference) still supported for custom distribution.
-   ───────────────────────────────────────────────────────────────────────────── */
-function buildRRIntervals(players,slots,starterNames,ptp){
-  var N=players.length,names=players.map(function(p){return p.name;});
-  if(N<=slots)return[{tS:0,tE:TOTAL,on:names.slice(),newIns:[]}];
-  var ss={};if(starterNames)starterNames.forEach(function(n){ss[n]=true;});
-  var stList=names.filter(function(n){return ss[n];}),bList=names.filter(function(n){return!ss[n];});
-  if(ptp&&ptp.less&&names.indexOf(ptp.less)!==-1){stList=stList.filter(function(n){return n!==ptp.less;});bList=bList.filter(function(n){return n!==ptp.less;});bList.push(ptp.less);}
-  if(ptp&&ptp.more&&names.indexOf(ptp.more)!==-1){stList=stList.filter(function(n){return n!==ptp.more;});bList=bList.filter(function(n){return n!==ptp.more;});stList.unshift(ptp.more);}
-  var ordered=stList.concat(bList),interval=TOTAL/N;
-  var field=ordered.slice(0,slots),bench=ordered.slice(slots),ivs=[];
+   buildPool(pos, avail)
+   ─────────────────────
+   Returns the players competing for slots at 'pos'.
+   Flex = exclusive transfer: a player flexed to 'pos' is IN this pool;
+   they are EXCLUDED from their primary pool (see exclusion in primary filter).
+
+   calculateTargets(pool, slots)
+   ─────────────────────────────
+   Proportional weight distribution with iterative cap normalization.
+   Any player whose share would exceed TOTAL is capped at TOTAL;
+   surplus redistributes among remaining players. Stable after ≤N iterations.
+
+   buildWeightedIntervals(pool, slots, starterNames)
+   ─────────────────────────────────────────────────
+   Converts targets to contiguous on/off intervals.
+   bench_duration[i] = TOTAL - target[i]
+   Bench windows placed end-to-end in weight-descending order.
+   Player with bench=0 (target=TOTAL) is never benched.
+   Each produced interval has exactly 'slots' players on field.
+
+   buildMidIntervals(pool, starterNames)
+   ──────────────────────────────────────
+   Special case for N=2*K (two equal middie groups):
+   alternates groups every midShiftMinutes using group-color priority.
+   All other N delegates to buildWeightedIntervals.
+   ================================================================================ */
+
+function buildPool(pos,avail){
+  /* Primary players at this pos who have NOT flexed away to somewhere else.
+     (A player with flex=X has left their primary pool and joined pool X.) */
+  var primary=avail.filter(function(p){return p.pos===pos&&p.flex===null;});
+  /* Players from other positions who have explicitly flexed into this pos */
+  var flexIn=avail.filter(function(p){return p.flex===pos&&p.pos!==pos;});
+  return primary.concat(flexIn);
+}
+
+function calculateTargets(pool,slots){
+  /* Total field-minutes available for this position */
+  var fieldMins=TOTAL*slots;
+  var weights={};
+  pool.forEach(function(p){weights[p.name]=p.playTimeWeight;});
+
+  /* Iterative cap: players exceeding TOTAL get capped; remainder redistributes */
+  var targets={};
+  pool.forEach(function(p){targets[p.name]=0;});
+  var uncapped=pool.slice();
+  var remaining=fieldMins;
+
+  for(var iter=0;iter<pool.length+1;iter++){
+    var W=uncapped.reduce(function(s,p){return s+weights[p.name];},0);
+    if(W<=0)break;
+    var newCapped=[];
+    uncapped.forEach(function(p){
+      var t=weights[p.name]/W*remaining;
+      if(t>=TOTAL-0.001){targets[p.name]=TOTAL;newCapped.push(p.name);}
+      else{targets[p.name]=t;}
+    });
+    if(newCapped.length===0)break;
+    /* Remove newly capped players from next iteration */
+    var cappedSum=newCapped.length*TOTAL;
+    remaining-=cappedSum;
+    uncapped=uncapped.filter(function(p){return newCapped.indexOf(p.name)===-1;});
+  }
+  return targets;
+}
+
+function ivAt(ivs,t){
+  for(var i=ivs.length-1;i>=0;i--)if(t>=ivs[i].tS-0.001)return ivs[i];
+  return ivs[0];
+}
+
+function buildWeightedIntervals(pool,slots,starterNames){
+  var N=pool.length;
+  /* Degenerate: everyone on field the whole game */
+  if(N<=slots)return[{tS:0,tE:TOTAL,on:pool.map(function(p){return p.name;}),newIns:[]}];
+
+  var targets=calculateTargets(pool,slots);
+
+  /* Sort by target desc (most time → longest on field → shortest bench window).
+     Tie-break: green group first (honours starter order). */
+  var O={green:0,gold:1,black:2};
+  var sorted=pool.slice().sort(function(a,b){
+    var td=targets[b.name]-targets[a.name];
+    if(Math.abs(td)>0.001)return td;
+    return(a.group?O[a.group]:3)-(b.group?O[b.group]:3);
+  });
+
+  /* Build bench windows: player i benched during [cumBench, cumBench+bench[i]] */
+  var events={};events[0]=true;events[TOTAL]=true;
+  var benchWindows=[];
+  var cumBench=0;
   for(var i=0;i<N;i++){
-    var tS=Math.round(i*interval*1000)/1000,tE=Math.round(Math.min((i+1)*interval,TOTAL)*1000)/1000;
-    ivs.push({tS:tS,tE:tE,on:field.slice(),newIns:i===0?[]:[field[field.length-1]]});
-    if(i<N-1){var out=field.shift();var inn=bench.shift();bench.push(out);field.push(inn);}
+    var b=Math.max(0,TOTAL-targets[sorted[i].name]);
+    if(b>0.001){
+      var bS=Math.round(cumBench*1000)/1000;
+      var bE=Math.round(Math.min(cumBench+b,TOTAL)*1000)/1000;
+      if(bS<TOTAL-0.001){
+        benchWindows.push({name:sorted[i].name,bS:bS,bE:bE});
+        events[bS]=true;events[bE]=true;
+      }
+    }
+    cumBench+=b;
+  }
+
+  var times=Object.keys(events).map(Number).sort(function(a,b){return a-b;});
+  var ivs=[];
+  for(var i=0;i<times.length-1;i++){
+    var tS=times[i],tE=times[i+1],mid=(tS+tE)/2;
+    var on=sorted.map(function(p){return p.name;}).filter(function(n){
+      for(var j=0;j<benchWindows.length;j++){
+        var bw=benchWindows[j];
+        if(bw.name===n&&mid>=bw.bS-0.001&&mid<bw.bE-0.001)return false;
+      }
+      return true;
+    });
+    /* Safety hard-count (should be exactly slots by construction) */
+    if(on.length>slots)on=on.slice(0,slots);
+    var prevOn=ivs.length>0?ivs[ivs.length-1].on:[];
+    ivs.push({tS:tS,tE:tE,on:on,newIns:on.filter(function(n){return prevOn.indexOf(n)===-1;})});
   }
   return ivs;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   buildMidIntervals — handles midfield group swapping.
-   CHANGE 2: midShiftMinutes can now be 6 (or any value) — no special-casing needed.
-   CHANGE 3: starterNames derived from group color.
-   ───────────────────────────────────────────────────────────────────────────── */
-function buildMidIntervals(players,starterNames,ptp){
-  var N=players.length,K=FORM.middie,names=players.map(function(p){return p.name;});
-  if(N<=K)return[{tS:0,tE:TOTAL,on:names.slice(),newIns:[]}];
-  // Build swap times using midShiftMinutes — works for 5, 6, 10 or any value
-  var swapTimes=[];for(var t=midShiftMinutes;t<TOTAL;t+=midShiftMinutes)swapTimes.push(Math.round(t*1000)/1000);
+function buildMidIntervals(pool,starterNames){
+  var N=pool.length,K=FORM.middie;
+  if(N<=K)return[{tS:0,tE:TOTAL,on:pool.map(function(p){return p.name;}),newIns:[]}];
+
+  /* Swap time grid */
+  var swapTimes=[];
+  for(var t=midShiftMinutes;t<TOTAL;t+=midShiftMinutes)swapTimes.push(Math.round(t*1000)/1000);
+
+  /* N=2K: two alternating groups */
   if(N===2*K){
-    // Two equal groups — determine which plays first via group color
     var grpMap={};
-    players.forEach(function(p){var g=p.group||('_u_'+p.name);if(!grpMap[g])grpMap[g]=[];grpMap[g].push(p.name);});
+    pool.forEach(function(p){var g=p.group||('_u_'+p.name);if(!grpMap[g])grpMap[g]=[];grpMap[g].push(p.name);});
     var grpKeys=Object.keys(grpMap);
     var gA,gB;
     if(grpKeys.length===2&&grpMap[grpKeys[0]].length===K&&grpMap[grpKeys[1]].length===K){
@@ -636,234 +774,93 @@ function buildMidIntervals(players,starterNames,ptp){
       gA=c0>=c1?grpMap[grpKeys[0]].slice():grpMap[grpKeys[1]].slice();
       gB=c0>=c1?grpMap[grpKeys[1]].slice():grpMap[grpKeys[0]].slice();
     }else{
-      gA=(starterNames&&starterNames.length===K)?starterNames.slice():names.slice(0,K);
-      gB=names.filter(function(n){return gA.indexOf(n)===-1;});
+      gA=starterNames&&starterNames.length===K?starterNames.slice():pool.slice(0,K).map(function(p){return p.name;});
+      gB=pool.map(function(p){return p.name;}).filter(function(n){return gA.indexOf(n)===-1;});
     }
     var all=[],cur=gA,other=gB,prev=0;
-    swapTimes.forEach(function(st){all.push({tS:prev,tE:st,on:cur.slice(),newIns:prev===0?[]:cur.slice()});var tmp=cur;cur=other;other=tmp;prev=st;});
+    swapTimes.forEach(function(st){
+      all.push({tS:prev,tE:st,on:cur.slice(),newIns:prev===0?[]:cur.slice()});
+      var tmp=cur;cur=other;other=tmp;prev=st;
+    });
     all.push({tS:prev,tE:TOTAL,on:cur.slice(),newIns:prev===0?[]:cur.slice()});
     all[0].newIns=[];
     return all;
   }
-  return buildRRIntervals(players,K,starterNames,ptp);
+
+  /* General case: use weighted scheduler */
+  return buildWeightedIntervals(pool,K,starterNames);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   CHANGE 4: applyFlexOverlay — FIXED flex position logic.
-
-   The old implementation could displace primary-position players when a flex
-   player happened to be off their primary shift, causing them to lose main
-   position time.
-
-   New rule (strictly enforced):
-     1. Primary position intervals are calculated first and are LOCKED IN.
-     2. A flex player is only eligible to appear on their flex position during
-        windows when they are provably OFF their primary position.
-     3. The flex player is inserted as a BONUS addition (field count may exceed
-        the nominal slot count for that window), never displacing a primary player.
-     4. MIN_REST still caps total playing time across all positions.
-
-   This guarantees no flex player loses primary-position time.
-   ───────────────────────────────────────────────────────────────────────────── */
-function applyFlexOverlay(posIvs, flexPlayers, getPrimaryIvs){
-  if(!flexPlayers||!flexPlayers.length)return posIvs;
-
-  // Collect the maximum additional playing time each flex player can absorb
-  // without exceeding TOTAL - MIN_REST across all positions.
-  var flexPrimaryTime={};
-  flexPlayers.forEach(function(fp){
-    var tot=0;
-    getPrimaryIvs(fp.name).forEach(function(iv){
-      iv.on.forEach(function(n){if(n===fp.name)tot+=(iv.tE-iv.tS);});
-    });
-    flexPrimaryTime[fp.name]=tot;
-  });
-
-  var MAX_PLAY=TOTAL-MIN_REST;
-
-  // Build a unified timeline from all involved intervals
-  var timeSet={};
-  posIvs.forEach(function(iv){timeSet[iv.tS]=true;timeSet[iv.tE]=true;});
-  flexPlayers.forEach(function(fp){
-    getPrimaryIvs(fp.name).forEach(function(iv){timeSet[iv.tS]=true;timeSet[iv.tE]=true;});
-  });
-  var times=Object.keys(timeSet).map(Number).sort(function(a,b){return a-b;});
-
-  // Track how much additional (flex) time each player has accumulated
-  var flexAcc={};
-  flexPlayers.forEach(function(fp){flexAcc[fp.name]=0;});
-
-  var newIvs=[];
-  for(var i=0;i<times.length-1;i++){
-    var tS=times[i],tE=times[i+1];
-    var dur=tE-tS;
-    // Start from the base primary-position lineup for this window
-    var baseOn=ivAt(posIvs,tS).on.slice();
-
-    // A flex player is eligible for this window only if:
-    //   (a) they are NOT in their primary position during this window
-    //   (b) adding them won't push total playtime past MAX_PLAY
-    var eligible=flexPlayers.filter(function(fp){
-      var mid=(tS+tE)/2;
-      var fpIv=ivAt(getPrimaryIvs(fp.name),mid);
-      var onPrimary=fpIv.on.indexOf(fp.name)!==-1;
-      if(onPrimary)return false;
-      var totalIfAdded=flexPrimaryTime[fp.name]+flexAcc[fp.name]+dur;
-      return totalIfAdded<=MAX_PLAY+0.01;
-    });
-
-    // Clone base lineup and add eligible flex players as extras (no displacement)
-    var finalOn=baseOn.slice();
-    eligible.forEach(function(fp){
-      if(finalOn.indexOf(fp.name)===-1){
-        finalOn.push(fp.name);
-        flexAcc[fp.name]+=dur;
-      }
-    });
-
-    var prevOn=newIvs.length>0?newIvs[newIvs.length-1].on:[];
-    newIvs.push({
-      tS:tS,tE:tE,on:finalOn,
-      newIns:finalOn.filter(function(n){return prevOn.indexOf(n)===-1;})
-    });
-  }
-  return newIvs;
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   computeRotation — main engine. Wires all the above together.
-   CHANGE 3: passes group-color-derived starter names instead of the old
-             'starters' object.
-   CHANGE 4: flex overlay now strictly additive (no primary displacement).
-   ───────────────────────────────────────────────────────────────────────────── */
+/* ================================================================================
+   computeRotation — assembles a full plan
+   ================================================================================ */
 function computeRotation(effectiveAbsent){
   var avail=ROSTER.filter(function(p){return!effectiveAbsent[p.name];});
-  var primaryGroups={
-    defense:avail.filter(function(p){return p.pos==='defense';}),
-    middie: avail.filter(function(p){return p.pos==='middie'; }),
-    attack: avail.filter(function(p){return p.pos==='attack'; })
-  };
-  var POS=['defense','middie','attack'];
-  for(var i=0;i<POS.length;i++){
-    var pos=POS[i],nP=primaryGroups[pos].length;
-    var nF=avail.filter(function(p){return p.flex===pos&&p.pos!==pos;}).length;
-    if(nP+nF<FORM[pos])return null;
-  }
 
-  var ptp=null;
-  if(ptMode==='custom'&&(ptMorePlayer||ptLessPlayer)){
-    ptp={};
-    if(ptMorePlayer&&!effectiveAbsent[ptMorePlayer])ptp.more=ptMorePlayer;
-    if(ptLessPlayer&&!effectiveAbsent[ptLessPlayer])ptp.less=ptLessPlayer;
-  }
+  /* Build pools (flex = exclusive transfer) */
+  var defPool=buildPool('defense',avail);
+  var midPool=buildPool('middie', avail);
+  var atkPool=buildPool('attack',  avail);
 
-  // Sort each position group by group color (green first)
-  var defS=sortByGroup(primaryGroups.defense);
-  var midS=sortByGroup(primaryGroups.middie);
-  var atkS=sortByGroup(primaryGroups.attack);
+  if(defPool.length<FORM.defense||midPool.length<FORM.middie||atkPool.length<FORM.attack)return null;
 
-  // Derive starter names from group color (CHANGE 3)
-  var defStarters=getStarterNamesFromGroup('defense', defS);
-  var midStarters=getStarterNamesFromGroup('middie',  midS);
-  var atkStarters=getStarterNamesFromGroup('attack',  atkS);
+  var defS=sortByGroup(defPool);
+  var midS=sortByGroup(midPool);
+  var atkS=sortByGroup(atkPool);
 
-  // Build primary position intervals (locked — flex cannot modify these)
-  var defIvP=buildRRIntervals(defS, FORM.defense, defStarters, ptp);
-  var midIvP=buildMidIntervals(midS, midStarters, ptp);
-  var atkIvP=buildRRIntervals(atkS, FORM.attack,  atkStarters, ptp);
+  var defIvs=buildWeightedIntervals(defS,FORM.defense,getStarterNamesFromGroup('defense',defS));
+  var midIvs=buildMidIntervals(midS,getStarterNamesFromGroup('middie',midS));
+  var atkIvs=buildWeightedIntervals(atkS,FORM.attack, getStarterNamesFromGroup('attack', atkS));
 
-  // Primary lookup needed by flex overlay
-  var primByPos={defense:defIvP,middie:midIvP,attack:atkIvP};
-  function getPrimIvsFor(name){var p=getRosterPlayer(name);return p?primByPos[p.pos]:[];}
-
-  // Identify flex players for each position
-  var fxD=avail.filter(function(p){return p.flex==='defense'&&p.pos!=='defense';});
-  var fxM=avail.filter(function(p){return p.flex==='middie' &&p.pos!=='middie'; });
-  var fxA=avail.filter(function(p){return p.flex==='attack' &&p.pos!=='attack'; });
-
-  // Apply flex overlay (CHANGE 4: strictly additive, no displacement)
-  // Note: we no longer pass 'slots' to applyFlexOverlay — the function no
-  // longer needs it because it never displaces primary players.
-  var defIvF=applyFlexOverlay(defIvP, fxD, getPrimIvsFor);
-  var midIvF=applyFlexOverlay(midIvP, fxM, getPrimIvsFor);
-  var atkIvF=applyFlexOverlay(atkIvP, fxA, getPrimIvsFor);
-
-  // Merge timeline boundaries
+  /* Merge timeline */
   var tSet={0:true};tSet[TOTAL]=true;
-  [defIvF,midIvF,atkIvF].forEach(function(ivs){ivs.forEach(function(iv){tSet[iv.tS]=true;tSet[iv.tE]=true;});});
+  [defIvs,midIvs,atkIvs].forEach(function(ivs){ivs.forEach(function(iv){tSet[iv.tS]=true;tSet[iv.tE]=true;});});
   var times=Object.keys(tSet).map(Number).sort(function(a,b){return a-b;});
 
+  /* Snapshots — exactly FORM[pos] per array by construction (single-pool system) */
   var snapshots=[];
   for(var i=0;i<times.length-1;i++){
     var tS=times[i],tE=times[i+1];
-    var dIv=ivAt(defIvF,tS),mIv=ivAt(midIvF,tS),aIv=ivAt(atkIvF,tS);
-
-    // ── DEDUPLICATION (flex fix) ──────────────────────────────────────────────
-    // applyFlexOverlay appends a flex player to their flex-position array but
-    // does NOT remove them from their primary-position array (which is a
-    // separate data structure). When the three arrays are combined into a
-    // snapshot a player can appear in two arrays simultaneously.
-    //
-    // Rule: a player may occupy exactly ONE positional array per shift.
-    // Priority: flex position wins (they were explicitly moved there for this
-    // window). Remove them from their primary-position array.
-    //
-    // We process: atk → mid → def as the "override wins" order, then cross-
-    // remove any name that appears in more than one array.
-    var snapDef=dIv.on.slice(),snapMid=mIv.on.slice(),snapAtk=aIv.on.slice();
-
-    // Build a seen-set walking atk first, then mid, then def.
-    // First occurrence wins removal from lower-priority arrays.
-    var seen={};
-    snapAtk.forEach(function(n){seen[n]='atk';});
-    snapMid=snapMid.filter(function(n){
-      if(seen[n])return false;   // already claimed by atk
-      seen[n]='mid';return true;
-    });
-    snapDef=snapDef.filter(function(n){
-      if(seen[n])return false;   // already claimed by atk or mid
-      seen[n]='def';return true;
-    });
-    // Also remove from atk anything that snuck in from def/mid side
-    // (shouldn't happen with the above order, but belt-and-suspenders)
-    snapAtk=snapAtk.filter(function(n){return seen[n]==='atk';});
-
-    // ── HARD COUNT VALIDATION ─────────────────────────────────────────────────
-    // Each array must be exactly FORM[pos] long. If applyFlexOverlay added a
-    // bonus player beyond the required count, trim the excess (last entries,
-    // which are the appended flex extras). This is the strict 4/3/4 guarantee.
-    if(snapAtk.length>FORM.attack) snapAtk=snapAtk.slice(0,FORM.attack);
-    if(snapMid.length>FORM.middie)  snapMid=snapMid.slice(0,FORM.middie);
-    if(snapDef.length>FORM.defense) snapDef=snapDef.slice(0,FORM.defense);
-
+    var dIv=ivAt(defIvs,tS),mIv=ivAt(midIvs,tS),aIv=ivAt(atkIvs,tS);
     var newIns={};
     if(tS>0){
-      [defIvF,midIvF,atkIvF].forEach(function(ivs){var iv=ivAt(ivs,tS);if(Math.abs(iv.tS-tS)<0.01)iv.newIns.forEach(function(n){newIns[n]=true;});});
+      [defIvs,midIvs,atkIvs].forEach(function(ivs){
+        var iv=ivAt(ivs,tS);
+        if(Math.abs(iv.tS-tS)<0.01)iv.newIns.forEach(function(n){newIns[n]=true;});
+      });
     }
-    snapshots.push({tS:tS,tE:tE,def:snapDef,mid:snapMid,atk:snapAtk,newIns:Object.keys(newIns),isKO:tS===0});
+    snapshots.push({tS:tS,tE:tE,def:dIv.on.slice(),mid:mIv.on.slice(),atk:aIv.on.slice(),newIns:Object.keys(newIns),isKO:tS===0});
   }
 
+  /* Actual minutes */
   var mins={};avail.forEach(function(p){mins[p.name]=0;});
-  snapshots.forEach(function(s){var dur=s.tE-s.tS;s.def.concat(s.mid,s.atk).forEach(function(n){if(mins[n]!==undefined)mins[n]+=dur;});});
-  return{snapshots:snapshots,groups:primaryGroups,mins:mins,avail:avail,fxD:fxD,fxM:fxM,fxA:fxA};
+  snapshots.forEach(function(s){
+    var dur=s.tE-s.tS;
+    s.def.concat(s.mid,s.atk).forEach(function(n){if(mins[n]!==undefined)mins[n]+=dur;});
+  });
+
+  return{snapshots:snapshots,groups:{defense:defPool,middie:midPool,attack:atkPool},mins:mins,avail:avail};
 }
 
-/* ─── generate ─── */
+/* ================================================================================
+   GENERATE
+   ================================================================================ */
 function generate(){
   var uncNames=getUnconfirmedNames(),hasUnc=uncNames.length>0;
   var confirmedAbsent={};
   for(var k in absent)confirmedAbsent[k]=true;
   uncNames.forEach(function(n){confirmedAbsent[n]=true;});
 
-  // Validate enough players at each position (no starter validation needed — group color handles order)
-  var availForCheck=ROSTER.filter(function(p){return!confirmedAbsent[p.name];});
+  var avail=ROSTER.filter(function(p){return!confirmedAbsent[p.name];});
   var w2=[];
   ['defense','middie','attack'].forEach(function(pos){
-    var n=availForCheck.filter(function(p){return p.pos===pos;}).length;
-    var nFlex=availForCheck.filter(function(p){return p.flex===pos&&p.pos!==pos;}).length;
-    if(n+nFlex<FORM[pos])w2.push('Not enough '+pos+' players ('+( n+nFlex)+' available, need '+FORM[pos]+').');
+    var pool=buildPool(pos,avail);
+    if(pool.length<FORM[pos])w2.push('Not enough '+pos+' players ('+pool.length+' in pool, need '+FORM[pos]+').');
   });
-  if(w2.length){document.getElementById('warnArea').innerHTML=w2.map(function(s){return'<div class="warn">'+s+'</div>';}).join('');return;}
+  if(w2.length){
+    document.getElementById('warnArea').innerHTML=w2.map(function(s){return'<div class="warn">'+s+'</div>';}).join('');
+    return;
+  }
   document.getElementById('warnArea').innerHTML='';
   planEdits={};
 
@@ -875,11 +872,17 @@ function generate(){
     var warns=[];
     if(!PLAN_A)warns.push('Cannot build rotation if unconfirmed are absent.');
     if(!PLAN_B)warns.push('Cannot build rotation if unconfirmed are present.');
-    if(warns.length){document.getElementById('warnArea').innerHTML=warns.map(function(s){return'<div class="warn">'+s+'</div>';}).join('');if(!PLAN_A&&!PLAN_B)return;}
+    if(warns.length){
+      document.getElementById('warnArea').innerHTML=warns.map(function(s){return'<div class="warn">'+s+'</div>';}).join('');
+      if(!PLAN_A&&!PLAN_B)return;
+    }
   }else{
     var abMap={};for(var k in absent)abMap[k]=true;
     PLAN=computeRotation(abMap);PLAN_A=null;PLAN_B=null;
-    if(!PLAN){document.getElementById('warnArea').innerHTML='<div class="warn">Not enough players at one or more positions. Assign FLEX players in Roster tab.</div>';return;}
+    if(!PLAN){
+      document.getElementById('warnArea').innerHTML='<div class="warn">Not enough players. Check FLEX assignments.</div>';
+      return;
+    }
   }
   renderShifts();renderTime();
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
@@ -888,15 +891,14 @@ function generate(){
   document.querySelectorAll('.nav-tab')[2].classList.add('active');
 }
 
-/* ─── swap state ─── */
+/* ── swap state ── */
 var swapFirst=null;
 function onChipClick(el){
   var name=el.getAttribute('data-name'),si=parseInt(el.getAttribute('data-si')),pos=el.getAttribute('data-pos'),pk=el.getAttribute('data-pk');
   if(!swapFirst){swapFirst={name:name,si:si,pos:pos,pk:pk};el.classList.add('chip-selected');return;}
   if(swapFirst.pk===pk&&swapFirst.si===si&&swapFirst.pos===pos&&swapFirst.name===name){clearSwap();return;}
   if(swapFirst.pk===pk&&swapFirst.si===si&&swapFirst.pos!==pos){
-    var ed=getEdits(pk);
-    var snap=ed.snapshots[si];
+    var ed=getEdits(pk),snap=ed.snapshots[si];
     var fArr=snap[swapFirst.pos].slice(),tArr=snap[pos].slice();
     var fi=fArr.indexOf(swapFirst.name),ti=tArr.indexOf(name);
     if(fi!==-1&&ti!==-1){fArr[fi]=name;tArr[ti]=swapFirst.name;snap[swapFirst.pos]=fArr;snap[pos]=tArr;recomputeNewIns(ed.snapshots,si);}
@@ -909,45 +911,44 @@ function clearSwap(){
   document.querySelectorAll('.chip-selected').forEach(function(el){el.classList.remove('chip-selected');});
 }
 
-/* ─── add / remove player from shift ─── */
+/* ── add / remove from shift ── */
 function addPlayerToShift(pk,si){
   var selEl=document.getElementById('addSel-'+pk+'-'+si);
   var posEl=document.getElementById('addPos-'+pk+'-'+si);
   if(!selEl||!posEl)return;
-  var name=selEl.value,pos=posEl.value;
-  if(!name)return;
-  var ed=getEdits(pk);
-  var snap=ed.snapshots[si];
+  var name=selEl.value,pos=posEl.value;if(!name)return;
+  var ed=getEdits(pk),snap=ed.snapshots[si];
   if(snap[pos].indexOf(name)!==-1)return;
   snap[pos].push(name);
   if(!ed.manualAdds[si])ed.manualAdds[si]=[];
-  var already=ed.manualAdds[si].some(function(e){return e.name===name&&e.pos===pos;});
-  if(!already)ed.manualAdds[si].push({name:name,pos:pos});
+  if(!ed.manualAdds[si].some(function(e){return e.name===name&&e.pos===pos;}))ed.manualAdds[si].push({name:name,pos:pos});
   recomputeNewIns(ed.snapshots,si);
   renderShifts();renderTime();
 }
-
 function removePlayerFromShift(pk,si,name,pos){
-  var ed=getEdits(pk);
-  if(!ed)return;
+  var ed=getEdits(pk);if(!ed)return;
   var snap=ed.snapshots[si],arr=snap[pos],idx=arr.indexOf(name);
   if(idx!==-1)arr.splice(idx,1);
   if(ed.manualAdds[si])ed.manualAdds[si]=ed.manualAdds[si].filter(function(e){return!(e.name===name&&e.pos===pos);});
   recomputeNewIns(ed.snapshots,si);
   renderShifts();renderTime();
 }
+function resetEdits(pk){delete planEdits[pk];clearSwap();renderShifts();renderTime();}
 
-function resetEdits(pk){
-  delete planEdits[pk];
-  clearSwap();
-  renderShifts();renderTime();
-}
-
-/* ─── RENDER SHIFTS ─── */
+/* ================================================================================
+   RENDER SHIFTS
+   ================================================================================ */
 function calcMins(snapshots,avail){
   var mins={};avail.forEach(function(p){mins[p.name]=0;});
   snapshots.forEach(function(s){var dur=s.tE-s.tS;s.def.concat(s.mid,s.atk).forEach(function(n){if(mins[n]!==undefined)mins[n]+=dur;});});
   return mins;
+}
+
+function poolAvgTarget(groups,pos){
+  var pool=groups[pos];if(!pool||!pool.length)return TOTAL.toFixed(1);
+  var t=calculateTargets(pool,FORM[pos]);
+  var s=pool.reduce(function(a,p){return a+t[p.name];},0);
+  return(s/pool.length).toFixed(1);
 }
 
 function renderShiftsForPlan(plan,pk){
@@ -955,17 +956,13 @@ function renderShiftsForPlan(plan,pk){
   var avail=plan.avail,groups=plan.groups;
   var mins=calcMins(snapshots,avail);
   var avg=0,keys=Object.keys(mins);keys.forEach(function(k){avg+=mins[k];});avg/=(avail.length||1);
-  var dL=groups.defense.length,mL=groups.middie.length,aL=groups.attack.length;
-  var dMin=dL<=FORM.defense?TOTAL.toFixed(1):(TOTAL*FORM.defense/dL).toFixed(1);
-  var mMin=mL<=FORM.middie ?TOTAL.toFixed(1):(TOTAL*FORM.middie /mL).toFixed(1);
-  var aMin=aL<=FORM.attack ?TOTAL.toFixed(1):(TOTAL*FORM.attack /aL).toFixed(1);
 
   var hasEdits=!!planEdits[pk];
   var html='<div class="stats-strip">'
-    +'<div class="stat-box"><span class="sv" style="color:var(--def)">'+dMin+'m</span><span class="sl">Each DEF</span></div>'
-    +'<div class="stat-box"><span class="sv" style="color:var(--mid)">'+mMin+'m</span><span class="sl">Each MID</span></div>'
-    +'<div class="stat-box"><span class="sv" style="color:var(--atk)">'+aMin+'m</span><span class="sl">Each ATK</span></div>'
-    +'<div class="stat-box"><span class="sv">'+avg.toFixed(1)+'m</span><span class="sl">Avg</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--def)">'+poolAvgTarget(groups,'defense')+'m</span><span class="sl">Avg DEF</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--mid)">'+poolAvgTarget(groups,'middie')+'m</span><span class="sl">Avg MID</span></div>'
+    +'<div class="stat-box"><span class="sv" style="color:var(--atk)">'+poolAvgTarget(groups,'attack')+'m</span><span class="sl">Avg ATK</span></div>'
+    +'<div class="stat-box"><span class="sv">'+avg.toFixed(1)+'m</span><span class="sl">Overall</span></div>'
     +'</div>';
   html+='<div class="edit-banner">&#9998; Tap two chips in the <em>same shift</em> to swap positions.'
     +(hasEdits?' <button onclick="resetEdits(\''+pk+'\')" style="background:none;border:1px solid var(--gold2);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;margin-left:6px;font-family:Oswald,sans-serif">&#8635; Reset</button>':'')
@@ -981,16 +978,18 @@ function renderShiftsForPlan(plan,pk){
     var snap=snapshots[si];
     var newSet={};snap.newIns.forEach(function(n){newSet[n]=true;});
     var subCount=snap.newIns.length;
+
     for(var bi=0;bi<Q_BREAKS.length;bi++){
-      if(!shownBreaks[bi]&&snap.tS>=Q_BREAKS[bi].time-0.05){html+='<div class="half-divider">'+Q_BREAKS[bi].label+'</div>';shownBreaks[bi]=true;}
+      if(!shownBreaks[bi]&&snap.tS>=Q_BREAKS[bi].time-0.05){
+        html+='<div class="half-divider">'+Q_BREAKS[bi].label+'</div>';shownBreaks[bi]=true;
+      }
     }
     var isQS=false,qBadge='';
-    if(gameFormat==='halves'){
-      if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='H2';}
-    }else{
+    if(gameFormat==='halves'){if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='H2';}}
+    else{
       if(Math.abs(snap.tS-QUARTER)<0.05){isQS=true;qBadge='Q2';}
-      if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='Q3';}
-      if(Math.abs(snap.tS-3*QUARTER)<0.05){isQS=true;qBadge='Q4';}
+      else if(Math.abs(snap.tS-HALF)<0.05){isQS=true;qBadge='Q3';}
+      else if(Math.abs(snap.tS-3*QUARTER)<0.05){isQS=true;qBadge='Q4';}
     }
 
     var onField=snap.atk.concat(snap.mid,snap.def);
@@ -1000,38 +999,29 @@ function renderShiftsForPlan(plan,pk){
     var makeChipRow=function(players,base,newCls,posKey){
       var out='';
       for(var ci=0;ci<players.length;ci++){
-        var n=players[ci];
-        var sp=getSubPosLabel(n);
+        var n=players[ci],sp=getSubPosLabel(n);
         var spTag=sp?'<span class="subpos-tag">'+sp+'</span>':'';
         var cls=newSetC[n]?newCls:base;
         var dot=newSetC[n]?'<span class="new-dot"></span>':'';
         out+='<span class="chip-with-remove">'
           +'<span class="pchip '+cls+'" data-name="'+n+'" data-si="'+siC+'" data-pos="'+posKey+'" data-pk="'+pkC+'" onclick="onChipClick(this)">'+n+spTag+dot+'</span>'
-          +'<button class="chip-remove" data-pk="'+pkC+'" data-si="'+siC+'" data-name="'+n+'" data-pos="'+posKey+'" title="Remove from this shift">&#10005;</button>'
+          +'<button class="chip-remove" data-pk="'+pkC+'" data-si="'+siC+'" data-name="'+n+'" data-pos="'+posKey+'" title="Remove">&#10005;</button>'
           +'</span>';
       }
       return out;
     };
 
-    var addPanel='';
     var selOpts=benched.map(function(n){return'<option value="'+n+'">'+n+'</option>';}).join('');
-    if(benched.length>0){
-      addPanel='<div class="add-panel">'
-        +'<div class="add-panel-title">&#43; Add Player to This Shift</div>'
+    var addPanel=benched.length>0
+      ?'<div class="add-panel"><div class="add-panel-title">&#43; Add Player to This Shift</div>'
         +'<div class="add-panel-row">'
         +'<select class="add-sel" id="addSel-'+pkC+'-'+siC+'">'+selOpts+'</select>'
         +'<select class="add-pos-sel" id="addPos-'+pkC+'-'+siC+'">'
-        +'<option value="atk" style="color:var(--atk)">ATK</option>'
-        +'<option value="mid" style="color:var(--mid)">MID</option>'
-        +'<option value="def" style="color:var(--def)">DEF</option>'
+        +'<option value="atk">ATK</option><option value="mid">MID</option><option value="def">DEF</option>'
         +'</select>'
         +'<button class="add-btn" onclick="addPlayerToShift(\''+pkC+'\','+siC+')">&#43; ADD</button>'
-        +'</div>'
-        +'<div class="bench-label">Benched this shift: '+benched.join(', ')+'</div>'
-        +'</div>';
-    }else{
-      addPanel='<div class="add-panel"><div class="add-panel-title" style="color:var(--muted)">All players are on the field this shift</div></div>';
-    }
+        +'</div><div class="bench-label">Benched: '+benched.join(', ')+'</div></div>'
+      :'<div class="add-panel"><div class="add-panel-title" style="color:var(--muted)">All players on field</div></div>';
 
     html+='<div class="shift-card'+(snap.isKO||isQS?' special':'')+'"><div class="shift-hdr">'
       +'<span class="shift-clock">'+fmt(snap.tS)+' \u2013 '+fmt(snap.tE)+'</span>'
@@ -1049,8 +1039,7 @@ function renderShiftsForPlan(plan,pk){
 }
 
 function renderShifts(){
-  var uncNames=getUnconfirmedNames();
-  var html='';
+  var uncNames=getUnconfirmedNames(),html='';
   if(PLAN_A||PLAN_B){
     var nl=uncNames.join(', ');
     if(PLAN_A){html+='<div class="plan-divider plan-divider-a">Rotation if Unconfirmed '+(uncNames.length>1?'Are':'Is')+' Absent<div class="plan-divider-names">Without: '+nl+'</div></div>';html+=renderShiftsForPlan(PLAN_A,'PLAN_A');}
@@ -1060,35 +1049,38 @@ function renderShifts(){
   document.getElementById('shifts-content').innerHTML=html;
 }
 
-/* ─── TIME TAB ─── */
+/* ================================================================================
+   TIME TAB
+   ================================================================================ */
 function renderTimeForPlan(plan,pk){
-  var snapshots=getSnapshots(pk),avail=plan.avail;
+  var snapshots=getSnapshots(pk),avail=plan.avail,groups=plan.groups;
   var mins=calcMins(snapshots,avail);
-  var maxM=0,keys=Object.keys(mins);keys.forEach(function(k){if(mins[k]>maxM)maxM=mins[k];});if(!maxM)maxM=1;
-  var avg=0;keys.forEach(function(k){avg+=mins[k];});avg/=(avail.length||1);
-  var posOrd={attack:0,middie:1,defense:2};
-  var entries=keys.map(function(k){return[k,mins[k]];}).sort(function(a,b){
-    var pa=getRosterPlayer(a[0]),pb=getRosterPlayer(b[0]);
-    var po=(posOrd[pa?pa.pos:'attack']||0)-(posOrd[pb?pb.pos:'attack']||0);
-    return po!==0?po:a[0].localeCompare(b[0]);
-  });
+  var maxM=0;Object.keys(mins).forEach(function(k){if(mins[k]>maxM)maxM=mins[k];});if(!maxM)maxM=1;
+  var avg=0;Object.keys(mins).forEach(function(k){avg+=mins[k];});avg/=(avail.length||1);
+
   var html='<div class="note">Avg: <strong>'+avg.toFixed(1)+' min</strong></div><div class="pt-list">';
-  var lastPos=null;
-  entries.forEach(function(e){
-    var name=e[0],m=e[1],p=getRosterPlayer(name),pos=p?p.pos:'attack';
-    if(pos!==lastPos){
-      var lbl=pos==='defense'?'DEFENSE':pos==='middie'?'MIDFIELD':'ATTACK';
-      var col=pos==='defense'?'var(--def)':pos==='middie'?'var(--mid)':'var(--atk)';
-      html+='<div style="font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;color:'+col+';padding:8px 0 4px;border-bottom:1px solid var(--border2);margin-top:'+(lastPos?'10px':'0')+'">'+lbl+'</div>';
-      lastPos=pos;
-    }
-    var pc=pos==='attack'?'var(--atk)':pos==='middie'?'var(--mid)':'var(--def)';
-    var flexTag=p&&p.flex?' <span style="font-size:10px;color:var(--muted)">[FLEX]</span>':'';
-    var spTag=p&&p.subpos?' <span style="font-size:10px;color:var(--gold)">'+p.subpos+'</span>':'';
-    var moreFlag=(ptMode==='custom'&&ptMorePlayer===name)?'<span style="color:var(--green);font-size:10px"> \u25b2</span>':'';
-    var lessFlag=(ptMode==='custom'&&ptLessPlayer===name)?'<span style="color:#ff7777;font-size:10px"> \u25bc</span>':'';
-    html+='<div class="pt-row"><div class="pt-top"><span class="pt-name" style="color:'+pc+'">'+name+spTag+flexTag+moreFlag+lessFlag+'</span><span class="pt-mins">'+m.toFixed(1)+' min</span></div>'
-      +'<div class="pt-bar-bg"><div class="pt-bar-fill" style="width:'+(m/maxM*100).toFixed(1)+'%;background:'+pc+';opacity:.82"></div></div></div>';
+  ['attack','middie','defense'].forEach(function(pos){
+    var pool=groups[pos];if(!pool||!pool.length)return;
+    var colMap={attack:'var(--atk)',middie:'var(--mid)',defense:'var(--def)'};
+    var lblMap={attack:'ATTACK',middie:'MIDFIELD',defense:'DEFENSE'};
+    var col=colMap[pos],lbl=lblMap[pos];
+    var targets=calculateTargets(pool,FORM[pos]);
+    html+='<div style="font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;color:'+col+
+      ';padding:8px 0 4px;border-bottom:1px solid var(--border2);margin-top:10px">'+lbl+'</div>';
+    pool.slice().sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(function(p){
+      var m=mins[p.name]||0;
+      var rp=getRosterPlayer(p.name);
+      var flexTag=(rp&&rp.flex===pos&&rp.pos!==pos)?' <span style="font-size:10px;color:var(--atk)">[FLEX]</span>':'';
+      var spTag=rp&&rp.subpos?' <span style="font-size:10px;color:var(--gold)">'+rp.subpos+'</span>':'';
+      var wtStr=p.playTimeWeight!==1.0?' <span style="font-size:10px;color:'+(p.playTimeWeight>1?'var(--atk)':'var(--muted)')+'">\xd7'+p.playTimeWeight.toFixed(1)+'</span>':'';
+      var tgt=targets[p.name];
+      var tgtStr=' <span style="font-size:10px;color:var(--muted)">(tgt '+tgt.toFixed(1)+')</span>';
+      html+='<div class="pt-row"><div class="pt-top">'
+        +'<span class="pt-name" style="color:'+col+'">'+p.name+spTag+flexTag+wtStr+tgtStr+'</span>'
+        +'<span class="pt-mins">'+m.toFixed(1)+' min</span>'
+        +'</div><div class="pt-bar-bg"><div class="pt-bar-fill" style="width:'
+        +(m/maxM*100).toFixed(1)+'%;background:'+col+';opacity:.82"></div></div></div>';
+    });
   });
   return html+'</div>';
 }
@@ -1103,17 +1095,15 @@ function renderTime(){
   document.getElementById('time-content').innerHTML=html;
 }
 
-/* ─── PRINT ─── */
+/* ================================================================================
+   PRINT
+   ================================================================================ */
 function closeOverlay(){document.getElementById('printOverlay').classList.remove('show');}
 
 function buildPrintHTML(plan,pk,label){
   var snapshots=getSnapshots(pk),avail=plan.avail,groups=plan.groups;
   var mins=calcMins(snapshots,avail);
-  var avg=0,keys=Object.keys(mins);keys.forEach(function(k){avg+=mins[k];});avg/=(avail.length||1);
-  var dL=groups.defense.length,mL=groups.middie.length,aL=groups.attack.length;
-  var dMin=dL<=FORM.defense?TOTAL.toFixed(1):(TOTAL*FORM.defense/dL).toFixed(1);
-  var mMin=mL<=FORM.middie ?TOTAL.toFixed(1):(TOTAL*FORM.middie /mL).toFixed(1);
-  var aMin=aL<=FORM.attack ?TOTAL.toFixed(1):(TOTAL*FORM.attack /aL).toFixed(1);
+  var avg=0;Object.keys(mins).forEach(function(k){avg+=mins[k];});avg/=(avail.length||1);
 
   var shownB={},rotHTML='';
   var PB=gameFormat==='halves'
@@ -1122,7 +1112,9 @@ function buildPrintHTML(plan,pk,label){
 
   for(var si=0;si<snapshots.length;si++){
     var snap=snapshots[si];
-    for(var pbi=0;pbi<PB.length;pbi++){if(!shownB[pbi]&&snap.tS>=PB[pbi].time-0.05){rotHTML+='<tr class="print-qbreak"><td colspan="4">'+PB[pbi].label+'</td></tr>';shownB[pbi]=true;}}
+    for(var pbi=0;pbi<PB.length;pbi++){
+      if(!shownB[pbi]&&snap.tS>=PB[pbi].time-0.05){rotHTML+='<tr class="print-qbreak"><td colspan="4">'+PB[pbi].label+'</td></tr>';shownB[pbi]=true;}
+    }
     var ns={};snap.newIns.forEach(function(n){ns[n]=true;});
     var prev=si>0?snapshots[si-1]:null;
     var oA=[],oM=[],oD=[];
@@ -1143,8 +1135,7 @@ function buildPrintHTML(plan,pk,label){
       return parts.join('&ensp;');
     }
     var sc=snap.newIns.length,sLbl=snap.isKO?'KICKOFF':(sc?sc+' sub'+(sc>1?'s':'')+' in':'');
-    var isQS=gameFormat==='halves'
-      ?Math.abs(snap.tS-HALF)<0.05
+    var isQS=gameFormat==='halves'?Math.abs(snap.tS-HALF)<0.05
       :(Math.abs(snap.tS-QUARTER)<0.05||Math.abs(snap.tS-HALF)<0.05||Math.abs(snap.tS-3*QUARTER)<0.05);
     rotHTML+='<tr'+(snap.isKO||isQS?' style="background:#fffbe6!important"':'')+'>'
       +'<td class="td-shift">'+shiftLabel(snap.tS,snap.tE)+(sLbl?'<span class="td-sublbl">'+sLbl+'</span>':'')+'</td>'
@@ -1153,10 +1144,15 @@ function buildPrintHTML(plan,pk,label){
       +'<td class="td-def">'+rCell(snap.def,oD)+'</td>'
       +'</tr>';
   }
+
   var lbl=label?'<div class="print-plan-label">'+label+'</div>':'';
   var fmtStr=gameFormat==='halves'?'2 halves \u00d7 20 min':gameFormat==='quarters12'?'4 qtrs \u00d7 12 min':'4 qtrs \u00d7 10 min';
   return lbl
-    +'<div class="print-stat-bar"><span style="color:#9a3300">ATK</span> '+aMin+' min &nbsp;&middot;&nbsp; <span style="color:#004f78">MID</span> '+mMin+' min &nbsp;&middot;&nbsp; <span style="color:#3e0f6e">DEF</span> '+dMin+' min &nbsp;&middot;&nbsp; Avg '+avg.toFixed(1)+' min</div>'
+    +'<div class="print-stat-bar">'
+    +'<span style="color:#9a3300">ATK</span> '+poolAvgTarget(groups,'attack')+' min avg &nbsp;&middot;&nbsp; '
+    +'<span style="color:#004f78">MID</span> '+poolAvgTarget(groups,'middie')+' min avg &nbsp;&middot;&nbsp; '
+    +'<span style="color:#3e0f6e">DEF</span> '+poolAvgTarget(groups,'defense')+' min avg &nbsp;&middot;&nbsp; '
+    +'Overall '+avg.toFixed(1)+' min</div>'
     +'<table class="print-rot-table"><thead><tr>'
     +'<th class="th-shift">CLOCK</th><th class="th-atk">\u25b2 ATTACK</th><th class="th-mid">\u25b2 MIDFIELD</th><th class="th-def">\u25b2 DEFENSE</th>'
     +'</tr></thead><tbody>'+rotHTML+'</tbody></table>';
@@ -1168,8 +1164,8 @@ function doPrint(){
   var uncNames=getUnconfirmedNames();
   var totalActive=ROSTER.filter(function(p){return!absent[p.name];}).length;
   var fmtStr=gameFormat==='halves'?'2 halves \u00d7 20 min':gameFormat==='quarters12'?'4 qtrs \u00d7 12 min':'4 qtrs \u00d7 10 min';
-  var content='<div class="print-page">';
-  content+='<div class="print-hdr-block">'
+  var content='<div class="print-page">'
+    +'<div class="print-hdr-block">'
     +'<div><div class="print-hdr-title">JR. LIONS LACROSSE</div><div class="print-hdr-sub">Game Day Rotation Card</div></div>'
     +'<div class="print-hdr-right"><div class="print-hdr-date">'+now+'</div>'
     +'<div class="print-hdr-stats">'+totalActive+' active &bull; '+fmtStr+'</div>'
@@ -1187,7 +1183,9 @@ function doPrint(){
 }
 function triggerPrint(){window.print();}
 
-/* ─── COPY ─── */
+/* ================================================================================
+   COPY
+   ================================================================================ */
 function copyTextForPlan(plan,pk,label){
   var snapshots=getSnapshots(pk),avail=plan.avail,mins=calcMins(snapshots,avail);
   var t=label?label+'\n\n':'';
@@ -1212,19 +1210,21 @@ function copyText(){
   navigator.clipboard.writeText(t).then(function(){alert('Copied!');});
 }
 
+/* ── init ── */
 renderRoster();
 updatePlanNote();
 
-// Delegated listener for chip-remove buttons
-document.addEventListener('click', function(e){
+/* Delegated chip-remove listener */
+document.addEventListener('click',function(e){
   var btn=e.target;
   if(!btn.classList.contains('chip-remove'))return;
   e.stopPropagation();
-  var pk=btn.getAttribute('data-pk');
-  var si=parseInt(btn.getAttribute('data-si'),10);
-  var name=btn.getAttribute('data-name');
-  var pos=btn.getAttribute('data-pos');
-  removePlayerFromShift(pk,si,name,pos);
+  removePlayerFromShift(
+    btn.getAttribute('data-pk'),
+    parseInt(btn.getAttribute('data-si'),10),
+    btn.getAttribute('data-name'),
+    btn.getAttribute('data-pos')
+  );
 });
 </script>
 </body>
